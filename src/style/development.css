@@ -1,0 +1,11 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+#almostthereContainer,
+#loadingContainer {
+  /*display: none!important;*/
+  /*opacity: 0.5;*/
+  pointer-events: none;
+}
