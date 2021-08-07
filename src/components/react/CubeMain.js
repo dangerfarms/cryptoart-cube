@@ -35,7 +35,6 @@ const generateRandomFaces = () => {
   return translateSizeToConfig(cube);
 };
 
-
 const initialCubeConfig = {
   colors,
   faces: generateRandomFaces(),
