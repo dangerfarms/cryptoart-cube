@@ -2,45 +2,46 @@ import React, { useState } from 'react';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
 
-const mockCubeData = {
-  colors: ['#ff003c', '#ff7b00', '#ffcd00', '#5ed723', '#1e63ff', '#ff003c'],
-  faces: [
-    [0, 1, 1, 1, 0, 1, 1, 0, 0],
-    [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0],
-    [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1],
-    [
-      1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0,
-      1, 0, 0, 1, 1,
-    ],
-    [
-      1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1,
-      0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
-    ],
-    [
-      1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1,
-      1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1,
-      1, 0,
-    ],
-  ],
-};
+const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
+
+/**
+ * Convert an array containing the number of squares per face into a random configuration.
+ * @param cube
+ */
+function translateSizeToConfig(cube) {
+  const maxSquaresPerFace = [9, 16, 25, 36, 49, 64]
+  return cube.map((square, i) => {
+    const squares = [
+      ...new Array(square).fill(1),
+      ...new Array(maxSquaresPerFace[i]-square).fill(0),
+    ]
+    return [...squares].sort(() => 0.5 - Math.random());
+  })
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 
 const generateRandomFaces = () => {
-  const faces = [];
-  for (let i = 3; i <= 8; i++) {
-    const newArray = [];
-    for (let j = 0; j < i * i; j++) {
-      newArray.push(Math.random() > 0.5 ? 1 : 0);
-    }
-    faces.push(newArray);
-  }
-  return faces;
+  const cube = [
+    getRandomInt(10),
+    getRandomInt(17),
+    getRandomInt(26),
+    getRandomInt(37),
+    getRandomInt(50),
+    getRandomInt(65),
+  ]
+  return translateSizeToConfig(cube);
 };
 
-const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#FF003c'];
 
 export function CubeMain(props) {
   const { cubeData } = props;
-  const [_cubeData, setCubeData] = useState(mockCubeData);
+  const [_cubeData, setCubeData] = useState({
+    colors,
+    faces: generateRandomFaces(),
+  });
   const store = useCreateStore();
   const data = useControls(
     {
