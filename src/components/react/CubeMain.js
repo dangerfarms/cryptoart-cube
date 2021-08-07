@@ -36,12 +36,14 @@ const generateRandomFaces = () => {
 };
 
 
+const initialCubeConfig = {
+  colors,
+  faces: generateRandomFaces(),
+}
+
 export function CubeMain(props) {
   const { cubeData } = props;
-  const [_cubeData, setCubeData] = useState({
-    colors,
-    faces: generateRandomFaces(),
-  });
+  const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const store = useCreateStore();
   const data = useControls(
     {
