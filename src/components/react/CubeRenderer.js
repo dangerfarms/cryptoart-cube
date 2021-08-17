@@ -27,6 +27,9 @@ function Boxes(props) {
     thickness = 0.01,
     explosion = 0.5,
     backGroundColor = '#f0f0f0',
+    subSquareOpacity = 0.1,
+    cylinderOpacity = 0.1,
+    cylinderThickness = 1,
   } = props;
   let numberPoints = 0;
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1);
@@ -192,7 +195,7 @@ function Boxes(props) {
 
           meshRef.current.setMatrixAt(currentFaceId, tempObject.matrix);
 
-          const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
+          // const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
 
           tempObject.scale.set(
             cylinderThickness,
@@ -255,6 +258,7 @@ function Boxes(props) {
     explosion,
     cubeData,
     hexColorsArray,
+    cylinderThickness,
   ]);
 
   useFrame((state) => {
@@ -272,6 +276,7 @@ function Boxes(props) {
         args={[roundedGeometry, null, facesActive.length]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
+        renderOrder={1}
       >
         <meshPhysicalMaterial
           vertexColors={THREE.VertexColors}
@@ -281,7 +286,7 @@ function Boxes(props) {
           thickness={0.1}
           envMapIntensity={1}
           transparent
-          opacity={0.8}
+          opacity={subSquareOpacity}
           // transmission={0.01}
           // roughness={0.3}
           // thickness={0.5}
@@ -294,6 +299,7 @@ function Boxes(props) {
       <instancedMesh
         ref={cylRef}
         args={[cylGeometry, null, facesActive.length * 4]}
+        renderOrder={0}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
       >
@@ -320,8 +326,8 @@ function Boxes(props) {
           roughness={0.1}
           thickness={0.1}
           envMapIntensity={1}
-          //transparent
-          // // opacity={0.8}
+          transparent
+          opacity={cylinderOpacity}
           // transmission={1}
           // roughness={0.3}
           // thickness={0.5}

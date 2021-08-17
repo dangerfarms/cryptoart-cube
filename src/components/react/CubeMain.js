@@ -63,6 +63,21 @@ export function CubeMain(props) {
         min: 0,
         max: 10,
       },
+      subSquareOpacity: {
+        value: 0.9,
+        min: 0,
+        max: 1,
+      },
+      cylinderThickness: {
+        value: 0.9,
+        min: 0,
+        max: 1,
+      },
+      cylinderOpacity: {
+        value: 0.9,
+        min: 0,
+        max: 1,
+      },
       color0: {
         value: colors[0],
         onChange: (color) => {
