@@ -53,6 +53,7 @@
   "dependencies": {
     "@react-three/drei": "^7.3.1",
     "@react-three/fiber": "^7.0.6",
+    "@react-three/postprocessing": "^2.0.5",
     "bootstrap": "^4.6.0",
     "concurrently": "^6.0.0",
     "dotenv": "8.2.0",
@@ -79,6 +80,7 @@
     "react-dropzone-uploader": "^2.11.0",
     "react-refresh": "0.8.3",
     "react-router-dom": "^5.2.0",
-    "three": "^0.126.1"
+    "three": "^0.126.1",
+    "three-rounded-box": "^0.1.1"
   }
 }

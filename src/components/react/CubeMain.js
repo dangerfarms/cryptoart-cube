@@ -9,14 +9,14 @@ const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'
  * @param cube
  */
 function translateSizeToConfig(cube) {
-  const maxSquaresPerFace = [9, 16, 25, 36, 49, 64]
+  const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   return cube.map((square, i) => {
     const squares = [
       ...new Array(square).fill(1),
-      ...new Array(maxSquaresPerFace[i]-square).fill(0),
-    ]
+      ...new Array(maxSquaresPerFace[i] - square).fill(0),
+    ];
     return [...squares].sort(() => 0.5 - Math.random());
-  })
+  });
 }
 
 function getRandomInt(max) {
@@ -31,14 +31,14 @@ const generateRandomFaces = () => {
     getRandomInt(37),
     getRandomInt(50),
     getRandomInt(65),
-  ]
+  ];
   return translateSizeToConfig(cube);
 };
 
 const initialCubeConfig = {
   colors,
   faces: generateRandomFaces(),
-}
+};
 
 export function CubeMain(props) {
   const { cubeData } = props;
@@ -55,7 +55,7 @@ export function CubeMain(props) {
       mainCubeSide: 10,
       thickness: {
         value: 0.02,
-        min: 0.001,
+        min: -1,
         max: 1,
       },
       explosion: {

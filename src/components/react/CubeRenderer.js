@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 
+const RoundedBoxGeometry = require('three-rounded-box')(THREE);
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -36,6 +37,7 @@ function Boxes(props) {
   } = useThree();
 
   const cameraRef = useRef();
+  const geometryRef = useRef();
 
   const facesActive = useMemo(
     () =>
@@ -58,7 +60,6 @@ function Boxes(props) {
             .flatMap((_, i) => tempColor.set(cubeData.colors[index]).toArray());
 
           const toReturn = [...acc, ..._colorArray];
-
           return toReturn;
         }, []),
       ),
@@ -66,13 +67,36 @@ function Boxes(props) {
   );
 
   const meshRef = useRef();
+  const cylRef = useRef();
   const prevRef = useRef();
 
+  let cylWidth = 0.05;
+  let cylHeight = 10;
+
+  const [cylGeometry, setCylGeometry] = useState(
+    new THREE.CylinderGeometry(cylWidth, cylWidth, 1, 32),
+  );
+  const [hexColorsArray, setHexColorsArray] = useState(cubeData.colors);
+
+  useEffect(() => {
+    setHexColorsArray(cubeData.colors);
+  }, [cubeData.colors]);
+
+  const [roundedGeometry, setRoundedGeometry] = useState(
+    new RoundedBoxGeometry(mainCubeSide, mainCubeSide, mainCubeSide, 0, 5),
+  );
+  useMemo(() => {
+    roundedGeometry.computeVertexNormals();
+    roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
+  }, [roundedGeometry, colorArray]);
   useEffect(() => {
     scene.background = new THREE.Color(backGroundColor);
   }, [scene, backGroundColor]);
 
   useEffect(() => {
+    if (!meshRef.current || !roundedGeometry || !cylRef.current) {
+      return;
+    }
     let currentFaceId = 0;
 
     const halfCubeSide = mainCubeSide / 2;
@@ -87,6 +111,8 @@ function Boxes(props) {
         new THREE.Vector3(0, 1, 0),
         new THREE.Vector3(0, 0, 1),
       ];
+
+      const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
       const currentFaceNumberOfSquaresPerLine = Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
@@ -165,37 +191,153 @@ function Boxes(props) {
           tempObject.updateMatrix();
 
           meshRef.current.setMatrixAt(currentFaceId, tempObject.matrix);
+
+          const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
+
+          tempObject.scale.set(
+            cylinderThickness,
+            (mainCubeSide + explosion * 2) * faceDisplacementSignal,
+            cylinderThickness,
+          );
+
+          const cylinderCornerCoordsSignal = [
+            [1, 1],
+            [1, -1],
+            [-1, -1],
+            [-1, 1],
+          ];
+
+          const cornerDisplacementScalar =
+            subFaceRelativeSideScaled * clampedSubSquaresScale * mainCubeSide;
+
+          for (let cornerId = 0; cornerId < 4; cornerId++) {
+            const cornerSignals = cylinderCornerCoordsSignal[cornerId];
+
+            const cylinderCoordPointerVector1 = mainCubeFaceMovingPointerDirectonVectors[0]
+              .clone()
+              .multiplyScalar((cornerSignals[0] * cornerDisplacementScalar) / 2);
+
+            const cylinderCoordPointerVector2 = mainCubeFaceMovingPointerDirectonVectors[1]
+              .clone()
+              .multiplyScalar((cornerSignals[1] * cornerDisplacementScalar) / 2);
+
+            let cylObj = tempObject.clone();
+
+            cylObj.position.sub(nonMovingCoordVector);
+            cylObj.position.add(cylinderCoordPointerVector1);
+            cylObj.position.add(cylinderCoordPointerVector2);
+
+            cylObj.rotateX(Math.PI / 2);
+
+            if (!facesActiveOriginalScale[currentFaceId]) {
+              cylObj.scale.set(0, 0, 0);
+            }
+
+            cylObj.updateMatrix();
+            const cylinderInstanceIndex = currentFaceId * 4 + cornerId;
+            cylRef.current.setMatrixAt(cylinderInstanceIndex, cylObj.matrix);
+            cylRef.current.setColorAt(cylinderInstanceIndex, faceColor);
+          }
+          // }
           currentFaceId++;
         }
       }
     }
     console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [meshRef, thickness, subSquaresScale, mainCubeSide, explosion, cubeData]);
+    cylRef.current.instanceMatrix.needsUpdate = true;
+  }, [
+    meshRef,
+    cylRef,
+    thickness,
+    subSquaresScale,
+    mainCubeSide,
+    explosion,
+    cubeData,
+    hexColorsArray,
+  ]);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-
+    if (!meshRef.current) {
+      return;
+    }
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
-  console.log(cameraRef.current, camera);
+
   return (
     <>
       <instancedMesh
         ref={meshRef}
-        args={[null, null, facesActive.length]}
+        args={[roundedGeometry, null, facesActive.length]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
       >
-        <boxGeometry args={[mainCubeSide, mainCubeSide, mainCubeSide]}>
-          <instancedBufferAttribute attachObject={['attributes', 'color']} args={[colorArray, 3]} />
-        </boxGeometry>
-        <meshPhongMaterial vertexColors={THREE.VertexColors} />
+        <meshPhysicalMaterial
+          vertexColors={THREE.VertexColors}
+          // side={THREE.DoubleSide}
+          // transmission={0.5}
+          roughness={0.1}
+          thickness={0.1}
+          envMapIntensity={1}
+          transparent
+          opacity={0.8}
+          // transmission={0.01}
+          // roughness={0.3}
+          // thickness={0.5}
+          // envMapIntensity={1}
+          // clearcoat={0.6}
+          // // metalness={0.9}
+        />
       </instancedMesh>
+
+      <instancedMesh
+        ref={cylRef}
+        args={[cylGeometry, null, facesActive.length * 4]}
+        // onPointerMove={(e) => set(e.instanceId)}
+        // onPointerOut={(e) => set(undefined)}
+      >
+        {/*<meshBasicMaterial*/}
+        {/*  //vertexColors={THREE.VertexColors}*/}
+        {/*  side={THREE.DoubleSide}*/}
+        {/*  //transmission={0.8}*/}
+        {/*  // roughness={0.3}*/}
+        {/*  // thickness={2}*/}
+        {/*  // envMapIntensity={4}*/}
+        {/*  //transparent*/}
+        {/*  // // opacity={0.8}*/}
+        {/*  // transmission={1}*/}
+        {/*  // roughness={0.3}*/}
+        {/*  // thickness={0.5}*/}
+        {/*  // envMapIntensity={1}*/}
+        {/*  // clearcoat={0.6}*/}
+        {/*  // // metalness={0.9}*/}
+        {/*/>*/}
+        <meshPhysicalMaterial
+          //vertexColors={THREE.VertexColors}
+          side={THREE.DoubleSide}
+          //transmission={0.8}
+          roughness={0.1}
+          thickness={0.1}
+          envMapIntensity={1}
+          //transparent
+          // // opacity={0.8}
+          // transmission={1}
+          // roughness={0.3}
+          // thickness={0.5}
+          // envMapIntensity={1}
+          // clearcoat={0.6}
+          // // metalness={0.9}
+        />
+      </instancedMesh>
+
       <PerspectiveCamera position={[0, 0, 25]} makeDefault ref={cameraRef}>
-        <pointLight intensity={0.55} />
+        <pointLight intensity={0.15} />
       </PerspectiveCamera>
       <OrbitControls camera={cameraRef.current} autoRotate />
+      <Suspense fallback={null}>
+        <Environment preset="warehouse" />
+      </Suspense>
     </>
   );
 }
@@ -207,7 +349,7 @@ export const CubeRenderer = (props) => {
       gl={{ antialias: false, alpha: false }}
       camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
-      <ambientLight />
+      <ambientLight intensity={0.15} />
       <Boxes {...props} />
       <Effects />
     </Canvas>
