@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
 import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
@@ -22,15 +22,17 @@ const cubeFacesOrientation = [
 function Boxes(props) {
   const {
     cubeData,
-    subSquaresScale = 0.8,
+    subSquaresScale = 0.9,
     mainCubeSide = 10,
     thickness = 0.01,
-    explosion = 0.5,
+    explosion = 0.1,
     backGroundColor = '#f0f0f0',
-    subSquareOpacity = 0.1,
+    subSquareOpacity = 0.9,
     cylinderOpacity = 0.1,
-    cylinderThickness = 1,
+    cylinderThickness = 0.8,
   } = props;
+
+  const [autoRotate, setAutoRotate] = useState(true);
   let numberPoints = 0;
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1);
   const {
@@ -38,6 +40,16 @@ function Boxes(props) {
     scene,
     gl: { domElement },
   } = useThree();
+
+  function toggleAutoRotate() {
+    setAutoRotate(!autoRotate);
+  }
+
+  useEffect(() => {
+    console.log();
+    domElement.removeEventListener('auxclick', toggleAutoRotate);
+    domElement.addEventListener('auxclick', toggleAutoRotate);
+  }, [domElement, autoRotate]);
 
   const cameraRef = useRef();
   const geometryRef = useRef();
@@ -74,7 +86,6 @@ function Boxes(props) {
   const prevRef = useRef();
 
   let cylWidth = 0.05;
-  let cylHeight = 10;
 
   const [cylGeometry, setCylGeometry] = useState(
     new THREE.CylinderGeometry(cylWidth, cylWidth, 1, 32),
@@ -104,7 +115,9 @@ function Boxes(props) {
 
     const halfCubeSide = mainCubeSide / 2;
 
-    const absoluteThickness = halfCubeSide * thickness;
+    const _thickness = thickness || 0.00001; // requested by client.
+
+    const absoluteThickness = halfCubeSide * _thickness;
 
     // goes through all the cube faces
 
@@ -166,7 +179,7 @@ function Boxes(props) {
             facesActiveOriginalScale[currentFaceId]
               ? subFaceRelativeSideScaled * clampedSubSquaresScale
               : 0,
-            facesActiveOriginalScale[currentFaceId] ? thickness : 0,
+            facesActiveOriginalScale[currentFaceId] ? _thickness : 0,
           );
 
           const coord1PointerVector = mainCubeFaceMovingPointerDirectonVectors[0]
@@ -218,11 +231,17 @@ function Boxes(props) {
 
             const cylinderCoordPointerVector1 = mainCubeFaceMovingPointerDirectonVectors[0]
               .clone()
-              .multiplyScalar((cornerSignals[0] * cornerDisplacementScalar) / 2);
+              .multiplyScalar(
+                (cornerSignals[0] * cornerDisplacementScalar) / 2 -
+                  cornerSignals[0] * cylinderThickness * cylWidth,
+              );
 
             const cylinderCoordPointerVector2 = mainCubeFaceMovingPointerDirectonVectors[1]
               .clone()
-              .multiplyScalar((cornerSignals[1] * cornerDisplacementScalar) / 2);
+              .multiplyScalar(
+                (cornerSignals[1] * cornerDisplacementScalar) / 2 -
+                  cornerSignals[1] * cylinderThickness * cylWidth,
+              );
 
             let cylObj = tempObject.clone();
 
@@ -340,10 +359,10 @@ function Boxes(props) {
       <PerspectiveCamera position={[0, 0, 25]} makeDefault ref={cameraRef}>
         <pointLight intensity={0.15} />
       </PerspectiveCamera>
-      <OrbitControls camera={cameraRef.current} autoRotate />
-      <Suspense fallback={null}>
+      <OrbitControls camera={cameraRef.current} enablePan={false} autoRotate={autoRotate} />
+      <React.Suspense fallback={null}>
         <Environment preset="warehouse" />
-      </Suspense>
+      </React.Suspense>
     </>
   );
 }
