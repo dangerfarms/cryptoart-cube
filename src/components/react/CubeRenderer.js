@@ -3,8 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
 import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import RoundedBox from 'three-rounded-box';
 
-const RoundedBoxGeometry = require('three-rounded-box')(THREE);
+const RoundedBoxGeometry = RoundedBox(THREE);
+
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
