@@ -48,13 +48,13 @@ export function CubeMain(props) {
     {
       backGroundColor: '#202426',
       subSquaresScale: {
-        value: 0.8,
+        value: 0.9,
         min: 0,
         max: 1,
       },
       mainCubeSide: 10,
       thickness: {
-        value: 0.02,
+        value: 0.01,
         min: -1,
         max: 1,
       },
@@ -69,12 +69,12 @@ export function CubeMain(props) {
         max: 1,
       },
       cylinderThickness: {
-        value: 0.9,
+        value: 0.3,
         min: 0,
         max: 1,
       },
       cylinderOpacity: {
-        value: 0.9,
+        value: 0.2,
         min: 0,
         max: 1,
       },
