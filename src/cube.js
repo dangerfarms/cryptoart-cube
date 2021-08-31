@@ -15,4 +15,4 @@ const loadCubeIntoDomElement = (cubeData, domElement) => {
 console.log('Importing Cube Module', THREE, {
   loadCubeIntoDomElement,
 });
-export { loadCubeIntoDomElement };
+export { loadCubeIntoDomElement, CubeMain };
