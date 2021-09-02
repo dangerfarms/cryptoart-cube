@@ -10,9 +10,9 @@ const ROOT = __dirname;
 module.exports = merge(common, {
   mode: 'development',
   devServer: {
-    static: './cryptoart_cube_build',
-    dev: {
+    static: {
       publicPath: '/',
+      directory: './cryptoart_cube_dist',
     },
     hot: false,
     open: true,
@@ -37,6 +37,20 @@ module.exports = merge(common, {
     publicPath: '/',
     globalObject: 'window',
     umdNamedDefine: true,
+  },
+  externals: {
+    react: {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react',
+    },
+    'react-dom': {
+      root: 'ReactDOM',
+      commonjs2: 'react-dom',
+      commonjs: 'react-dom',
+      amd: 'react-dom',
+    },
   },
   // output: {
   //   filename: '[name].bundle.js',

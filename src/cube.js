@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { CubeMain } from './components/react/CubeMain';
+import { CubeMain, CubeRenderer } from './components/react/CubeMain';
 
 const loadCubeIntoDomElement = (cubeData, domElement) => {
-  ReactDOM.render(<CubeMain cubeData={cubeData} />, domElement);
+  ReactDOM.render(<CubeMain key="cubemain" cubeData={cubeData} />, domElement);
 
   cubeData.cube = true;
 
@@ -14,5 +14,7 @@ const loadCubeIntoDomElement = (cubeData, domElement) => {
 
 console.log('Importing Cube Module', THREE, {
   loadCubeIntoDomElement,
+  CubeMain,
+  CubeRenderer,
 });
-export { loadCubeIntoDomElement, CubeMain };
+export { loadCubeIntoDomElement, CubeMain, CubeRenderer };

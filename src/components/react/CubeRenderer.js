@@ -2,9 +2,10 @@ import * as THREE from 'three';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
-import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
+import CubeCamera from './CubeCamera';
 
-const RoundedBoxGeometry = require('three-rounded-box')(THREE);
+// const RoundedBoxGeometry = require('three-rounded-box')(THREE);
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -22,7 +23,7 @@ const cubeFacesOrientation = [
 function Boxes(props) {
   const {
     cubeData,
-    previewNewCube = false,
+    toggleTwoCubes = false,
     subSquaresScale = 0.9,
     mainCubeSide = 10,
     thickness = 0.01,
@@ -31,45 +32,58 @@ function Boxes(props) {
     subSquareOpacity = 0.9,
     cylinderOpacity = 0.1,
     cylinderThickness = 0.8,
-    freeze = false,
-    disableZoom = false,
+    // freeze = false,
+    previewCube = false,
+    active = true,
+    previewCubeWireframe = false,
+    previewCubeUniqueColor = false,
+    // previewCubeAttachBloomToAnimation = false,
+    previewCubeAnimationSpeed = 10,
+    previewCubeOpacity = 1,
   } = props;
-  const controls = useRef();
-  const [autoRotate, setAutoRotate] = useState(true);
   const [scaleMainCube, setScaleMainCube] = useState(1);
 
-  let numberPoints = 0;
-  const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1);
+  const [cubeVersion] = useState(Math.round(Math.random() * 10));
+
+  useEffect(() => {
+    console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
+  }, [cubeVersion, previewCube]);
+
+  const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1) + (previewCube ? 0.1 : 0);
   const {
-    camera,
+    // camera,
     scene,
-    gl: { domElement },
-    invalidate,
+    // gl: { domElement },
+    // invalidate,
     // setDefaultCamera,
   } = useThree();
 
   // useEffect(() => void setDefaultCamera(cameraRef), [cameraRef]);
-  function toggleAutoRotate() {
-    setAutoRotate(!autoRotate);
-  }
 
   useFrame(({ clock, gl, scene, camera }) => {
-    const isNewFrame = controls.current.update();
+    // const isNewFrame = controls.current.update();
     // console.log('frame', freeze, isNewFrame);
-    if (!isNewFrame || freeze) {
+    // console.log(previewCube);
+    if (
+      // freeze ||
+      previewCube
+    ) {
       return;
     }
-    gl.render(scene, camera);
-    if ((!previewNewCube && scaleMainCube >= 1) || (previewNewCube && scaleMainCube <= 0)) {
+
+    // console.log('normalCube', cubeVersion);
+
+    // gl.render(scene, camera);
+    if ((!toggleTwoCubes && scaleMainCube >= 1) || (toggleTwoCubes && scaleMainCube <= 0)) {
       // console.log('frame2');
       scaleMainCube === 1 || scaleMainCube === 0
         ? null
         : setScaleMainCube(Math.round(scaleMainCube));
-      if (!freeze) invalidate(!isNewFrame);
+      // if (!freeze) invalidate(!isNewFrame);
       return;
     }
     // console.log(clock.getDelta());
-    let scale = scaleMainCube + (previewNewCube ? -1 : 1) * 500 * clock.getDelta();
+    let scale = scaleMainCube + (toggleTwoCubes ? -1 : 1) * 500 * clock.getDelta();
     setScaleMainCube(scale);
     // const scale = 1 + Math.sin(clock.elapsedTime) * 0.3
     // for (let i = 0; i < 10000; ++i) {
@@ -78,18 +92,46 @@ function Boxes(props) {
     //   ref.current.setMatrixAt(i, transform)
     // }
     // ref.current.instanceMatrix.needsUpdate = true
-    if (!freeze) invalidate(!isNewFrame);
+    // if (!freeze) invalidate(!isNewFrame);
   }, 1);
 
-  useEffect(() => {
-    // console.log();
-    domElement.removeEventListener('auxclick', toggleAutoRotate);
-    domElement.addEventListener('auxclick', toggleAutoRotate);
-    if (!freeze) invalidate();
-  }, [domElement, autoRotate]);
+  useFrame(({ clock, gl, scene, camera }) => {
+    // const isNewFrame = controls.current.update();
+    // console.log('frame', freeze, isNewFrame);
+    if (
+      // freeze ||
+      !previewCube ||
+      !active
+    ) {
+      return;
+    }
 
-  const cameraRef = useRef();
-  const geometryRef = useRef();
+    // console.log('previewCube', cubeVersion, facesNewActive, facesActive);
+    // gl.render(scene, camera);
+
+    // if ((!toggleTwoCubes && scaleMainCube >= 1) || (toggleTwoCubes && scaleMainCube <= 0)) {
+    //   // console.log('frame2');
+    //   scaleMainCube === 1 || scaleMainCube === 0
+    //     ? null
+    //     : setScaleMainCube(Math.round(scaleMainCube));
+    //   if (!freeze) invalidate(!isNewFrame);
+    //   return;
+    // }
+    // console.log(clock.getDelta());
+    let scale =
+      subSquaresScale + Math.sin(clock.elapsedTime * previewCubeAnimationSpeed) * 0.04 + 0.01;
+    setScaleMainCube(scale);
+    // const scale = 1 + Math.sin(clock.elapsedTime) * 0.3
+    // for (let i = 0; i < 10000; ++i) {
+    //   vec.copy(positions[i]).multiplyScalar(scale)
+    //   transform.setPosition(vec)
+    //   ref.current.setMatrixAt(i, transform)
+    // }
+    // ref.current.instanceMatrix.needsUpdate = true
+    // if (!freeze) invalidate(!isNewFrame);
+  }, 1);
+
+  // const geometryRef = useRef();
 
   const facesActive = useMemo(
     () =>
@@ -99,72 +141,84 @@ function Boxes(props) {
     [cubeData],
   );
 
-  const facesActiveOriginalScale = useMemo(() => [...facesActive]);
+  const facesActiveOriginalScale = useMemo(() => [...facesActive], [facesActive]);
 
-  const facesNewActive = useMemo(
-    () =>
-      cubeData.facesNew.reduce((acc, face) => {
-        return [...acc, ...face];
-      }, []),
-    [cubeData],
-  );
-
-  const facesNewActiveOriginalScale = useMemo(() => [...facesNewActive]);
+  const facesNewActive = useMemo(() => {
+    if (!cubeData.facesNew) return [];
+    return cubeData.facesNew.reduce((acc, face) => {
+      return [...acc, ...face];
+    }, []);
+  }, [cubeData]);
+  const facesNewActiveOriginalScale = useMemo(() => [...facesNewActive], [facesNewActive]);
 
   // gets all colors ready to be sent to GPU instances
   const colorArray = useMemo(
     () =>
       Float32Array.from(
         cubeData.faces.reduce((acc, face, index) => {
-          const newColor = tempColor.set(cubeData.colors[index]).toArray();
+          const _previewCubeUniqueColor = previewCube && previewCubeUniqueColor;
           const _colorArray = new Array(face.length)
             .fill()
-            .flatMap((_, i) => tempColor.set(cubeData.colors[index]).toArray());
+            .flatMap((_, i) =>
+              tempColor.set(_previewCubeUniqueColor ? '#ffffff' : cubeData.colors[index]).toArray(),
+            );
 
           const toReturn = [...acc, ..._colorArray];
           return toReturn;
         }, []),
       ),
-    [cubeData],
+    [cubeData, previewCube, previewCubeUniqueColor],
   );
 
   const meshRef = useRef();
   const cylRef = useRef();
-  const prevRef = useRef();
 
   let cylWidth = 0.05;
 
-  const [cylGeometry, setCylGeometry] = useState(
-    new THREE.CylinderGeometry(cylWidth, cylWidth, 1, 32),
-  );
+  const [cylGeometry] = useState(new THREE.CylinderGeometry(cylWidth, cylWidth, 1, 32));
   const [hexColorsArray, setHexColorsArray] = useState(cubeData.colors);
 
   useEffect(() => {
     setHexColorsArray(cubeData.colors);
-    if (!freeze) invalidate();
-  }, [cubeData.colors]);
+    // if (!freeze) invalidate();
+  }, [
+    cubeData.colors,
+    // freeze,
+    // invalidate,
+  ]);
 
-  const [roundedGeometry, setRoundedGeometry] = useState(
-    new RoundedBoxGeometry(mainCubeSide, mainCubeSide, mainCubeSide, 0, 5),
-  );
-  useMemo(() => {
-    roundedGeometry.computeVertexNormals();
-    roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
-  }, [roundedGeometry, colorArray]);
+  // const [roundedGeometry, setRoundedGeometry] = useState(
+  //   new RoundedBoxGeometry(mainCubeSide, mainCubeSide, mainCubeSide, 0, 5),
+  // );
+  // useMemo(() => {
+  //   roundedGeometry.computeVertexNormals();
+  //   roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
+  // }, [roundedGeometry, colorArray]);
   useEffect(() => {
     scene.background = new THREE.Color(backGroundColor);
-    if (!freeze) invalidate();
-  }, [scene, backGroundColor]);
+    // if (!freeze) invalidate();
+  }, [
+    scene,
+    backGroundColor,
+    // freeze,
+    // invalidate,
+  ]);
 
   useEffect(() => {
-    if (!meshRef.current || !roundedGeometry || !cylRef.current || freeze) {
+    if (
+      !meshRef.current ||
+      !cylRef.current
+      // || freeze
+    ) {
       return;
     }
     let currentFaceId = 0;
 
     const halfCubeSide = mainCubeSide / 2;
 
-    const _thickness = thickness || 0.00001; // requested by client.
+    const _thickness = (previewCube ? thickness - 0.0001 : thickness) || 0.00001; // requested by client.
+
+    const _explosion = previewCube ? explosion - 0.01 : explosion;
 
     const absoluteThickness = halfCubeSide * _thickness;
 
@@ -210,7 +264,7 @@ function Boxes(props) {
       // extracts the face rotation vector - maybe multiply by signal?
 
       nonMovingCoordVector.multiplyScalar(
-        (halfCubeSide + absoluteThickness + explosion) * faceDisplacementSignal,
+        (halfCubeSide + absoluteThickness + _explosion) * faceDisplacementSignal,
       ); // gets the displacement for the static coordinate
 
       const pointerStartPositionVector = mainCubeFaceMovingPointerDirectonVectors[0]
@@ -225,22 +279,18 @@ function Boxes(props) {
           //   facesActiveOriginalScale[currentFaceId],
           //   facesNewActiveOriginalScale[currentFaceId],
           // );
+          const faceSecondCube = facesNewActiveOriginalScale[currentFaceId] || 0;
+          const compoundScale =
+            facesActiveOriginalScale[currentFaceId] * scaleMainCube +
+            faceSecondCube * (1 - scaleMainCube);
           tempObject.scale.set(
-            facesActiveOriginalScale[currentFaceId] || facesNewActiveOriginalScale[currentFaceId]
-              ? subFaceRelativeSideScaled *
-                  clampedSubSquaresScale *
-                  (facesActiveOriginalScale[currentFaceId] * scaleMainCube +
-                    facesNewActiveOriginalScale[currentFaceId] * (1 - scaleMainCube))
+            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+              ? subFaceRelativeSideScaled * clampedSubSquaresScale * compoundScale
               : 0,
             facesActiveOriginalScale[currentFaceId] || facesNewActiveOriginalScale[currentFaceId]
-              ? subFaceRelativeSideScaled *
-                  clampedSubSquaresScale *
-                  (facesActiveOriginalScale[currentFaceId] * scaleMainCube +
-                    facesNewActiveOriginalScale[currentFaceId] * (1 - scaleMainCube))
+              ? subFaceRelativeSideScaled * clampedSubSquaresScale * compoundScale
               : 0,
-            facesActiveOriginalScale[currentFaceId] || facesNewActiveOriginalScale[currentFaceId]
-              ? _thickness
-              : 0,
+            facesActiveOriginalScale[currentFaceId] || faceSecondCube ? _thickness : 0,
           );
 
           const coord1PointerVector = mainCubeFaceMovingPointerDirectonVectors[0]
@@ -272,10 +322,17 @@ function Boxes(props) {
           // const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
 
           tempObject.scale.set(
-            cylinderThickness * scaleMainCube,
-            (mainCubeSide + explosion * 2) * faceDisplacementSignal * scaleMainCube,
-            cylinderThickness * scaleMainCube,
+            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+              ? cylinderThickness * compoundScale
+              : 0,
+            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+              ? (mainCubeSide + _explosion * 2) * faceDisplacementSignal * compoundScale
+              : 0,
+            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+              ? cylinderThickness * compoundScale
+              : 0,
           );
+
           const cylinderCornerCoordsSignal = [
             [1, 1],
             [1, -1],
@@ -311,9 +368,9 @@ function Boxes(props) {
 
             cylObj.rotateX(Math.PI / 2);
 
-            if (!facesActiveOriginalScale[currentFaceId]) {
-              cylObj.scale.set(0, 0, 0);
-            }
+            // if (!facesActiveOriginalScale[currentFaceId]) {
+            //   cylObj.scale.set(0, 0, 0);
+            // }
 
             cylObj.updateMatrix();
             const cylinderInstanceIndex = currentFaceId * 4 + cornerId;
@@ -325,10 +382,10 @@ function Boxes(props) {
         }
       }
     }
-    console.log('drawn cube');
+    // console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
     cylRef.current.instanceMatrix.needsUpdate = true;
-    if (!freeze) invalidate();
+    // if (!freeze) invalidate();
   }, [
     meshRef,
     cylRef,
@@ -340,13 +397,20 @@ function Boxes(props) {
     hexColorsArray,
     cylinderThickness,
     scaleMainCube,
+    // freeze,
+    // invalidate,
+    clampedSubSquaresScale,
+    cylWidth,
+    facesActiveOriginalScale,
+    facesNewActiveOriginalScale,
+    previewCube,
   ]);
   // useEffect(() => {
   //   controls.current.addEventListener('change', () => invalidate(false));
   // }, []);
 
-  useFrame(() => controls.current.update());
-  useEffect(() => void controls.current.addEventListener('change', invalidate), [controls.current]);
+  // useFrame(() => controls.current.update());
+  // useEffect(() => void controls.current.addEventListener('change', invalidate), [invalidate]);
 
   // useFrame((state) => {
   //   const time = state.clock.deltaTime;
@@ -357,40 +421,73 @@ function Boxes(props) {
   //   meshRef.current.instanceMatrix.needsUpdate = true;
   // });
 
+  // console.log(active);
+  const _previewCubeWireframe = previewCube && previewCubeWireframe;
+
+  const _previewCubeUniqueColor = previewCube && previewCubeUniqueColor;
   return (
     <>
       <instancedMesh
         ref={meshRef}
-        args={[roundedGeometry, null, facesActive.length]}
+        args={[null, null, facesActive.length]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
-        renderOrder={1}
+        renderOrder={previewCube ? 1 : 2}
+        visible={active}
       >
-        <meshPhysicalMaterial
-          vertexColors={THREE.VertexColors}
-          // side={THREE.DoubleSide}
-          // transmission={0.5}
-          roughness={0.1}
-          thickness={0.1}
-          envMapIntensity={1}
-          transparent
-          opacity={subSquareOpacity}
-          // transmission={0.01}
-          // roughness={0.3}
-          // thickness={0.5}
-          // envMapIntensity={1}
-          // clearcoat={0.6}
-          // // metalness={0.9}
-        />
+        <boxGeometry args={[mainCubeSide, mainCubeSide, mainCubeSide]}>
+          <instancedBufferAttribute attachObject={['attributes', 'color']} args={[colorArray, 3]} />
+        </boxGeometry>
+        {!previewCube ? (
+          <meshPhysicalMaterial
+            vertexColors={THREE.VertexColors}
+            // side={THREE.DoubleSide}
+            // transmission={0.5}
+            roughness={0.1}
+            thickness={0.1}
+            envMapIntensity={1}
+            transparent
+            opacity={subSquareOpacity}
+            // transmission={0.01}
+            // roughness={0.3}
+            // thickness={0.5}
+            // envMapIntensity={1}
+            // clearcoat={0.6}
+            // // metalness={0.9}
+          />
+        ) : (
+          <meshBasicMaterial
+            vertexColors={THREE.VertexColors}
+            // color={_previewCubeUniqueColor && '0xffffff'}
+            // side={THREE.DoubleSide}
+            transmission={0}
+            reflectivity={1}
+            envMapIntensity={1}
+            transparent
+            opacity={previewCubeOpacity}
+            roughness={!_previewCubeUniqueColor ? 0.1 : 0}
+            thickness={!_previewCubeUniqueColor ? 0.1 : 1}
+            wireframe={_previewCubeWireframe}
+            // wireframe={previewCube}
+            // transmission={0.01}
+            // roughness={0.3}
+            // thickness={0.5}
+            // envMapIntensity={1}
+            // clearcoat={0.6}
+            // // metalness={0.9}
+          />
+        )}
       </instancedMesh>
 
       <instancedMesh
         ref={cylRef}
         args={[cylGeometry, null, facesActive.length * 4]}
         renderOrder={0}
+        visible={active}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
       >
+        {' '}
         {/*<meshBasicMaterial*/}
         {/*  //vertexColors={THREE.VertexColors}*/}
         {/*  side={THREE.DoubleSide}*/}
@@ -407,34 +504,45 @@ function Boxes(props) {
         {/*  // clearcoat={0.6}*/}
         {/*  // // metalness={0.9}*/}
         {/*/>*/}
-        <meshPhysicalMaterial
-          //vertexColors={THREE.VertexColors}
-          side={THREE.DoubleSide}
-          //transmission={0.8}
-          roughness={0.1}
-          thickness={0.1}
-          envMapIntensity={1}
-          transparent
-          opacity={cylinderOpacity}
-          // transmission={1}
-          // roughness={0.3}
-          // thickness={0.5}
-          // envMapIntensity={1}
-          // clearcoat={0.6}
-          // // metalness={0.9}
-        />
+        {!previewCube ? (
+          <meshPhysicalMaterial
+            //vertexColors={THREE.VertexColors}
+            side={THREE.DoubleSide}
+            //transmission={0.8}
+            roughness={0.1}
+            thickness={0.1}
+            envMapIntensity={1}
+            transparent
+            opacity={cylinderOpacity}
+            // transmission={1}
+            // roughness={0.3}
+            // thickness={0.5}
+            // envMapIntensity={1}
+            // clearcoat={0.6}
+            // // metalness={0.9}
+          />
+        ) : (
+          <meshPhongMaterial
+            //vertexColors={THREE.VertexColors}
+            side={THREE.DoubleSide}
+            //transmission={0.8}
+            roughness={0.1}
+            thickness={0.1}
+            reflectivity={1}
+            envMapIntensity={1}
+            transparent
+            opacity={1}
+            // wireframe={previewCube}
+            // transmission={0.01}
+            // roughness={0.3}
+            // thickness={0.5}
+            // envMapIntensity={1}
+            // clearcoat={0.6}
+            // // metalness={0.9}
+          />
+        )}
       </instancedMesh>
 
-      <PerspectiveCamera position={[0, 0, 25]} makeDefault ref={cameraRef}>
-        <pointLight intensity={0.15} />
-      </PerspectiveCamera>
-      <OrbitControls
-        ref={controls}
-        camera={cameraRef.current}
-        enablePan={false}
-        autoRotate={autoRotate}
-        enableZoom={!disableZoom}
-      />
       <React.Suspense fallback={null}>
         <Environment preset="warehouse" />
       </React.Suspense>
@@ -443,17 +551,27 @@ function Boxes(props) {
 }
 
 export const CubeRenderer = (props) => {
-  console.log('CubeRenderer', props.freeze);
   return (
     <Canvas
-      invalidateFrameloop={props.freeze}
+      key={'scene'}
+      // invalidateFrameloop={props.freeze}
       linear
       gl={{ antialias: false, alpha: false }}
-      camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
+      // camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
       <ambientLight intensity={0.15} />
-      <Boxes {...props} />
-      <Effects />
+      <Boxes key={'main'} {...props} previewCube={false} />
+      <Boxes
+        {...props}
+        key={'preview'}
+        cubeData={{ ...props.cubeData, faces: props.cubeData.facesSecond, facesNew: null }}
+        subSquareOpacity={0.9}
+        previewCube={true}
+        toggleTwoCubes={false}
+        active={props.cubeData.facesSecond && props.previewCube}
+      />
+      <CubeCamera key={'cubeCamera'} {...props} />
+      <Effects key={'effects'} {...props} />
     </Canvas>
   );
 };

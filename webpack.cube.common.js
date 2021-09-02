@@ -10,6 +10,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 
 const ROOT = __dirname;
 const parsedDotEnv = {
+  ...process.env,
   NODE_ENV: JSON.stringify(process.env.NODE_ENV),
   ...dotenv.config().parsed,
 };
@@ -42,6 +43,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(parsedDotEnv),
+      // 'process.env': {
+      //   NODE_ENV: JSON.stringify('development'),
+      // },
     }),
     new ESLintPlugin(),
   ],

@@ -39,6 +39,7 @@ const initialCubeConfig = {
   colors,
   faces: generateRandomFaces(),
   facesNew: generateRandomFaces(),
+  facesSecond: generateRandomFaces(),
 };
 
 function CubeMain(props) {
@@ -47,7 +48,21 @@ function CubeMain(props) {
   const store = useCreateStore();
   const data = useControls(
     {
-      previewNewCube: false,
+      toggleTwoCubes: false,
+      previewCube: true,
+      previewCubeWireframe: false,
+      previewCubeUniqueColor: true,
+      previewCubeBloomAnimation: false,
+      previewCubeAnimationSpeed: {
+        value: 10,
+        min: 0,
+        max: 20,
+      },
+      previewCubeOpacity: {
+        value: 0.9,
+        min: 0,
+        max: 1,
+      },
       hideControls: false,
       freeze: false,
       disableZoom: false,
@@ -87,42 +102,72 @@ function CubeMain(props) {
         value: colors[0],
         onChange: (color) => {
           colors[0] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       color1: {
         value: colors[1],
         onChange: (color) => {
           colors[1] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       color2: {
         value: colors[2],
         onChange: (color) => {
           colors[2] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       color3: {
         value: colors[3],
         onChange: (color) => {
           colors[3] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       color4: {
         value: colors[4],
         onChange: (color) => {
           colors[4] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       color5: {
         value: colors[5],
         onChange: (color) => {
           colors[5] = color;
-          setCubeData({ colors, faces: _cubeData.faces, facesNew: _cubeData.facesNew });
+          setCubeData({
+            colors,
+            faces: _cubeData.faces,
+            facesNew: _cubeData.facesNew,
+            facesSecond: _cubeData.facesSecond,
+          });
         },
       },
       regenerate: button(() => {
@@ -130,6 +175,7 @@ function CubeMain(props) {
           colors,
           faces: generateRandomFaces(),
           facesNew: generateRandomFaces(),
+          facesSecond: generateRandomFaces(),
         });
       }),
     },
@@ -138,9 +184,9 @@ function CubeMain(props) {
   return (
     <>
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
-        <LevaPanel store={store} titleBar={true} />
+        <LevaPanel key="panel" store={store} titleBar={true} />
       )}
-      <CubeRenderer cubeData={_cubeData || cubeData} {...data} />
+      <CubeRenderer key={'renderer'} cubeData={_cubeData || cubeData} {...data} />
     </>
   );
 }
