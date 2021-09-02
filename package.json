@@ -1,7 +1,7 @@
 {
   "name": "cryptoart_cube",
   "version": "1.0.0",
-  "description": "",
+  "description": "cryptoart cube",
   "main": "cryptoart_cube_build/cube.bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -80,6 +80,8 @@
     "react-dropzone-uploader": "^2.11.0",
     "react-refresh": "0.8.3",
     "react-router-dom": "^5.2.0",
+    "react-spring": "^9.2.4",
+    "react-spring-three": "^1.0.4",
     "three": "^0.126.1",
     "three-rounded-box": "^0.1.1"
   }
