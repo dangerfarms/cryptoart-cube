@@ -68,13 +68,7 @@ object-assign
  */
 
 /**
- * @license
- * Copyright 2010-2021 Three.js Authors
- * SPDX-License-Identifier: MIT
- */
-
-/**
- * postprocessing v6.22.5 build Tue Aug 31 2021
+ * postprocessing v6.22.3 build Sat Jul 31 2021
  * https://github.com/vanruesc/postprocessing
  * Copyright 2021 Raoul van Rüschen
  * @license Zlib

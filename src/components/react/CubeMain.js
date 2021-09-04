@@ -39,9 +39,9 @@ const generateRandomFaces = () => {
 const generateCubes = () => {
   const cube1 = generateRandomFaces();
 
+  const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   const cube2Squares = cube1
-    .map(face => face.reduce((a, b) => a + b, 0))
-    .map(squareCount => squareCount > 1 ? squareCount - 2 : 0)
+    .map((face, i) => getRandomInt((maxSquaresPerFace[i] + 1) - face.reduce((a, b) => a + b, 0)))
 
   const cube2Config = createIntersectingCubeConfig(cube1, cube2Squares);
 
