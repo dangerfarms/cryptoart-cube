@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
+import { createIntersectingCubeConfig } from '../../utils';
 
 const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
 
@@ -35,14 +36,29 @@ const generateRandomFaces = () => {
   return translateSizeToConfig(cube);
 };
 
+const generateCubes = () => {
+  const cube1 = generateRandomFaces();
+
+  const cube2Squares = cube1
+    .map(face => face.reduce((a, b) => a + b, 0))
+    .map(squareCount => squareCount > 1 ? squareCount - 2 : 0)
+
+  const cube2Config = createIntersectingCubeConfig(cube1, cube2Squares);
+
+  return {
+    faces: cube1,
+    facesNew: cube2Config,
+    facesSecond: cube2Config,
+  }
+}
+
 const initialCubeConfig = {
   colors,
-  faces: generateRandomFaces(),
-  facesNew: generateRandomFaces(),
-  facesSecond: generateRandomFaces(),
+  ...generateCubes()
 };
 
 function CubeMain(props) {
+
   const { cubeData } = props;
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const store = useCreateStore();
