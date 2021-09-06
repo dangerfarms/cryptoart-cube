@@ -59,7 +59,7 @@ const initialCubeConfig = {
 
 function CubeMain(props) {
 
-  const { cubeData, freeze , disableZoom } = props;
+  const { cubeData, freeze = false, disableZoom = false } = props;
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const store = useCreateStore();
   const data = useControls(
