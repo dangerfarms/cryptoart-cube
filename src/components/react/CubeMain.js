@@ -59,7 +59,7 @@ const initialCubeConfig = {
 
 function CubeMain(props) {
 
-  const { cubeData } = props;
+  const { cubeData, freeze = false, disableZoom = false } = props;
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const store = useCreateStore();
   const data = useControls(
@@ -80,8 +80,8 @@ function CubeMain(props) {
         max: 1,
       },
       hideControls: false,
-      freeze: false,
-      disableZoom: false,
+      freeze,
+      disableZoom,
       backGroundColor: '#202426',
       subSquaresScale: {
         value: 0.9,
