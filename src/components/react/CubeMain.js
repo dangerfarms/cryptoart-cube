@@ -59,13 +59,21 @@ const initialCubeConfig = {
 
 function CubeMain(props) {
 
-  const { cubeData, freeze = false, disableZoom = false } = props;
+  const {
+    cubeData,
+    cubeSecondary,
+    freeze = false,
+    disableZoom = false
+  } = props;
+
+  const previewCube = !!cubeSecondary;
+
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const store = useCreateStore();
   const data = useControls(
     {
       toggleTwoCubes: false,
-      previewCube: true,
+      previewCube,
       previewCubeWireframe: false,
       previewCubeUniqueColor: true,
       previewCubeBloomAnimation: false,
