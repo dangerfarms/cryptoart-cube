@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
+import { createIntersectingCubeConfig } from '../../utils/cubeGeneration';
 
 const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
 
@@ -35,19 +36,53 @@ const generateRandomFaces = () => {
   return translateSizeToConfig(cube);
 };
 
+const generateCubes = () => {
+  const cube1 = generateRandomFaces();
+  const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
+  const cube2Squares = cube1.map((face, i) =>
+    getRandomInt(maxSquaresPerFace[i] + 1 - face.reduce((a, b) => a + b, 0)),
+  );
+
+  const cube2Config = createIntersectingCubeConfig(cube1, cube2Squares);
+
+  const cube3config = cube1.map((face, faceId) =>
+    face.map((value, subFaceId) => {
+      return value || cube2Config[faceId][subFaceId];
+    }),
+  );
+
+  return {
+    faces: cube1,
+    facesSecond: cube2Config,
+    facesNew: cube3config,
+  };
+};
+
 const initialCubeConfig = {
   colors,
-  faces: generateRandomFaces(),
-  facesNew: generateRandomFaces(),
-  facesSecond: generateRandomFaces(),
+  ...generateCubes(),
 };
 
 function CubeMain(props) {
-  const { cubeData } = props;
+  const { cubeData, freeze = false, disableZoom = false } = props;
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
+  const [screenShotFunction, setScreenShotFunction] = useState();
   const store = useCreateStore();
   const data = useControls(
     {
+      lightningRays: true,
+      positionCube1: [-10, -10, -10],
+      positionCube2: [10, 10, 10],
+      displacementAnimationDistance: {
+        value: 1,
+        min: 0,
+        max: 10,
+      },
+      displacementIncrementPerFrame: {
+        value: 0.01,
+        min: 0,
+        max: 1,
+      },
       toggleTwoCubes: false,
       previewCube: true,
       previewCubeWireframe: false,
@@ -64,8 +99,8 @@ function CubeMain(props) {
         max: 1,
       },
       hideControls: false,
-      freeze: false,
-      disableZoom: false,
+      freeze,
+      disableZoom,
       backGroundColor: '#202426',
       subSquaresScale: {
         value: 0.9,
@@ -173,10 +208,14 @@ function CubeMain(props) {
       regenerate: button(() => {
         setCubeData({
           colors,
-          faces: generateRandomFaces(),
-          facesNew: generateRandomFaces(),
-          facesSecond: generateRandomFaces(),
+
+          ...generateCubes(),
         });
+      }),
+      takeScreenShot: button(() => {
+        if (screenShotFunction) {
+          console.log(screenShotFunction());
+        }
       }),
     },
     { store },
@@ -186,7 +225,12 @@ function CubeMain(props) {
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
         <LevaPanel key="panel" store={store} titleBar={true} />
       )}
-      <CubeRenderer key={'renderer'} cubeData={_cubeData || cubeData} {...data} />
+      <CubeRenderer
+        key={'renderer'}
+        cubeData={_cubeData || cubeData}
+        {...data}
+        registerScreenShotFunction={setScreenShotFunction}
+      />
     </>
   );
 }

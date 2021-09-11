@@ -4,8 +4,12 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
 import { Environment } from '@react-three/drei';
 import CubeCamera from './CubeCamera';
+// import { MeshLine, MeshLineMaterial } from 'three.meshline';
+import { LineMesh } from './Line';
+import { noise } from '../../utils/Noise';
 
-// const RoundedBoxGeometry = require('three-rounded-box')(THREE);
+// // const RoundedBoxGeometry = require('three-rounded-box')(THREE);
+// extend({ MeshLine, MeshLineMaterial });
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -19,6 +23,8 @@ const cubeFacesOrientation = [
   [0, 1, 0],
   [0, -1, 0],
 ];
+
+let jIncrement = 0;
 
 function Boxes(props) {
   const {
@@ -40,10 +46,16 @@ function Boxes(props) {
     // previewCubeAttachBloomToAnimation = false,
     previewCubeAnimationSpeed = 10,
     previewCubeOpacity = 1,
+    position = [0, 0, 0],
+    displacementAnimationDistance = 1,
+    displacementIncrementPerFrame = 0.01,
+    registerScreenShotFunction,
   } = props;
   const [scaleMainCube, setScaleMainCube] = useState(1);
 
   const [cubeVersion] = useState(Math.round(Math.random() * 10));
+
+  const [cubeMatrixes, setCubeMatrixes] = useState([]);
 
   useEffect(() => {
     console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
@@ -53,12 +65,24 @@ function Boxes(props) {
   const {
     // camera,
     scene,
+    gl,
     // gl: { domElement },
     // invalidate,
     // setDefaultCamera,
   } = useThree();
 
-  // useEffect(() => void setDefaultCamera(cameraRef), [cameraRef]);
+  const renderToJPG = useMemo(() => {
+    const strMime = 'image/png';
+    const imgData = gl.domElement.toDataURL(strMime);
+    console.log(imgData);
+    return imgData;
+  }, [gl.domElement]);
+
+  useEffect(() => {
+    if (registerScreenShotFunction) {
+      registerScreenShotFunction(renderToJPG);
+    }
+  }, [registerScreenShotFunction, renderToJPG]);
 
   useFrame(({ clock, gl, scene, camera }) => {
     // const isNewFrame = controls.current.update();
@@ -73,6 +97,32 @@ function Boxes(props) {
 
     // console.log('normalCube', cubeVersion);
 
+    // console.log('here', cubeMatrixes);
+    for (let j = 0; j < cubeMatrixes.length; j++) {
+      const matrix = cubeMatrixes[j].clone();
+      const position = new THREE.Vector3().setFromMatrixPosition(matrix);
+      const increment = j + jIncrement;
+      const newX = position.x + noise(increment, 0, 0) * displacementAnimationDistance;
+      const newY = position.y + noise(increment, increment, 0) * displacementAnimationDistance;
+      const newZ =
+        position.z + noise(increment, increment, increment) * displacementAnimationDistance;
+      matrix.setPosition(new THREE.Vector3(newX, newY, newZ));
+      meshRef.current.setMatrixAt(j, matrix);
+
+      // const incrementedj = j + jIncrement;
+      // const x = noise(incrementedj, 0, 0) * 2;
+      // const y = noise(incrementedj, incrementedj, 0) * 2;
+      // const z = noise(incrementedj, incrementedj, incrementedj) * 2;
+      // points.push(
+      //   point1Vector.x + point2Vector.x * j + x,
+      //   point1Vector.y + point2Vector.y * j + y,
+      //   point1Vector.z + point2Vector.z * j + z,
+      // );
+    }
+    // console.log(jIncrement);
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    jIncrement += displacementIncrementPerFrame;
+
     // gl.render(scene, camera);
     if ((!toggleTwoCubes && scaleMainCube >= 1) || (toggleTwoCubes && scaleMainCube <= 0)) {
       // console.log('frame2');
@@ -85,6 +135,7 @@ function Boxes(props) {
     // console.log(clock.getDelta());
     let scale = scaleMainCube + (toggleTwoCubes ? -1 : 1) * 500 * clock.getDelta();
     setScaleMainCube(scale);
+
     // const scale = 1 + Math.sin(clock.elapsedTime) * 0.3
     // for (let i = 0; i < 10000; ++i) {
     //   vec.copy(positions[i]).multiplyScalar(scale)
@@ -106,6 +157,30 @@ function Boxes(props) {
       return;
     }
 
+    for (let j = 0; j < cubeMatrixes.length; j++) {
+      const matrix = cubeMatrixes[j].clone();
+      const position = new THREE.Vector3().setFromMatrixPosition(matrix);
+      const increment = j + jIncrement;
+      const newX = position.x + noise(increment, 0, 0) * displacementAnimationDistance;
+      const newY = position.y + noise(increment, increment, 0) * displacementAnimationDistance;
+      const newZ =
+        position.z + noise(increment, increment, increment) * displacementAnimationDistance;
+      matrix.setPosition(new THREE.Vector3(newX, newY, newZ));
+      meshRef.current.setMatrixAt(j, matrix);
+
+      // const incrementedj = j + jIncrement;
+      // const x = noise(incrementedj, 0, 0) * 2;
+      // const y = noise(incrementedj, incrementedj, 0) * 2;
+      // const z = noise(incrementedj, incrementedj, incrementedj) * 2;
+      // points.push(
+      //   point1Vector.x + point2Vector.x * j + x,
+      //   point1Vector.y + point2Vector.y * j + y,
+      //   point1Vector.z + point2Vector.z * j + z,
+      // );
+    }
+    // console.log(jIncrement);
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    jIncrement += displacementIncrementPerFrame;
     // console.log('previewCube', cubeVersion, facesNewActive, facesActive);
     // gl.render(scene, camera);
 
@@ -214,6 +289,8 @@ function Boxes(props) {
     }
     let currentFaceId = 0;
 
+    const _cubeMatrixes = [];
+
     const halfCubeSide = mainCubeSide / 2;
 
     const _thickness = (previewCube ? thickness - 0.0001 : thickness) || 0.00001; // requested by client.
@@ -319,6 +396,8 @@ function Boxes(props) {
 
           meshRef.current.setMatrixAt(currentFaceId, tempObject.matrix);
 
+          _cubeMatrixes.push(tempObject.matrix.clone());
+
           // const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
 
           tempObject.scale.set(
@@ -385,6 +464,7 @@ function Boxes(props) {
     // console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
     cylRef.current.instanceMatrix.needsUpdate = true;
+    setCubeMatrixes(_cubeMatrixes);
     // if (!freeze) invalidate();
   }, [
     meshRef,
@@ -433,6 +513,7 @@ function Boxes(props) {
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
         renderOrder={previewCube ? 1 : 2}
+        position={position}
         visible={active}
       >
         <boxGeometry args={[mainCubeSide, mainCubeSide, mainCubeSide]}>
@@ -551,6 +632,8 @@ function Boxes(props) {
 }
 
 export const CubeRenderer = (props) => {
+  // const boxes1Position = [0, 0, 0];
+  // const boxes2Position = [10, 10, 10];
   return (
     <Canvas
       key={'scene'}
@@ -560,7 +643,7 @@ export const CubeRenderer = (props) => {
       // camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
       <ambientLight intensity={0.15} />
-      <Boxes key={'main'} {...props} previewCube={false} />
+      <Boxes key={'main'} {...props} previewCube={false} position={props.positionCube1} />
       <Boxes
         {...props}
         key={'preview'}
@@ -569,7 +652,48 @@ export const CubeRenderer = (props) => {
         previewCube={true}
         toggleTwoCubes={false}
         active={props.cubeData.facesSecond && props.previewCube}
+        position={props.positionCube1}
+        registerScreenShotFunction={null}
       />
+      {props.lightningRays ? (
+        <>
+          <LineMesh
+            width={0.1}
+            displacement={2}
+            color={0xff0000}
+            point1={props.positionCube1}
+            point2={props.positionCube2}
+            dashArray={0.5}
+            lineSpeed={0.03}
+            dashRatio={0.6}
+            // position={[0, 10, 0]}
+          />
+          <LineMesh
+            width={0.1}
+            color={0xff0000}
+            displacement={0.5}
+            incrementedRate={0.01}
+            offsetStart={0.2}
+            point1={props.positionCube1}
+            point2={props.positionCube2}
+            // position={[0, 10, 0]}
+          />
+        </>
+      ) : null}
+
+      {/*<mesh>*/}
+      {/*  <meshLine attach="geometry" points={points} />*/}
+      {/*  <meshLineMaterial*/}
+      {/*    attach="material"*/}
+      {/*    transparent*/}
+      {/*    depthTest={false}*/}
+      {/*    lineWidth={10}*/}
+      {/*    color={0xff00ff}*/}
+      {/*    dashArray={0.05}*/}
+      {/*    dashRatio={0.95}*/}
+      {/*  />*/}
+      {/*</mesh>*/}
+      <Boxes key={'main2'} {...props} previewCube={false} position={props.positionCube2} />
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
     </Canvas>
