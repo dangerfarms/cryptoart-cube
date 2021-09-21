@@ -62,6 +62,7 @@ function CubeMain(props) {
   const {
     cubeData,
     cubeSecondary,
+    cubeProperties = [null, null, null, null, null, null, null],
     freeze = false,
     disableZoom = false
   } = props;
@@ -92,33 +93,33 @@ function CubeMain(props) {
       disableZoom,
       backGroundColor: '#202426',
       subSquaresScale: {
-        value: 0.9,
+        value: cubeProperties[3] || 0.9,
         min: 0,
         max: 1,
       },
-      mainCubeSide: 10,
+      mainCubeSide: cubeProperties[0] || 10,
       thickness: {
-        value: 0.01,
+        value: cubeProperties[1] || 0.01,
         min: -1,
         max: 1,
       },
       explosion: {
-        value: 0.1,
+        value: cubeProperties[2] || 0.1,
         min: 0,
         max: 10,
       },
       subSquareOpacity: {
-        value: 0.9,
+        value: cubeProperties[4] || 0.9,
         min: 0,
         max: 1,
       },
       cylinderThickness: {
-        value: 0.1,
+        value: cubeProperties[5] || 0.1,
         min: 0,
         max: 1,
       },
       cylinderOpacity: {
-        value: 0.8,
+        value: cubeProperties[5] || 0.8,
         min: 0,
         max: 1,
       },
