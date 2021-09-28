@@ -11,6 +11,8 @@ import { noise } from '../../utils/Noise';
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
+const isDev = process.env.NODE_ENV === "development"
+
 // // const RoundedBoxGeometry = require('three-rounded-box')(THREE);
 // extend({ MeshLine, MeshLineMaterial });
 const tempObject = new THREE.Object3D();
@@ -704,7 +706,7 @@ export const CubeRenderer = (props) => {
       <Boxes key={'main2'} {...props} previewCube={false} position={props.positionCube2} />
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
-      <Stats />
+      {isDev ? <Stats /> : null}
     </Canvas>
   );
 };

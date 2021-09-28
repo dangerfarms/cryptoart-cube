@@ -1,13 +1,14 @@
 import { getProject, types } from '@theatre/core';
 import studio from '@theatre/studio';
+import mergeAnimation from '../constants/animations/merge.json';
 
-if (process.env.NODE_ENV === 'development') {
+// if (process.env.NODE_ENV === 'development') {
   studio.initialize();
   studio.ui.hide();
-}
+// }
 
-const project = getProject('CryptoCube');
-
+console.log(mergeAnimation,process.env.NODE_ENV);
+const project = getProject('CryptoCube', { state: mergeAnimation });
 const sheet = project.sheet('Scene', 'default');
 
 const obj = sheet.object('testObject', {
