@@ -281,7 +281,9 @@ function Boxes(props) {
   //   roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
   // }, [roundedGeometry, colorArray]);
   useEffect(() => {
-    scene.background = new THREE.Color(backGroundColor);
+    // TODO: Revert?
+    // scene.background = new THREE.Color(backGroundColor);
+    scene.background = null;
     // if (!freeze) invalidate();
   }, [
     scene,
