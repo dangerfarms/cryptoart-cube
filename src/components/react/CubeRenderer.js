@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import Effects from './Effects';
-import { Environment } from '@react-three/drei';
+import { Environment, Stats } from '@react-three/drei';
 import CubeCamera from './CubeCamera';
 // import { MeshLine, MeshLineMaterial } from 'three.meshline';
 import { LineMesh } from './Line';
@@ -46,7 +46,7 @@ function Boxes(props) {
     // previewCubeAttachBloomToAnimation = false,
     previewCubeAnimationSpeed = 10,
     previewCubeOpacity = 1,
-    position = [0, 0, 0],
+    position = { x: 0, y: 0, z: 0 },
     displacementAnimationDistance = 1,
     displacementIncrementPerFrame = 0.01,
     registerScreenShotFunction,
@@ -74,7 +74,7 @@ function Boxes(props) {
   const renderToJPG = useMemo(() => {
     const strMime = 'image/png';
     const imgData = gl.domElement.toDataURL(strMime);
-    console.log(imgData);
+    // console.log(imgData);
     return imgData;
   }, [gl.domElement]);
 
@@ -513,7 +513,7 @@ function Boxes(props) {
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
         renderOrder={previewCube ? 1 : 2}
-        position={position}
+        position={[position.x, position.y, position.z]}
         visible={active}
       >
         <boxGeometry args={[mainCubeSide, mainCubeSide, mainCubeSide]}>
@@ -696,6 +696,7 @@ export const CubeRenderer = (props) => {
       <Boxes key={'main2'} {...props} previewCube={false} position={props.positionCube2} />
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
+      <Stats />
     </Canvas>
   );
 };

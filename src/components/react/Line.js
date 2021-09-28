@@ -63,8 +63,8 @@ export function LineMesh({
 
   useFrame(() => {
     const points = [];
-    const point1Vector = new THREE.Vector3(...point1);
-    const point2Vector = new THREE.Vector3(...point2);
+    const point1Vector = new THREE.Vector3(point1.x, point1.y, point1.z);
+    const point2Vector = new THREE.Vector3(point2.x, point2.y, point2.z);
     point2Vector.sub(point1Vector);
     point2Vector.divideScalar(noPoints);
 

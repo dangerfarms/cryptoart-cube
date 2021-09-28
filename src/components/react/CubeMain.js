@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
 import { createIntersectingCubeConfig } from '../../utils/cubeGeneration';
+import { CubeMainStudio } from './CubeMainStudio';
+import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
+import { useService } from '@xstate/react';
 
 const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
 
@@ -67,12 +70,14 @@ function CubeMain(props) {
   const { cubeData, freeze = false, disableZoom = false } = props;
   const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [screenShotFunction, setScreenShotFunction] = useState();
+
+  const [state, send] = useService(cryptoCubeMachine.service);
   const store = useCreateStore();
-  const data = useControls(
-    {
+  const [data, set] = useControls(
+    () => ({
       lightningRays: true,
-      positionCube1: [-10, -10, -10],
-      positionCube2: [10, 10, 10],
+      positionCube1: { x: -10, y: -10, z: -10 },
+      positionCube2: { x: 10, y: 10, z: 10 },
       displacementAnimationDistance: {
         value: 1,
         min: 0,
@@ -217,9 +222,13 @@ function CubeMain(props) {
           console.log(screenShotFunction());
         }
       }),
-    },
+      merge: button(() => {
+        cryptoCubeMachine.actionCreators.mergeCubes();
+      }),
+    }),
     { store },
   );
+  // console.log('data', data, set);
   return (
     <>
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
@@ -231,6 +240,7 @@ function CubeMain(props) {
         {...data}
         registerScreenShotFunction={setScreenShotFunction}
       />
+      <CubeMainStudio set={set} data={data} />
     </>
   );
 }
