@@ -3,6 +3,7 @@ import studio from '@theatre/studio';
 
 if (process.env.NODE_ENV === 'development') {
   studio.initialize();
+  studio.ui.hide();
 }
 
 const project = getProject('CryptoCube');

@@ -8,6 +8,9 @@ import CubeCamera from './CubeCamera';
 import { LineMesh } from './Line';
 import { noise } from '../../utils/Noise';
 
+import { useActor } from '@xstate/react';
+import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
+
 // // const RoundedBoxGeometry = require('three-rounded-box')(THREE);
 // extend({ MeshLine, MeshLineMaterial });
 const tempObject = new THREE.Object3D();
@@ -49,9 +52,9 @@ function Boxes(props) {
     position = { x: 0, y: 0, z: 0 },
     displacementAnimationDistance = 1,
     displacementIncrementPerFrame = 0.01,
-    registerScreenShotFunction,
   } = props;
   const [scaleMainCube, setScaleMainCube] = useState(1);
+  const [state, send] = useActor(cryptoCubeMachine.service);
 
   const [cubeVersion] = useState(Math.round(Math.random() * 10));
 
@@ -70,19 +73,25 @@ function Boxes(props) {
     // invalidate,
     // setDefaultCamera,
   } = useThree();
-
-  const renderToJPG = useMemo(() => {
-    const strMime = 'image/png';
-    const imgData = gl.domElement.toDataURL(strMime);
-    // console.log(imgData);
-    return imgData;
+  //
+  // const renderToJPG = useMemo(() => {
+  //   const strMime = 'image/png';
+  //   const imgData = gl.domElement.toDataURL(strMime);
+  //   // console.log(imgData);
+  //   return imgData;
+  // }, [gl.domElement]);
+  //
+  useEffect(() => {
+    // if (gl.domElement && !state.domElement){
+    //
+    //   alert("here");
+    //   cryptoCubeMachine.actionCreators.registerGL(gl.domElement)
+    // }
+    gl.domElement.id = "canvasGL"
+    cryptoCubeMachine.actionCreators.registerGL('canvasGL');
+    console.log(gl.domElement);
   }, [gl.domElement]);
 
-  useEffect(() => {
-    if (registerScreenShotFunction) {
-      registerScreenShotFunction(renderToJPG);
-    }
-  }, [registerScreenShotFunction, renderToJPG]);
 
   useFrame(({ clock, gl, scene, camera }) => {
     // const isNewFrame = controls.current.update();
@@ -429,14 +438,14 @@ function Boxes(props) {
               .clone()
               .multiplyScalar(
                 (cornerSignals[0] * cornerDisplacementScalar) / 2 -
-                  cornerSignals[0] * cylinderThickness * cylWidth,
+                cornerSignals[0] * cylinderThickness * cylWidth,
               );
 
             const cylinderCoordPointerVector2 = mainCubeFaceMovingPointerDirectonVectors[1]
               .clone()
               .multiplyScalar(
                 (cornerSignals[1] * cornerDisplacementScalar) / 2 -
-                  cornerSignals[1] * cylinderThickness * cylWidth,
+                cornerSignals[1] * cylinderThickness * cylWidth,
               );
 
             let cylObj = tempObject.clone();
@@ -639,7 +648,7 @@ export const CubeRenderer = (props) => {
       key={'scene'}
       // invalidateFrameloop={props.freeze}
       linear
-      gl={{ antialias: false, alpha: false }}
+      gl={{ antialias: false, alpha: false , preserveDrawingBuffer:true}}
       // camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
       <ambientLight intensity={0.15} />
@@ -653,7 +662,6 @@ export const CubeRenderer = (props) => {
         toggleTwoCubes={false}
         active={props.cubeData.facesSecond && props.previewCube}
         position={props.positionCube1}
-        registerScreenShotFunction={null}
       />
       {props.lightningRays ? (
         <>

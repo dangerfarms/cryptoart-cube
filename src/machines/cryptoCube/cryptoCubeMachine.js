@@ -19,48 +19,82 @@ if (devMode) {
 }
 
 const cryptoCubeMachine = createMachine({
-  id: 'cube-machine',
-  initial: 'idle',
-  context: initialState,
-  key: 'root',
-  states: {
-    idle: {
-      on: {
-        [actionTypes.MERGE_CUBES]: {
-          target: 'mergingCubes',
+    id: 'cube-machine',
+    initial: 'idle',
+    context: initialState,
+    key: 'root',
+    states: {
+      idle: {
+        on: {
+          [actionTypes.MERGE_CUBES]: {
+            target: 'mergingCubes',
+          },
+          [actionTypes.SAVE_THUMB]: {
+            actions: ['takeScreenshot', 'saveThumbnail'],
+          },
+          [actionTypes.REGISTER_GL]: {
+            actions: ['registerDomElement'],
+          },
         },
       },
-    },
 
-    mergingCubes: {
-      invoke: {
-        id: 'merging',
-        src: () => cubeStudioService.playScene(),
-        onDone: {
-          target: 'idle',
+      mergingCubes: {
+        invoke: {
+          id: 'merging',
+          src: () => cubeStudioService.playScene(),
+          onDone: {
+            target: 'idle',
+          },
+          onError: {
+            target: 'failure',
+          },
         },
-        onError: {
-          target: 'failure',
+      },
+      success: {},
+      failure: {
+        on: {
+          RETRY: { target: 'mergingCubes' },
         },
       },
     },
-    success: {},
-    failure: {
-      on: {
-        RETRY: { target: 'mergingCubes' },
-      },
-    },
-
-    // mergingCubes: {
-    //   on: {
-    //     [actionTypes.MERGE_COMPLETE]: {
-    //       target: 'idle',
-    //     },
-    //   },
-    //
-    // },
   },
-});
+  {
+    actions: {
+      registerDomElement: assign((context, event) => {
+        console.log('registerGL', context, event);
+        return {
+          domElement: event.domElement,
+        };
+      }),
+      takeScreenshot: assign((context, event) => {
+        console.log('takeScreenshot', context, event);
+        const strMime = 'image/png';
+        const domElement = document.getElementById(context.domElement);
+        // domElement.getContext('webgl', { preserveDrawingBuffer: true });
+        // gl.render(scene, camera);
+        // const domElement=context.domElement;
+        const thumbnail = domElement.toDataURL(strMime);
+        console.log(thumbnail);
+        return {
+          thumbnail,
+        };
+      }),
+      saveThumbnail: (context, event) => {
+        console.log('saveThumbnail', context, event);
+
+        function downloadImage(data, filename = 'cube.png') {
+          var a = document.createElement('a');
+          a.href = data;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+
+        downloadImage(context.thumbnail);
+      },
+    },
+  });
 
 const machine = {
   service: interpret(cryptoCubeMachine, {

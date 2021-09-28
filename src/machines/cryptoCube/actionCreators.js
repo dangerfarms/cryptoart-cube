@@ -7,6 +7,14 @@ export const generateActionCreators = (machine) => {
     mergeComplete: () => {
       machine.service.send(machine.actionTypes.MERGE_CUBES);
     },
+    registerGL: (domElement) => {
+      machine.service.send(machine.actionTypes.REGISTER_GL, {
+        domElement
+      });
+    },
+    takeScreenShot: () => {
+      machine.service.send(machine.actionTypes.SAVE_THUMB);
+    },
     //
     // setTriggeredUnrwap: () => {
     //   machine.service.send(machine.actionTypes.UNWRAP_TAP);

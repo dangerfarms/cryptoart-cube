@@ -1,4 +1,6 @@
 export const actionTypes = {
   MERGE_CUBES: 'MERGE_CUBES',
+  SAVE_THUMB: 'SAVE_THUMB',
+  REGISTER_GL: 'REGISTER_GL',
   MERGE_COMPLETE: 'MERGE_COMPLETE',
 };
