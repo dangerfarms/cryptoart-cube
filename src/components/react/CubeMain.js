@@ -5,7 +5,6 @@ import { createIntersectingCubeConfig } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { useActor } from '@xstate/react';
-import { actions } from 'xstate';
 
 const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
 
@@ -73,7 +72,7 @@ function CubeMain(props) {
     cubeSecondary,
     cubeProperties = [null, null, null, null, null, null, null],
     freeze = false,
-    disableZoom = false
+    disableZoom = false,
   } = props;
 
   const previewCube = !!cubeSecondary;
@@ -227,8 +226,7 @@ function CubeMain(props) {
         });
       }),
       takeScreenShot: button(() => {
-          cryptoCubeMachine.actionCreators.takeScreenShot()
-
+        cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
       merge: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubes();
@@ -242,16 +240,12 @@ function CubeMain(props) {
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
         <LevaPanel key="panel" store={store} titleBar={true} />
       )}
-      <CubeRenderer
-        key={'renderer'}
-        cubeData={_cubeData || cubeData}
-        {...data}
-      />
+      <CubeRenderer key={'renderer'} cubeData={_cubeData || cubeData} {...data} />
       <CubeMainStudio set={set} data={data} />
     </>
   );
 }
 
-const { mergeCubes, takeScreenShot } = cryptoCubeMachine.actionCreators
+const { mergeCubes, takeScreenShot } = cryptoCubeMachine.actionCreators;
 
 export { CubeMain, CubeRenderer, mergeCubes, takeScreenShot };

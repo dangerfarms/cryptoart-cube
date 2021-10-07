@@ -11,7 +11,7 @@ import { noise } from '../../utils/Noise';
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
-const isDev = process.env.NODE_ENV === "development"
+const isDev = process.env.NODE_ENV === 'development';
 
 // // const RoundedBoxGeometry = require('three-rounded-box')(THREE);
 // extend({ MeshLine, MeshLineMaterial });
@@ -89,7 +89,7 @@ function Boxes(props) {
     //   alert("here");
     //   cryptoCubeMachine.actionCreators.registerGL(gl.domElement)
     // }
-    gl.domElement.id = "canvasGL"
+    gl.domElement.id = 'canvasGL';
     cryptoCubeMachine.actionCreators.registerGL('canvasGL');
     console.log(gl.domElement);
   }, [gl.domElement]);
@@ -652,12 +652,17 @@ export const CubeRenderer = (props) => {
       key={'scene'}
       // invalidateFrameloop={props.freeze}
       linear
-      gl={{ antialias: false, alpha: false , preserveDrawingBuffer:true}}
+      gl={{ antialias: false, alpha: false, preserveDrawingBuffer: true }}
       // camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
       <ambientLight intensity={0.15} />
-      <Boxes key={'main'} {...props} previewCube={false} position={props.positionCube1} />
-      <Boxes
+
+      <Boxes key={'main'}
+        // main cube
+             {...props} previewCube={false} position={props.positionCube1} />
+      {props.cubeData.facesSecond && <Boxes
+
+        // White preview cube
         {...props}
         key={'preview'}
         cubeData={{ ...props.cubeData, faces: props.cubeData.facesSecond, facesNew: null }}
@@ -666,7 +671,7 @@ export const CubeRenderer = (props) => {
         toggleTwoCubes={false}
         active={props.cubeData.facesSecond && props.previewCube}
         position={props.positionCube1}
-      />
+      />}
       {props.lightningRays ? (
         <>
           <LineMesh
@@ -705,7 +710,15 @@ export const CubeRenderer = (props) => {
       {/*    dashRatio={0.95}*/}
       {/*  />*/}
       {/*</mesh>*/}
-      <Boxes key={'main2'} {...props} previewCube={false} position={props.positionCube2} />
+      {props.cubeData.facesSecond && <Boxes key={'main2'}
+        //second cube for merge animation
+                                            {...props} previewCube={false}
+                                            cubeData={{
+                                              ...props.cubeData,
+                                              faces: props.cubeData.facesSecond,
+                                              facesNew: null,
+                                            }}
+                                            position={props.positionCube2} />}
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
       {isDev ? <Stats /> : null}
