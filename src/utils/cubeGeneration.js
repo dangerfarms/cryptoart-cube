@@ -9,6 +9,9 @@
  * @param cube2Squares [2,0,15,2,5,30]
  */
 export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
+  if (cube2Squares === undefined)
+    return null;
+
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   const emptyCube = maxSquaresPerFace.map((square, i) => new Array(square).fill(0));
 

@@ -80,11 +80,12 @@ function CubeMain(props) {
 
   const previewCube = !!cubeSecondary;
 
+  const cubeDataConfig = translateSizeToConfig(cubeData);
   const cubeConfig = cubeData ?
     {
       colors,
-      faces: translateSizeToConfig(cubeData),
-      facesSecond: translateSizeToConfig(cubeSecondary),
+      faces: cubeDataConfig,
+      facesSecond: createIntersectingCubeConfig(cubeDataConfig, cubeSecondary),
       facesNew: null,
     } :
     initialCubeConfig;
