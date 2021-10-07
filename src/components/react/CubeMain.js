@@ -13,6 +13,9 @@ const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'
  * @param cube
  */
 function translateSizeToConfig(cube) {
+  if (cube === undefined)
+    return null;
+
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   return cube.map((square, i) => {
     const squares = [
@@ -77,7 +80,16 @@ function CubeMain(props) {
 
   const previewCube = !!cubeSecondary;
 
-  const [_cubeData, setCubeData] = useState(initialCubeConfig);
+  const cubeConfig = cubeData ?
+    {
+      colors,
+      faces: translateSizeToConfig(cubeData),
+      facesSecond: translateSizeToConfig(cubeSecondary),
+      facesNew: null,
+    } :
+    initialCubeConfig;
+
+  const [_cubeData, setCubeData] = useState(cubeConfig);
 
   const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
