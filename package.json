@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "cryptoart cube",
   "main": "cryptoart_cube_lib/cube.bundle.js",
+  "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development webpack serve  --config webpack.cube.dev.js",
@@ -23,6 +24,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@theatre/studio": "^0.4.2",
     "aframe-particle-system-component": "^1.1.3",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.0",
@@ -59,7 +61,6 @@
     "@react-three/fiber": "^7.0.6",
     "@react-three/postprocessing": "^2.0.5",
     "@theatre/core": "^0.4.2",
-    "@theatre/studio": "^0.4.2",
     "@xstate/inspect": "^0.5.0",
     "@xstate/react": "^1.6.1",
     "bootstrap": "^4.6.0",

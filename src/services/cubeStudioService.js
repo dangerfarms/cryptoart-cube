@@ -1,13 +1,14 @@
 import { getProject, types } from '@theatre/core';
-import studio from '@theatre/studio';
 import mergeAnimation from '../constants/animations/merge.json';
 
-// if (process.env.NODE_ENV === 'development') {
-  studio.initialize();
-  studio.ui.hide();
-// }
+if (process.env.NODE_ENV === 'development') {
+  import('@theatre/studio').then(({ default: studio }) => {
+    studio.initialize();
+    studio.ui.hide();
+  });
+}
 
-console.log(mergeAnimation,process.env.NODE_ENV);
+console.log(mergeAnimation, process.env.NODE_ENV);
 const project = getProject('CryptoCube', { state: mergeAnimation });
 const sheet = project.sheet('Scene', 'default');
 
@@ -28,7 +29,6 @@ const obj = sheet.object('testObject', {
   // testValues: [0, 1, 1],
 });
 
-console.log(studio, process.env.NODE_ENV, sheet, obj);
 const subscribeToChangesAndReturnUnsubscriber = (set) => {
   return obj.onValuesChange((newValues) => {
     // console.log('newValues', newValues);
