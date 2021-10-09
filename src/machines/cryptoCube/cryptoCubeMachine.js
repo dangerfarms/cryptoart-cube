@@ -29,6 +29,7 @@ const cryptoCubeMachine = createMachine(
         on: {
           [actionTypes.MERGE_CUBES]: {
             target: 'mergingCubes',
+            actions: assign({ mergeCallback: (context, event) => event.callback }),
           },
           [actionTypes.SAVE_THUMB]: {
             actions: ['takeScreenshot', 'saveThumbnail'],
@@ -45,6 +46,9 @@ const cryptoCubeMachine = createMachine(
           src: () => cubeStudioService.playScene(),
           onDone: {
             target: 'idle',
+            actions: (context, event) => {
+              context.mergeCallback && context.mergeCallback();
+            },
           },
           onError: {
             target: 'failure',

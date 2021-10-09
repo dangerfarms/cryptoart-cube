@@ -46,7 +46,7 @@ function CubeMain(props) {
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
   } = props;
 
-  console.log('colors', colors, CUBE_CONSTANTS.Defaults.colors);
+  // console.log('colors', colors, CUBE_CONSTANTS.Defaults.colors);
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
@@ -213,13 +213,15 @@ function CubeMain(props) {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
       merge: button(() => {
-        cryptoCubeMachine.actionCreators.mergeCubes();
+        cryptoCubeMachine.actionCreators.mergeCubes(() => {
+          alert('completed');
+        });
       }),
     }),
     { store },
   );
   // console.log('data', data, set);
-  console.log('data', _cubeData, data);
+  // console.log('data', _cubeData, data);
 
   // _cubeData has a generated data
   // cubeData is the data from html - Variable cube : true ?
