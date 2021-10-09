@@ -4,7 +4,6 @@ import { cubeStudioService } from '../../services/cubeStudioService';
 function CubeMainStudio(props) {
   const { set } = props;
 
-  //
   // console.log('obj', obj.value);
   // React.useLayoutEffect(() => {
   //   return studio.onSelectionChange((newSelection) => {

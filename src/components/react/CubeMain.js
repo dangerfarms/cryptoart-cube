@@ -34,6 +34,7 @@ function CubeMain(props) {
     faces = CUBE_CONSTANTS.Defaults.faces,
     facesMergedCube = generateRandomFaces(),
     facesPreview = generateRandomFaces(),
+    previewCube = CUBE_CONSTANTS.Defaults.previewCube,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
     subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
@@ -45,8 +46,6 @@ function CubeMain(props) {
     cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
   } = props;
-
-  // console.log('colors', colors, CUBE_CONSTANTS.Defaults.colors);
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
@@ -75,7 +74,7 @@ function CubeMain(props) {
         max: 1,
       },
       toggleMergedCube: CUBE_CONSTANTS.Defaults.toggleMergedCube,
-      previewCube: CUBE_CONSTANTS.Defaults.previewCube,
+      previewCube: previewCube,
       previewCubeWireframe: CUBE_CONSTANTS.Defaults.previewCubeWireframe,
       previewCubeUniqueColor: CUBE_CONSTANTS.Defaults.previewCubeUniqueColor,
       previewCubeBloomAnimation: CUBE_CONSTANTS.Defaults.previewCubeBloomAnimation,
