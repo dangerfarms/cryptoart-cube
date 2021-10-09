@@ -30,9 +30,6 @@ export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
   return cube2Config;
 };
 
-
-
-
 /**
  * Convert an array containing the number of squares per face into a random configuration.
  * @param cube
@@ -52,7 +49,7 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-const generateRandomFaces = () => {
+export const generateRandomFaces = () => {
   const cube = [
     getRandomInt(10),
     getRandomInt(17),
@@ -73,7 +70,7 @@ export const generateCubes = () => {
 
   const cube2Config = createIntersectingCubeConfig(cube1, cube2Squares);
 
-  const cube3config = cube1.map((face, faceId) =>
+  const cube3Config = cube1.map((face, faceId) =>
     face.map((value, subFaceId) => {
       return value || cube2Config[faceId][subFaceId];
     }),
@@ -82,6 +79,7 @@ export const generateCubes = () => {
   return {
     faces: cube1,
     facesSecond: cube2Config,
-    facesNew: cube3config,
+    facesMergedCube: cube3Config,
+    facesPreview: cube2Config,
   };
 };

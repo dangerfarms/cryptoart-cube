@@ -5,9 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { CubeMain, CubeRenderer, mergeCubes, takeScreenShot } from './components/react/CubeMain';
 
 const loadCubeIntoDomElement = (cubeData, domElement) => {
-  ReactDOM.render(<CubeMain key="cubemain" cubeData={cubeData} />, domElement);
+  ReactDOM.render(<CubeMain key="cubemain" {...cubeData} />, domElement);
 
-  cubeData.cube = true;
+  cubeData.loadCubeIntoDomElement = true;
 
   return cubeData;
 };

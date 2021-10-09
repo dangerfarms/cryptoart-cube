@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CubeMain key="CubeMain" data={data} />
+    <CubeMain key="CubeMain" {...data} />
   </React.StrictMode>,
   document.getElementById('root'),
 );

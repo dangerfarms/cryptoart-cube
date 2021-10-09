@@ -1,37 +1,69 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { generateCubes } from '../../utils/cubeGeneration';
+import { generateCubes, generateRandomFaces } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
-import { useActor } from '@xstate/react';
+import { CUBE_CONSTANTS } from '../../constants/constants';
 
-const colors = ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'];
 const initialCubeConfig = {
-  colors,
+  colors: CUBE_CONSTANTS.Defaults.colors,
   ...generateCubes(),
+};
+
+CubeMain.propTypes = {
+  colors: PropTypes.array,
+  faces: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  facesPreview: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  freeze: PropTypes.bool,
+  disableZoom: PropTypes.bool,
+  subSquaresScale: PropTypes.number,
+  mainCubeSide: PropTypes.number,
+  thickness: PropTypes.number,
+  explosion: PropTypes.number,
+  subSquareOpacity: PropTypes.number,
+  cylinderThickness: PropTypes.number,
+  cylinderOpacity: PropTypes.number,
 };
 
 function CubeMain(props) {
   const {
-    cubeData,
-    cubeSecondary,
-    cubeProperties = [null, null, null, null, null, null, null],
-    freeze = false,
-    disableZoom = false,
+    colors = CUBE_CONSTANTS.Defaults.colors,
+    faces = CUBE_CONSTANTS.Defaults.faces,
+    facesMergedCube = generateRandomFaces(),
+    facesPreview = generateRandomFaces(),
+    freeze = CUBE_CONSTANTS.Defaults.freeze,
+    disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
+    subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
+    mainCubeSide = CUBE_CONSTANTS.Defaults.mainCubeSide,
+    thickness = CUBE_CONSTANTS.Defaults.thickness,
+    explosion = CUBE_CONSTANTS.Defaults.explosion,
+    subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity,
+    cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
+    cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
+    lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
   } = props;
 
-  const previewCube = !!cubeSecondary;
+  console.log('colors', colors, CUBE_CONSTANTS.Defaults.colors);
 
-  const [_cubeData, setCubeData] = useState(initialCubeConfig);
+  // const [_cubeData, setCubeData] = useState(initialCubeConfig);
+  const [_cubeData, setCubeData] = useState({
+    colors,
+    faces,
+    facesMergedCube,
+    facesPreview,
+    facesSecond: facesPreview,
+  });
 
-  const [state, send] = useActor(cryptoCubeMachine.service);
+  // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
   const [data, set] = useControls(
     () => ({
-      lightningRays: true,
-      positionCube1: { x: -10, y: -10, z: -10 },
-      positionCube2: { x: 10, y: 10, z: 10 },
+      lightningRays: lightningRays,
+      positionCube1: { x: 0, y: 0, z: 0 },
+      positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
         value: 1,
         min: 0,
@@ -42,8 +74,8 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
-      toggleTwoCubes: false,
-      previewCube,
+      toggleMergedCube: false,
+      previewCube: !!facesPreview,
       previewCubeWireframe: false,
       previewCubeUniqueColor: true,
       previewCubeBloomAnimation: false,
@@ -62,33 +94,33 @@ function CubeMain(props) {
       disableZoom,
       backGroundColor: '#202426',
       subSquaresScale: {
-        value: cubeProperties[3] || 0.9,
+        value: subSquaresScale,
         min: 0,
         max: 1,
       },
-      mainCubeSide: cubeProperties[0] || 10,
+      mainCubeSide: mainCubeSide,
       thickness: {
-        value: cubeProperties[1] || 0.01,
+        value: thickness,
         min: -1,
         max: 1,
       },
       explosion: {
-        value: cubeProperties[2] || 0.1,
+        value: explosion,
         min: 0,
         max: 10,
       },
       subSquareOpacity: {
-        value: cubeProperties[4] || 0.9,
+        value: subSquareOpacity,
         min: 0,
         max: 1,
       },
       cylinderThickness: {
-        value: cubeProperties[5] || 0.1,
+        value: cylinderThickness,
         min: 0,
         max: 1,
       },
       cylinderOpacity: {
-        value: cubeProperties[5] || 0.8,
+        value: cylinderOpacity,
         min: 0,
         max: 1,
       },
@@ -99,8 +131,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -111,8 +144,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -123,8 +157,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -135,8 +170,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -147,8 +183,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -159,8 +196,9 @@ function CubeMain(props) {
           setCubeData({
             colors,
             faces: _cubeData.faces,
-            facesNew: _cubeData.facesNew,
+            facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
           });
         },
       },
@@ -181,13 +219,18 @@ function CubeMain(props) {
     { store },
   );
   // console.log('data', data, set);
-  console.log(_cubeData, cubeData, data);
+  console.log('data', _cubeData, data);
+
+  // _cubeData has a generated data
+  // cubeData is the data from html - Variable cube : true ?
+  // data has all props except cubeConfig
+
   return (
     <>
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
         <LevaPanel key="panel" store={store} titleBar={true} />
       )}
-      <CubeRenderer key={'renderer'} cubeData={_cubeData || cubeData} {...data} />
+      <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
       <CubeMainStudio set={set} data={data} />
     </>
   );

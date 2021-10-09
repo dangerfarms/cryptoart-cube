@@ -9,7 +9,7 @@ export const generateActionCreators = (machine) => {
     },
     registerGL: (domElement) => {
       machine.service.send(machine.actionTypes.REGISTER_GL, {
-        domElement
+        domElement,
       });
     },
     takeScreenShot: () => {

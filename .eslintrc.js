@@ -21,7 +21,7 @@ module.exports = {
   },
   ignorePatterns: ['/node_modules/**', '/build/**'],
   rules: {
-    'no-unused-vars': ['warn', { args: 'none', argsIgnorePattern: 'req|res|next|val' }],
+    // 'no-unused-vars': ['warn', { args: 'none', argsIgnorePattern: 'req|res|next|val' }],
     'prettier/prettier': ['warn'],
     'react/prop-types': 'off',
     'react/no-unescaped-entities': 'warn',

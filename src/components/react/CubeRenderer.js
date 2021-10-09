@@ -34,7 +34,7 @@ let jIncrement = 0;
 function Boxes(props) {
   const {
     cubeData,
-    toggleTwoCubes = false,
+    toggleMergedCube = false,
     subSquaresScale = 0.9,
     mainCubeSide = 10,
     thickness = 0.01,
@@ -94,7 +94,6 @@ function Boxes(props) {
     console.log(gl.domElement);
   }, [gl.domElement]);
 
-
   useFrame(({ clock, gl, scene, camera }) => {
     // const isNewFrame = controls.current.update();
     // console.log('frame', freeze, isNewFrame);
@@ -135,7 +134,7 @@ function Boxes(props) {
     jIncrement += displacementIncrementPerFrame;
 
     // gl.render(scene, camera);
-    if ((!toggleTwoCubes && scaleMainCube >= 1) || (toggleTwoCubes && scaleMainCube <= 0)) {
+    if ((!toggleMergedCube && scaleMainCube >= 1) || (toggleMergedCube && scaleMainCube <= 0)) {
       // console.log('frame2');
       scaleMainCube === 1 || scaleMainCube === 0
         ? null
@@ -144,7 +143,7 @@ function Boxes(props) {
       return;
     }
     // console.log(clock.getDelta());
-    let scale = scaleMainCube + (toggleTwoCubes ? -1 : 1) * 500 * clock.getDelta();
+    let scale = scaleMainCube + (toggleMergedCube ? -1 : 1) * 500 * clock.getDelta();
     setScaleMainCube(scale);
 
     // const scale = 1 + Math.sin(clock.elapsedTime) * 0.3
@@ -192,10 +191,10 @@ function Boxes(props) {
     // console.log(jIncrement);
     meshRef.current.instanceMatrix.needsUpdate = true;
     jIncrement += displacementIncrementPerFrame;
-    // console.log('previewCube', cubeVersion, facesNewActive, facesActive);
+    // console.log('previewCube', cubeVersion, facesMergedCubeActive, facesActive);
     // gl.render(scene, camera);
 
-    // if ((!toggleTwoCubes && scaleMainCube >= 1) || (toggleTwoCubes && scaleMainCube <= 0)) {
+    // if ((!toggleMergedCube && scaleMainCube >= 1) || (toggleMergedCube && scaleMainCube <= 0)) {
     //   // console.log('frame2');
     //   scaleMainCube === 1 || scaleMainCube === 0
     //     ? null
@@ -229,13 +228,16 @@ function Boxes(props) {
 
   const facesActiveOriginalScale = useMemo(() => [...facesActive], [facesActive]);
 
-  const facesNewActive = useMemo(() => {
-    if (!cubeData.facesNew) return [];
-    return cubeData.facesNew.reduce((acc, face) => {
+  const facesMergedCubeActive = useMemo(() => {
+    if (!cubeData.facesMergedCube) return [];
+    return cubeData.facesMergedCube.reduce((acc, face) => {
       return [...acc, ...face];
     }, []);
   }, [cubeData]);
-  const facesNewActiveOriginalScale = useMemo(() => [...facesNewActive], [facesNewActive]);
+  const facesMergedCubeActiveOriginalScale = useMemo(
+    () => [...facesMergedCubeActive],
+    [facesMergedCubeActive],
+  );
 
   // gets all colors ready to be sent to GPU instances
   const colorArray = useMemo(
@@ -367,9 +369,9 @@ function Boxes(props) {
         for (let coord2 = 0; coord2 < currentFaceNumberOfSquaresPerLine; coord2++) {
           // console.log(
           //   facesActiveOriginalScale[currentFaceId],
-          //   facesNewActiveOriginalScale[currentFaceId],
+          //   facesMergedCubeActiveOriginalScale[currentFaceId],
           // );
-          const faceSecondCube = facesNewActiveOriginalScale[currentFaceId] || 0;
+          const faceSecondCube = facesMergedCubeActiveOriginalScale[currentFaceId] || 0;
           const compoundScale =
             facesActiveOriginalScale[currentFaceId] * scaleMainCube +
             faceSecondCube * (1 - scaleMainCube);
@@ -377,7 +379,8 @@ function Boxes(props) {
             facesActiveOriginalScale[currentFaceId] || faceSecondCube
               ? subFaceRelativeSideScaled * clampedSubSquaresScale * compoundScale
               : 0,
-            facesActiveOriginalScale[currentFaceId] || facesNewActiveOriginalScale[currentFaceId]
+            facesActiveOriginalScale[currentFaceId] ||
+              facesMergedCubeActiveOriginalScale[currentFaceId]
               ? subFaceRelativeSideScaled * clampedSubSquaresScale * compoundScale
               : 0,
             facesActiveOriginalScale[currentFaceId] || faceSecondCube ? _thickness : 0,
@@ -442,14 +445,14 @@ function Boxes(props) {
               .clone()
               .multiplyScalar(
                 (cornerSignals[0] * cornerDisplacementScalar) / 2 -
-                cornerSignals[0] * cylinderThickness * cylWidth,
+                  cornerSignals[0] * cylinderThickness * cylWidth,
               );
 
             const cylinderCoordPointerVector2 = mainCubeFaceMovingPointerDirectonVectors[1]
               .clone()
               .multiplyScalar(
                 (cornerSignals[1] * cornerDisplacementScalar) / 2 -
-                cornerSignals[1] * cylinderThickness * cylWidth,
+                  cornerSignals[1] * cylinderThickness * cylWidth,
               );
 
             let cylObj = tempObject.clone();
@@ -495,7 +498,7 @@ function Boxes(props) {
     clampedSubSquaresScale,
     cylWidth,
     facesActiveOriginalScale,
-    facesNewActiveOriginalScale,
+    facesMergedCubeActiveOriginalScale,
     previewCube,
   ]);
   // useEffect(() => {
@@ -657,21 +660,30 @@ export const CubeRenderer = (props) => {
     >
       <ambientLight intensity={0.15} />
 
-      <Boxes key={'main'}
+      <Boxes
+        key={'main'}
         // main cube
-             {...props} previewCube={false} position={props.positionCube1} />
-      {props.cubeData.facesSecond && <Boxes
-
-        // White preview cube
         {...props}
-        key={'preview'}
-        cubeData={{ ...props.cubeData, faces: props.cubeData.facesSecond, facesNew: null }}
-        subSquareOpacity={0.9}
-        previewCube={true}
-        toggleTwoCubes={false}
-        active={props.cubeData.facesSecond && props.previewCube}
+        previewCube={false}
         position={props.positionCube1}
-      />}
+      />
+      {props.cubeData.facesPreview && (
+        <Boxes
+          // White preview cube
+          {...props}
+          key={'preview'}
+          cubeData={{
+            ...props.cubeData,
+            faces: props.cubeData.facesPreview,
+            facesMergedCube: null,
+          }}
+          subSquareOpacity={0.9}
+          previewCube={true}
+          toggleMergedCube={false}
+          active={props.cubeData.facesPreview && props.previewCube}
+          position={props.positionCube1}
+        />
+      )}
       {props.lightningRays ? (
         <>
           <LineMesh
@@ -710,15 +722,21 @@ export const CubeRenderer = (props) => {
       {/*    dashRatio={0.95}*/}
       {/*  />*/}
       {/*</mesh>*/}
-      {props.cubeData.facesSecond && <Boxes key={'main2'}
-        //second cube for merge animation
-                                            {...props} previewCube={false}
-                                            cubeData={{
-                                              ...props.cubeData,
-                                              faces: props.cubeData.facesSecond,
-                                              facesNew: null,
-                                            }}
-                                            position={props.positionCube2} />}
+      {props.cubeData.facesSecond && (
+        <Boxes
+          key={'main2'}
+          //second cube for merge animation
+          {...props}
+          previewCube={false}
+          toggleMergedCube={false}
+          cubeData={{
+            ...props.cubeData,
+            faces: props.cubeData.facesSecond,
+            facesMergedCube: null,
+          }}
+          position={props.positionCube2}
+        />
+      )}
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
       {isDev ? <Stats /> : null}

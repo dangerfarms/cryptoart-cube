@@ -10,20 +10,18 @@
  */
 export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
-  const emptyCube = maxSquaresPerFace
-    .map((square, i) => new Array(square).fill(0));
+  const emptyCube = maxSquaresPerFace.map((square, i) => new Array(square).fill(0));
 
-  const freeSquareFaceIndices = cube1Config
-    .map(
-      (faceConfig, i) => faceConfig
-        .map((e, j) => e === 0 ? j : '').filter(String)
-        .slice(0, cube2Squares[i])
-    );
+  const freeSquareFaceIndices = cube1Config.map((faceConfig, i) =>
+    faceConfig
+      .map((e, j) => (e === 0 ? j : ''))
+      .filter(String)
+      .slice(0, cube2Squares[i]),
+  );
 
-  const cube2Config = emptyCube
-    .map((face, i) =>
-      face.map((square, j) => freeSquareFaceIndices[i].includes(j) ? 1 : 0)
-    )
+  const cube2Config = emptyCube.map((face, i) =>
+    face.map((square, j) => (freeSquareFaceIndices[i].includes(j) ? 1 : 0)),
+  );
 
   console.log(cube1Config);
   console.log(freeSquareFaceIndices);
@@ -31,4 +29,3 @@ export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
 
   return cube2Config;
 };
-

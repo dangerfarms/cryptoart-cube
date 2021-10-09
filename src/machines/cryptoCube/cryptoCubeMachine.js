@@ -18,7 +18,8 @@ if (devMode) {
   });
 }
 
-const cryptoCubeMachine = createMachine({
+const cryptoCubeMachine = createMachine(
+  {
     id: 'cube-machine',
     initial: 'idle',
     context: initialState,
@@ -94,7 +95,8 @@ const cryptoCubeMachine = createMachine({
         downloadImage(context.thumbnail);
       },
     },
-  });
+  },
+);
 
 const machine = {
   service: interpret(cryptoCubeMachine, {
