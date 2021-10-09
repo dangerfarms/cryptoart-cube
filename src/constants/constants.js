@@ -30,6 +30,11 @@ const Defaults = {
   cylinderThickness: 0.1,
   cylinderOpacity: 0.8,
   lightningRays: false,
+  toggleMergedCube: false,
+  previewCube: false,
+  previewCubeWireframe: false,
+  previewCubeUniqueColor: true,
+  previewCubeBloomAnimation: false,
 };
 
 export const CUBE_CONSTANTS = {
