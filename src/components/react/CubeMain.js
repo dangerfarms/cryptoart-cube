@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { generateCubes, generateRandomFaces } from '../../utils/cubeGeneration';
+import { generateCubes } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
@@ -53,6 +53,7 @@ function CubeMain(props) {
   const [_cubeData, setCubeData] = useState({
     colors,
     faces,
+    previewCube,
     facesMergedCube,
     facesPreview,
     facesSecond,
