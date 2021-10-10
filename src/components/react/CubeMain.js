@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
@@ -57,6 +57,16 @@ function CubeMain(props) {
     facesPreview,
     facesSecond,
   });
+
+  useEffect(() => {
+    setCubeData({
+      colors,
+      faces,
+      facesMergedCube,
+      facesSecond,
+      facesPreview,
+    });
+  }, [colors, faces, facesMergedCube, facesPreview, facesSecond, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
