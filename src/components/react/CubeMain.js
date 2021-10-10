@@ -15,6 +15,7 @@ const initialCubeConfig = {
 CubeMain.propTypes = {
   colors: PropTypes.array,
   faces: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  facesSecond: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesPreview: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   freeze: PropTypes.bool,
@@ -32,9 +33,10 @@ function CubeMain(props) {
   const {
     colors = CUBE_CONSTANTS.Defaults.colors,
     faces = CUBE_CONSTANTS.Defaults.faces,
-    facesMergedCube = generateRandomFaces(),
-    facesPreview = generateRandomFaces(),
+    facesMergedCube,
+    facesPreview,
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
+    facesSecond,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
     subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
@@ -53,7 +55,7 @@ function CubeMain(props) {
     faces,
     facesMergedCube,
     facesPreview,
-    facesSecond: facesPreview,
+    facesSecond,
   });
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
