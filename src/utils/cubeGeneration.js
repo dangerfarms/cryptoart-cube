@@ -34,7 +34,7 @@ export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
  * Convert an array containing the number of squares per face into a random configuration.
  * @param cube
  */
-function translateSizeToConfig(cube) {
+export function translateSizeToConfig(cube) {
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   return cube.map((square, i) => {
     const squares = [
