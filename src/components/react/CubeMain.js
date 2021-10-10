@@ -66,6 +66,7 @@ function CubeMain(props) {
       facesMergedCube,
       facesSecond,
       facesPreview,
+      previewCube,
     });
   }, [colors, faces, facesMergedCube, facesPreview, facesSecond, previewCube]);
 
