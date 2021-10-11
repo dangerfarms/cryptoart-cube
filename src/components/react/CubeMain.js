@@ -78,12 +78,12 @@ function CubeMain(props) {
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
-        value: 1,
+        value: 0,
         min: 0,
         max: 10,
       },
       displacementIncrementPerFrame: {
-        value: 0.01,
+        value: 0,
         min: 0,
         max: 1,
       },
