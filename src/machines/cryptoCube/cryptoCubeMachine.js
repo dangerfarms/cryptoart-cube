@@ -9,7 +9,8 @@ import { generateActionCreators } from './actionCreators';
 import { cubeStudioService } from '../../services/cubeStudioService';
 
 const devMode = process.env.NODE_ENV === 'development';
-if (devMode) {
+const statePreview = process.env.REACT_APP_STATE_PREVIEW === 'true';
+if (devMode && statePreview) {
   inspect({
     // options
     // url: 'https://statecharts.io/inspect', // (default)
