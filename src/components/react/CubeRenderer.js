@@ -7,6 +7,7 @@ import CubeCamera from './CubeCamera';
 // import { MeshLine, MeshLineMaterial } from 'three.meshline';
 import { LineMesh } from './Line';
 import { noise } from '../../utils/Noise';
+require('./CubeRenderer.css');
 
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
@@ -154,7 +155,7 @@ function Boxes(props) {
     // }
     // ref.current.instanceMatrix.needsUpdate = true
     // if (!freeze) invalidate(!isNewFrame);
-  }, 1);
+  }, 0);
 
   useFrame(({ clock, gl, scene, camera }) => {
     // const isNewFrame = controls.current.update();
@@ -214,7 +215,7 @@ function Boxes(props) {
     // }
     // ref.current.instanceMatrix.needsUpdate = true
     // if (!freeze) invalidate(!isNewFrame);
-  }, 1);
+  }, 0);
 
   // const geometryRef = useRef();
 
@@ -401,6 +402,21 @@ function Boxes(props) {
               .sub(coord1PointerVector)
               .sub(coord2PointerVector),
           );
+
+          // // const matrix = cubeMatrixes[j].clone();
+          // // const position = new THREE.Vector3().setFromMatrixPosition(tempObject.matrix.clone());
+          // const increment = currentFaceId + jIncrement;
+          // const newX =
+          //   tempObject.position.x + noise(increment, 0, 0) * displacementAnimationDistance;
+          // const newY =
+          //   tempObject.position.y + noise(increment, increment, 0) * displacementAnimationDistance;
+          // const newZ =
+          //   tempObject.position.z +
+          //   noise(increment, increment, increment) * displacementAnimationDistance;
+          // tempObject.position.set(newX, newY, newZ);
+
+          tempObject.updateMatrix();
+          // meshRef.current.setMatrixAt(j, matrix);
 
           const angle = Math.PI / 2;
           tempObject.rotation.x = 0;
@@ -739,7 +755,7 @@ export const CubeRenderer = (props) => {
       )}
       <CubeCamera key={'cubeCamera'} {...props} />
       <Effects key={'effects'} {...props} />
-      {isDev ? <Stats /> : null}
+      {isDev ? <Stats className="cubeStats" /> : null}
     </Canvas>
   );
 };

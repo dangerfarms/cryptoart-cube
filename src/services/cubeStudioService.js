@@ -17,7 +17,11 @@ const obj = sheet.object('testObject', {
     nudgeMultiplier: 0.1,
     range: [0, 1],
   }),
-
+  orbitControls: types.number(1, {
+    nudgeMultiplier: 1,
+    range: [0, 1],
+  }),
+  positionCamera: { x: 0, y: 0, z: 25 },
   positionCube1: { x: -10, y: -10, z: -10 },
   positionCube2: { x: 10, y: 10, z: 10 },
   displacementAnimationDistance: types.number(1, {

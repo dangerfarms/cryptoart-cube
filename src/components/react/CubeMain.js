@@ -47,6 +47,7 @@ function CubeMain(props) {
     cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
     cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
+    orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
@@ -75,6 +76,7 @@ function CubeMain(props) {
   const [data, set] = useControls(
     () => ({
       lightningRays: lightningRays,
+      positionCamera: { x: 0, y: 0, z: 25 },
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
@@ -137,6 +139,7 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
+      orbitControls: orbitControls,
       color0: {
         value: colors[0],
         onChange: (color) => {
