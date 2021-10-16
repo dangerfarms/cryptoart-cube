@@ -1,7 +1,7 @@
 import { getProject, types } from '@theatre/core';
-import mergeAnimation from '../constants/animations/merge.json';
+import mergeAnimation from '../constants/animations/merge13102021.json';
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_STUDIO === 'true') {
   import('@theatre/studio').then(({ default: studio }) => {
     studio.initialize();
     studio.ui.hide();
