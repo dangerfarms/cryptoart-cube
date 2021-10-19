@@ -228,9 +228,14 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
-      merge: button(() => {
-        cryptoCubeMachine.actionCreators.mergeCubes(() => {
-          alert('completed');
+      mergeCubesIntro: button(() => {
+        cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
+          alert('completed intro');
+        });
+      }),
+      mergeCubesConclusion: button(() => {
+        cryptoCubeMachine.actionCreators.mergeCubesConclusion(() => {
+          alert('completed conclusion');
         });
       }),
     }),
@@ -254,6 +259,6 @@ function CubeMain(props) {
   );
 }
 
-const { mergeCubes, takeScreenShot } = cryptoCubeMachine.actionCreators;
+const { mergeCubesIntro, mergeCubesConclusion, takeScreenShot } = cryptoCubeMachine.actionCreators;
 
-export { CubeMain, CubeRenderer, mergeCubes, takeScreenShot };
+export { CubeMain, CubeRenderer, mergeCubesIntro, mergeCubesConclusion, takeScreenShot };

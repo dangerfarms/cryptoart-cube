@@ -28,8 +28,12 @@ const cryptoCubeMachine = createMachine(
     states: {
       idle: {
         on: {
-          [actionTypes.MERGE_CUBES]: {
-            target: 'mergingCubes',
+          [actionTypes.MERGE_CUBES_INTRO]: {
+            target: 'mergingCubesIntro',
+            actions: assign({ mergeCallback: (context, event) => event.callback }),
+          },
+          [actionTypes.MERGE_CUBES_CONCLUSION]: {
+            target: 'mergingCubesConclusion',
             actions: assign({ mergeCallback: (context, event) => event.callback }),
           },
           [actionTypes.SAVE_THUMB]: {
@@ -41,10 +45,25 @@ const cryptoCubeMachine = createMachine(
         },
       },
 
-      mergingCubes: {
+      mergingCubesIntro: {
         invoke: {
           id: 'merging',
-          src: () => cubeStudioService.playScene(),
+          src: () => cubeStudioService.playMergeIntro(),
+          onDone: {
+            target: 'idle',
+            actions: (context, event) => {
+              context.mergeCallback && context.mergeCallback();
+            },
+          },
+          onError: {
+            target: 'failure',
+          },
+        },
+      },
+      mergingCubesConclusion: {
+        invoke: {
+          id: 'merging',
+          src: () => cubeStudioService.playMergeConclusion(),
           onDone: {
             target: 'idle',
             actions: (context, event) => {
@@ -59,7 +78,7 @@ const cryptoCubeMachine = createMachine(
       success: {},
       failure: {
         on: {
-          RETRY: { target: 'mergingCubes' },
+          RETRY: { target: 'mergingCubesConclusion' },
         },
       },
     },

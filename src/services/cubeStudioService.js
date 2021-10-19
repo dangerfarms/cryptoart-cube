@@ -1,5 +1,5 @@
 import { getProject, types } from '@theatre/core';
-import mergeAnimation from '../constants/animations/merge13102021.json';
+import mergeAnimation from '../constants/animations/merge19102021.json';
 
 if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_STUDIO === 'true') {
   import('@theatre/studio').then(({ default: studio }) => {
@@ -41,7 +41,13 @@ const subscribeToChangesAndReturnUnsubscriber = (set) => {
   });
 };
 
-const playScene = (callback) => {
+const playMergeIntro = (callback) => {
+  sheet.sequence.position = 0;
+
+  return sheet.sequence.play({ range: [0, 3] });
+};
+
+const playMergeConclusion = (callback) => {
   return sheet.sequence.play();
 };
 
@@ -200,5 +206,6 @@ const playScene = (callback) => {
 
 export const cubeStudioService = {
   subscribeToChangesAndReturnUnsubscriber,
-  playScene,
+  playMergeIntro,
+  playMergeConclusion,
 };

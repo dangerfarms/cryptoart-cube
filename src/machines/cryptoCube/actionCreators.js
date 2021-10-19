@@ -1,7 +1,11 @@
 export const generateActionCreators = (machine) => {
   return {
-    mergeCubes: (callback) => {
-      machine.service.send(machine.actionTypes.MERGE_CUBES, { callback });
+    mergeCubesIntro: (callback) => {
+      machine.service.send(machine.actionTypes.MERGE_CUBES_INTRO, { callback });
+    },
+
+    mergeCubesConclusion: (callback) => {
+      machine.service.send(machine.actionTypes.MERGE_CUBES_CONCLUSION, { callback });
     },
 
     mergeComplete: () => {
