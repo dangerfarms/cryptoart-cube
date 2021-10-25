@@ -46,6 +46,7 @@ function CubeMain(props) {
     subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity,
     cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
     cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
+    displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
@@ -80,7 +81,7 @@ function CubeMain(props) {
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
-        value: 0,
+        value: displacementAnimationDistance,
         min: 0,
         max: 10,
       },
