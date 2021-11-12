@@ -671,7 +671,7 @@ export const CubeRenderer = (props) => {
       key={'scene'}
       // invalidateFrameloop={props.freeze}
       linear
-      gl={{ antialias: false, alpha: false, preserveDrawingBuffer: true }}
+      gl={{ antialias: false, alpha: true, preserveDrawingBuffer: true }}
       // camera={{ position: [0, 0, 15], near: 0.1, far: 200 }}
     >
       <ambientLight intensity={0.15} />
