@@ -44,11 +44,11 @@ const subscribeToChangesAndReturnUnsubscriber = (set) => {
 const playMergeIntro = (callback) => {
   sheet.sequence.position = 0;
 
-  return sheet.sequence.play({ range: [0, 3], rate: 1.5 });
+  return sheet.sequence.play({ range: [0, 3], rate: 2 });
 };
 
 const playMergeConclusion = (callback) => {
-  return sheet.sequence.play({ rate: 1.5 });
+  return sheet.sequence.play({ rate: 2 });
 };
 
 // const data = useControls(
