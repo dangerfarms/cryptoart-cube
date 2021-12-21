@@ -122,7 +122,7 @@ function CubeMain(props) {
       },
       explosion: {
         value: explosion,
-        min: 0,
+        min: -10,
         max: 10,
       },
       subSquareOpacity: {
