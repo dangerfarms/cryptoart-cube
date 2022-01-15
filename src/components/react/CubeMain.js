@@ -6,6 +6,8 @@ import { generateCubes } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
+import { useThree } from '@react-three/fiber';
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -229,6 +231,8 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
+      exportToObj: button(() => {
+      }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
           alert('completed intro');
@@ -252,10 +256,10 @@ function CubeMain(props) {
   return (
     <>
       {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
-        <LevaPanel key="panel" store={store} titleBar={true} />
+        <LevaPanel key="panel" store={store} titleBar={true}/>
       )}
       <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
-      <CubeMainStudio set={set} data={data} />
+      <CubeMainStudio set={set} data={data}/>
     </>
   );
 }

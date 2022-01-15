@@ -11,6 +11,7 @@ require('./CubeRenderer.css');
 
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -76,6 +77,12 @@ function Boxes(props) {
     // invalidate,
     // setDefaultCamera,
   } = useThree();
+
+
+  const exporter = new OBJExporter();
+  const result = exporter.parse(scene);
+  console.log(result);
+
   //
   // const renderToJPG = useMemo(() => {
   //   const strMime = 'image/png';
