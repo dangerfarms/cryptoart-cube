@@ -1,27 +1,47 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#111111"/><meta name="description" content="Crypto cube"/><script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script><script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script><title>Cube</title><style>* {
-          box-sizing: border-box;
-      }
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#111111"/><meta name="description" content="Crypto cube"/><script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script><script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script><title>Cryptoart</title><style>* {
+            box-sizing: border-box;
+        }
 
-      html,
-      body,
-      #root {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-      }
+        html,
+        body,
+        #root {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-      body {
-          background: #f0f0f0;
-      }</style><script defer="defer" src="/cube.bundle.js"></script></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script>const mockCubeData = {
-    // colors: ["#69d2e7", "#a7dbd8", "#e0e4cc", "#f38630", "#fa6900", "#ff00ff"],
-    faces: [[0, 1, 1, 1, 0, 1, 1, 0, 0], [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1], [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1], [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0]],
-    // facesMergedCube: [[0, 1, 1, 1, 0, 1, 1, 1, 1], [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0], [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1], [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1], [0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1], [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0]]
+        body {
+            background: #f0f0f0;
+        }</style><script defer="defer" src="/cube.bundle.js"></script></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script>const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  let squareCount, isCombined;
+  try {
+    squareCount = urlParams.get('config').split(',').map(value => parseInt(value));
+    isCombined = urlParams.get('isCombined') || false;
+    // const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
+    // faces = config.map((square, i) => {
+    //   const squares = [
+    //     ...new Array(square).fill(1),
+    //     ...new Array(maxSquaresPerFace[i] - square).fill(0),
+    //   ];
+    //   return [...squares].sort(() => 0.5 - Math.random());
+    // });
+  } catch {
+    squareCount = [4, 7, 13, 16, 13, 7];
+    isCombined = false;
+    // faces = [[0, 1, 1, 1, 0, 1, 1, 0, 0], [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1], [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1], [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0]];
+  }
+
+  const cubeData = {
+    frag1Config: squareCount,
+    isCombined,
+    hideBackground: false,
   };</script><script>window.onload = function() {
-    console.log("CUBE", DANGER_CUBE);
-    const domElement = document.getElementById("root");
+    const domElement = document.getElementById('root');
     DANGER_CUBE.loadCubeIntoDomElement(
-      mockCubeData,
-      domElement
+      cubeData,
+      domElement,
     );
   };</script></body></html>
