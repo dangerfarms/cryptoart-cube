@@ -110,7 +110,7 @@ function CubeMain(props) {
         max: 10,
       },
       displacementIncrementPerFrame: {
-        value: 0,
+        value: frag1properties.displacementIncrementPerFrame || 0,
         min: 0,
         max: 1,
       },
