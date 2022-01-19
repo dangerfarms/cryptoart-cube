@@ -19,7 +19,7 @@
   let squareCount, isCombined;
   try {
     squareCount = urlParams.get('config').split(',').map(value => parseInt(value));
-    isCombined = urlParams.get('isCombined') || false;
+    isCombined = urlParams.get('isCombined') === "true" || false;
     // const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
     // faces = config.map((square, i) => {
     //   const squares = [
