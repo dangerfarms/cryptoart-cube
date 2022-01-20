@@ -84,14 +84,101 @@ export const generateCubes = () => {
   };
 };
 
-/*
-this function returns a thickness value closer to the default (0.01) as the face is more full
-the more the face is full the more the thickness will be reduced to the default value
-  */
+const cBlack = '#000000'
+const cRed = '#ff003c'
+const cOrange = '#ff7b00'
+const cYellow = '#ffcd00'
+const cGreen = '#5ed723'
+const cBlue = '#1e63ff'
+const cPurple = '#ba0dbe'
+const cWhite = "ffffff"
+const defaultColor = ['#0ff03c', '#ff7b00', '#ff003c', '#ffcd00', '#1e63ff', '#ba0dbe']
+const primeColor = [
+  '#00000',
+  '#00001',
+  '#ffffff',
+  '#ffffff',
+  '#00004',
+  '#ffffff',
+  '#00006',
+  '#ffffff',
+  '#00008',
+  '#00009',
+  '#00010',
+  '#ffffff',
+  '#00012',
+  '#ffffff',
+  '#00014',
+  '#00015',
+  '#00016',
+  '#ffffff',
+  '#00018',
+  '#ffffff',
+  '#00020',
+  '#00021',
+  '#00022',
+  '#ffffff',
+  '#00024',
+  '#00025',
+  '#00026',
+  '#00027',
+  '#00028',
+  '#ffffff',
+  '#00030',
+  '#ffffff',
+  '#00032',
+  '#00033',
+  '#00034',
+  '#00035',
+  '#00036',
+  '#ffffff',
+  '#00038',
+  '#00039',
+  '#00040',
+  '#ffffff',
+  '#00042',
+  '#ffffff',
+  '#00044',
+  '#00045',
+  '#00046',
+  '#ffffff',
+  '#00048',
+  '#00049',
+  '#00050',
+  '#00051',
+  '#00052',
+  '#ffffff',
+  '#00054',
+  '#00055',
+  '#00056',
+  '#00057',
+  '#00058',
+  '#ffffff',
+  '#00060',
+  '#ffffff',
+  '#00062',
+  '#00063',
+  '#00064',
+]
+function returnColor(sqr1,sqr2,sqr3,sqr4,sqr5,sqr6){
+  for(var i = 2; i < sqr1; i++)
+    if(sqr1 % i === 0) return defaultColor;
+  for(var i = 2; i < sqr2; i++)
+    if(sqr2 % i === 0) return defaultColor;
+  for(var i = 2; i < sqr3; i++)
+    if(sqr3 % i === 0) return [primeColor[sqr1],primeColor[sqr2],'#ff003c', '#ffcd00', '#1e63ff', '#ba0dbe'];
+  for(var i = 2; i < sqr4; i++)
+    if(sqr4 % i === 0) return [primeColor[sqr1],primeColor[sqr2],primeColor[sqr3], '#ffcd00', '#1e63ff', '#ba0dbe'];
+  for(var i = 2; i < sqr5; i++)
+    if(sqr5 % i === 0) return [primeColor[sqr1],primeColor[sqr2],primeColor[sqr3], primeColor[sqr4], '#1e63ff', '#ba0dbe'];
+  for(var i = 2; i < sqr6; i++)
+    if(sqr6 % i === 0) return [primeColor[sqr1],primeColor[sqr2],primeColor[sqr3], primeColor[sqr4], primeColor[sqr5], '#ba0dbe'];
+  return [primeColor[sqr1],primeColor[sqr2],primeColor[sqr3],primeColor[sqr4],primeColor[sqr5],primeColor[sqr6]];
+}
 function calculateThickness(squares){
-  var fullFace=25 //as we are using face 3 to define the thickness
+  var fullFace=25
   var value
-  var interval=1 //set the range to -0.5 to 0.5
+  var interval=1
   var k = interval/fullFace
   if(squares==fullFace){
     value = 0.01
@@ -109,78 +196,43 @@ function calculateThickness(squares){
     return value
   }
 }
-/*returns a mainCubeSideValue between range as specified*/
-function calculateMainCubeSide(squares){
-  //return squares*(14/9)-10 //da -10 a +4
-  if (squares==9){
-    return 10
-  }
-  else{
-    return squares*(10/9)-11 //da -11 a -1
-  }
+
+//2, 3, 5, 7, 11, 13 / 6 out of 16
+function calculateDisplacementDistance(squares){
+  for(var i = 2; i < squares; i++)
+    if(squares % i === 0) return false;
+  return 10-10*(squares/16);
+}
+//2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61 / 18 out of 64
+function enableDisplacementMovement(squares){
+  //for(var i = 2; i < squares; i++)
+  //  if(squares % i === 0) return false;
+  return 0.1;
 }
 
 
-function calculateDisplacement(squares1,squares2,squares3,squares4,squares5,squares6){
-  var mainCube = calculateMainCubeSide(squares1)
-  var expl = 5-squares4*(5/36)
-  if(mainCube<0){
-    if(-(mainCube)<expl){
-      return (6-(squares1/9+squares2/16+squares3/25+squares4/36+squares5/49+squares6/64))/2
-    }
-  }
-  else{
-    return 0
-  }
-}
 
 export const adjustedFragmentProperties = squareCount => {
-  // const properties = fragment.properties || []
-  // const [cubeSide, thickness, explosion, squareScale, squareOpacity, cylinderThickness, cylinderOpacity] = properties;
-
-  // const props = [
-  //   ((cubeSide * 2.0) - 100)/10,
-  //   ((thickness * 2.0) - 100)/100,
-  //   (explosion * 1.0) / 10,
-  //   (squareScale * 1.0) / 100,
-  //   (squareOpacity * 1.0) / 100,
-  //   (cylinderThickness * 1.0) / 100,
-  //   (cylinderOpacity * 1.0) / 100,
-  // ];
-
   /*
-  the idea is to have a fragment that looks more like the default fragment view the more it is full
-  some of the properties are influenced by the value of each face
-
-  mainCubeSide Face1 - Red
-  thickness Face 3 - Yellow
-  explosion Face 4 - Green
-  subSquaresScale Face 2 - Orange
-  subSquareOpacity Face 5 - Blue
-  cylinderOpacity - Face 6 - Magenta
-  displacementAnimationDistance - Fullness
-
-  Considering we change mainCubeSide also the camera should change accordingly in order to not show a fragment too big or to small in the viewport
-
-  Low Squares fragments looks really good with this setup
-
-  displacement when explosion going out could solve the problem of the one going out
-  when mainCubeSide is negative and explosion < of -(mainCubeSide) is ok (looks like going inwards)
-
-  maybe displacement only if overlapping
-
-  fragment.combined true or false
-
+  face1: subSquareOpacity 0.5-0.9
+  face2: displacementAnimationDistance (-10)-0 only prime numbers
+  face3: thickness (-0.5)-0.5
+  face4: explosion (-5)-0
+  face5: subSquaresScale 0.7-1
+  face6: cylinderOpacity 0-1
+  fullness:
   */
   const props = {
-    mainCubeSide: calculateMainCubeSide(squareCount[0]), /* depending on face1 square count, range -11 to 1 */
-    thickness: calculateThickness(squareCount[2]),// depending on face3 from -1 to 0
-    explosion: 5-squareCount[3]*(5/36), /*depending on face 4 from 5 to 0*/
-    subSquaresScale: 0.7 + squareCount[1]*(0.3/16),/*depending on face 2 from 0.7-1*/
-    subSquareOpacity: 0.3 + squareCount[4]*((0.9-0.3)/49),//.9, depending on face 5 from 0.3 to 0.9
-    cylinderThickness: .03,
-    cylinderOpacity: squareCount[5]/64,//.2 depending on face 6 from 0 to 1
-    displacementAnimationDistance: 0,//calculateDisplacement(fragment.colorConf[0],fragment.colorConf[1],fragment.colorConf[2],fragment.colorConf[3],fragment.colorConf[4],fragment.colorConf[5])
+    mainCubeSide: 10,
+    thickness: calculateThickness(squareCount[2]),
+    explosion: -(5-squareCount[3]*(5/36)),
+    subSquaresScale: 0.7 + squareCount[4]*(0.3/49),
+    subSquareOpacity: 0.5 + squareCount[0]*((0.9-0.5)/9),
+    cylinderThickness: .1,
+    cylinderOpacity: squareCount[5]/64,
+    displacementAnimationDistance: calculateDisplacementDistance(squareCount[1]),
+    displacementIncrementPerFrame: enableDisplacementMovement(squareCount[5]),
+    colors: returnColor(squareCount[0],squareCount[1],squareCount[2],squareCount[3],squareCount[4],squareCount[5])
   }
   console.log(props);
   return props;
