@@ -87,7 +87,7 @@ function CubeMain(props) {
 
   useEffect(() => {
     setCubeData({
-      colors,
+      colors: frag1properties.colors || colors,
       faces: frag1faces,
       facesMergedCube,
       facesSecond,
