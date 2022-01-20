@@ -41,7 +41,6 @@ CubeMain.propTypes = {
 
 function CubeMain(props) {
   const {
-    colors = CUBE_CONSTANTS.Defaults.colors,
     // TODO: new value that holds square count
     frag1Config = null,
     isCombined = false,
@@ -72,7 +71,10 @@ function CubeMain(props) {
     translateSizeToConfig(frag1Config) :
     generateRandomFaces();
   const frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
+  const colors = frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
   // TODO: END NEW CODE
+
+  console.log(colors);
 
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
@@ -87,14 +89,14 @@ function CubeMain(props) {
 
   useEffect(() => {
     setCubeData({
-      colors: frag1properties.colors || colors,
+      colors,
       faces: frag1faces,
       facesMergedCube,
       facesSecond,
       facesPreview,
       previewCube,
     });
-  }, [colors, facesMergedCube, facesPreview, facesSecond, previewCube]);
+  }, [facesMergedCube, facesPreview, facesSecond, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
