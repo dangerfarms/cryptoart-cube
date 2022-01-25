@@ -12,7 +12,7 @@ import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
 import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
-import { useThree } from '@react-three/fiber';
+
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -71,13 +71,14 @@ function CubeMain(props) {
   // TODO: NEW CODE – lift up?
   const frag1faces = (frag1Config !== null) ?
     translateSizeToConfig(frag1Config) :
-    generateRandomFaces();
+    translateSizeToConfig([9, 16, 25, 36, 49, 64]);
   const frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
-  const colors = frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  const colors = (frag1Config === null) ?
+    ['#555', '#555', '#555', '#555', '#555', '#555'] :
+    frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
   // TODO: END NEW CODE
 
   console.log(colors);
-
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
@@ -258,7 +259,9 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
-      exportToObj: button(() => {
+      exportObj: button(() => {
+        const exporter = new OBJExporter();
+        alert(scene);
       }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
@@ -282,7 +285,7 @@ function CubeMain(props) {
 
   return (
     <>
-      {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
+      {process.env.REACT_APP_DEBUG_CUBE && (
         <LevaPanel key="panel" store={store} titleBar={true}/>
       )}
       <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
