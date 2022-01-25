@@ -41,10 +41,11 @@ function Boxes(props) {
     mainCubeSide = 10,
     thickness = 0.01,
     explosion = 0.1,
-    backGroundColor = '#f0f0f0',
+    backGroundColor = "#f0f0f0",
     subSquareOpacity = 0.9,
     cylinderOpacity = 0.1,
     cylinderThickness = 0.8,
+    hideBackground = true,
     // freeze = false,
     previewCube = false,
     active = true,
@@ -291,9 +292,12 @@ function Boxes(props) {
   //   roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
   // }, [roundedGeometry, colorArray]);
   useEffect(() => {
-    // TODO: Revert?
-    // scene.background = new THREE.Color(backGroundColor);
-    scene.background = null;
+    if (hideBackground) {
+      scene.background = null;
+    } else {
+      scene.background = new THREE.Color(backGroundColor)
+    }
+
     // if (!freeze) invalidate();
   }, [
     scene,
