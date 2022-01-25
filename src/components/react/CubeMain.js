@@ -2,10 +2,17 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { generateCubes } from '../../utils/cubeGeneration';
+import {
+  adjustedFragmentProperties,
+  generateCubes,
+  generateRandomFaces,
+  translateSizeToConfig,
+} from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
+
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -14,12 +21,17 @@ const initialCubeConfig = {
 
 CubeMain.propTypes = {
   colors: PropTypes.array,
-  faces: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  // TODO: New
+  frag1Config: PropTypes.arrayOf(PropTypes.number),
+  isCombined: PropTypes.bool,
+  // TODO: remove if square count works
+  // faces: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesSecond: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesPreview: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   freeze: PropTypes.bool,
   disableZoom: PropTypes.bool,
+  hideBackground: PropTypes.bool,
   subSquaresScale: PropTypes.number,
   mainCubeSide: PropTypes.number,
   thickness: PropTypes.number,
@@ -31,13 +43,17 @@ CubeMain.propTypes = {
 
 function CubeMain(props) {
   const {
-    colors = CUBE_CONSTANTS.Defaults.colors,
-    faces = CUBE_CONSTANTS.Defaults.faces,
+    // TODO: new value that holds square count
+    frag1Config = null,
+    isCombined = false,
+    // TODO: Remove if not needed
+    // faces = CUBE_CONSTANTS.Defaults.faces,
     facesMergedCube,
     facesPreview,
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
     facesSecond,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
+    hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
     subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
     mainCubeSide = CUBE_CONSTANTS.Defaults.mainCubeSide,
@@ -51,10 +67,23 @@ function CubeMain(props) {
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
 
+
+  // TODO: NEW CODE – lift up?
+  const frag1faces = (frag1Config !== null) ?
+    translateSizeToConfig(frag1Config) :
+    translateSizeToConfig([9, 16, 25, 36, 49, 64]);
+  const frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
+  const colors = (frag1Config === null) ?
+    ['#555', '#555', '#555', '#555', '#555', '#555'] :
+    frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  // TODO: END NEW CODE
+
+  console.log(colors);
+
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
     colors,
-    faces,
+    faces: frag1faces,
     previewCube,
     facesMergedCube,
     facesPreview,
@@ -64,13 +93,13 @@ function CubeMain(props) {
   useEffect(() => {
     setCubeData({
       colors,
-      faces,
+      faces: frag1faces,
       facesMergedCube,
       facesSecond,
       facesPreview,
       previewCube,
     });
-  }, [colors, faces, facesMergedCube, facesPreview, facesSecond, previewCube]);
+  }, [facesMergedCube, facesPreview, facesSecond, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
@@ -86,10 +115,11 @@ function CubeMain(props) {
         max: 10,
       },
       displacementIncrementPerFrame: {
-        value: 0,
+        value: frag1properties.displacementIncrementPerFrame || 0,
         min: 0,
         max: 1,
       },
+      hideBackground,
       toggleMergedCube: CUBE_CONSTANTS.Defaults.toggleMergedCube,
       previewCube: previewCube,
       previewCubeWireframe: CUBE_CONSTANTS.Defaults.previewCubeWireframe,
@@ -105,7 +135,7 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
-      hideControls: false,
+      hideControls: true,
       freeze,
       disableZoom,
       backGroundColor: '#202426',
@@ -114,29 +144,29 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
-      mainCubeSide: mainCubeSide,
+      mainCubeSide: frag1properties.mainCubeSide || mainCubeSide,
       thickness: {
-        value: thickness,
+        value: frag1properties.thickness || thickness,
         min: -1,
         max: 1,
       },
       explosion: {
-        value: explosion,
+        value: frag1properties.explosion ||  explosion,
         min: -10,
         max: 10,
       },
       subSquareOpacity: {
-        value: subSquareOpacity,
+        value: frag1properties.subSquareOpacity || subSquareOpacity,
         min: 0,
         max: 1,
       },
       cylinderThickness: {
-        value: cylinderThickness,
+        value: frag1properties.cylinderThickness || cylinderThickness,
         min: 0,
         max: 1,
       },
       cylinderOpacity: {
-        value: cylinderOpacity,
+        value: frag1properties.cylinderOpacity || cylinderOpacity,
         min: 0,
         max: 1,
       },
@@ -229,6 +259,10 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
+      exportObj: button(() => {
+        const exporter = new OBJExporter();
+        alert(scene);
+      }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
           alert('completed intro');
@@ -251,11 +285,11 @@ function CubeMain(props) {
 
   return (
     <>
-      {process.env.REACT_APP_DEBUG_CUBE && !data.hideControls && (
-        <LevaPanel key="panel" store={store} titleBar={true} />
+      {process.env.REACT_APP_DEBUG_CUBE && (
+        <LevaPanel key="panel" store={store} titleBar={true}/>
       )}
       <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
-      <CubeMainStudio set={set} data={data} />
+      <CubeMainStudio set={set} data={data}/>
     </>
   );
 }
