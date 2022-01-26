@@ -2,12 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import {
-  adjustedFragmentProperties,
-  generateCubes,
-  generateRandomFaces,
-  translateSizeToConfig,
-} from '../../utils/cubeGeneration';
+import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
@@ -69,16 +64,20 @@ function CubeMain(props) {
 
 
   // TODO: NEW CODE – lift up?
-  const frag1faces = (frag1Config !== null) ?
-    translateSizeToConfig(frag1Config) :
-    translateSizeToConfig([9, 16, 25, 36, 49, 64]);
-  const frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
-  const colors = (frag1Config === null) ?
-    ['#555', '#555', '#555', '#555', '#555', '#555'] :
-    frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  let frag1faces, frag1properties, colors;
+  if (frag1Config === null) {
+    frag1faces = translateSizeToConfig([9, 16, 25, 36, 49, 64]);
+    frag1properties = {
+      displacementAnimationDistance: 1,
+      displacementIncrementPerFrame: 0.1,
+    };
+    colors = ['#555', '#555', '#555', '#555', '#555', '#555'];
+  } else {
+    frag1faces = translateSizeToConfig(frag1Config);
+    frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
+    colors = frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  }
   // TODO: END NEW CODE
-
-  console.log(colors);
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
@@ -110,7 +109,7 @@ function CubeMain(props) {
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
-        value: displacementAnimationDistance,
+        value: frag1properties.displacementAnimationDistance || displacementAnimationDistance,
         min: 0,
         max: 10,
       },
@@ -151,7 +150,7 @@ function CubeMain(props) {
         max: 1,
       },
       explosion: {
-        value: frag1properties.explosion ||  explosion,
+        value: frag1properties.explosion || explosion,
         min: -10,
         max: 10,
       },
