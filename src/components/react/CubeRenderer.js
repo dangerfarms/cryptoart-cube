@@ -103,7 +103,7 @@ function Boxes(props) {
       function ( result ) {
         const output = JSON.stringify( result, null, 2 );
         console.log( output );
-        saveString( output, 'scene.gltf' );
+        // saveString( output, 'scene.gltf' );
       },
       // called when there is an error in the generation
       function ( error ) {
