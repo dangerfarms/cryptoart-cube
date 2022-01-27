@@ -11,8 +11,7 @@ require('./CubeRenderer.css');
 
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
-import { exporter, parseMTL } from '../../exporter';
-import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
+
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -81,6 +80,8 @@ function Boxes(props) {
     // setDefaultCamera,
   } = useThree();
 
+  // ============== EXPORT CODE ===========================
+
   const exporter = new GLTFExporter();
   const link = document.createElement( 'a' );
   link.style.display = 'none';
@@ -95,28 +96,25 @@ function Boxes(props) {
   function saveString( text, filename ) {
     save( new Blob( [ text ], { type: 'text/plain' } ), filename );
   }
-
-
-  setTimeout(() => {
+  useEffect(() => {
     exporter.parse(
-      gl,
-      function ( result ) {
-        const output = JSON.stringify( result, null, 2 );
-        console.log( output );
-        // saveString( output, 'scene.gltf' );
+      scene,
+      function(result) {
+        const output = JSON.stringify(result, null, 2);
+        console.log(output);
+        saveString(output, 'scene.gltf');
       },
       // called when there is an error in the generation
-      function ( error ) {
-        console.log( 'An error happened' );
+      function(error) {
+        console.log('An error happened');
       },
-      { },
-    );
-  }, 5000);
+      {
+        onlyVisible: false,
+      },
+    )
+  }, []);
 
-
-
-  // console.log(exporter.parse(scene));
-  // console.log(parseMTL(scene));
+  // ============== END: EXPORT CODE ===========================
 
   //
   // const renderToJPG = useMemo(() => {

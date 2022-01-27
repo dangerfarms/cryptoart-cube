@@ -63,6 +63,8 @@ function CubeMain(props) {
   } = props;
 
 
+  console.log(isCombined);
+
   // TODO: NEW CODE – lift up?
   let frag1faces, frag1properties, colors;
   if (frag1Config === null) {
@@ -260,7 +262,7 @@ function CubeMain(props) {
       }),
       exportObj: button(() => {
         const exporter = new OBJExporter();
-        alert(scene);
+        alert(exporter.parse(scene));
       }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
