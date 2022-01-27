@@ -260,10 +260,6 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
-      exportObj: button(() => {
-        const exporter = new OBJExporter();
-        alert(exporter.parse(scene));
-      }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
           alert('completed intro');
