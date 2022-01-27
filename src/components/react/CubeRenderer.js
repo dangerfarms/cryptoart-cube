@@ -11,7 +11,8 @@ require('./CubeRenderer.css');
 
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
-import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
+
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -79,10 +80,41 @@ function Boxes(props) {
     // setDefaultCamera,
   } = useThree();
 
+  // ============== EXPORT CODE ===========================
 
-  const exporter = new OBJExporter();
-  const result = exporter.parse(scene);
-  console.log(result);
+  const exporter = new GLTFExporter();
+  const link = document.createElement( 'a' );
+  link.style.display = 'none';
+  document.body.appendChild( link ); // Firefox workaround, see #6594
+
+  function save( blob, filename ) {
+    link.href = URL.createObjectURL( blob );
+    link.download = filename;
+    link.click();
+  }
+
+  function saveString( text, filename ) {
+    save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+  }
+  useEffect(() => {
+    exporter.parse(
+      scene,
+      function(result) {
+        const output = JSON.stringify(result, null, 2);
+        console.log(output);
+        saveString(output, 'scene.gltf');
+      },
+      // called when there is an error in the generation
+      function(error) {
+        console.log('An error happened');
+      },
+      {
+        onlyVisible: false,
+      },
+    )
+  }, []);
+
+  // ============== END: EXPORT CODE ===========================
 
   //
   // const renderToJPG = useMemo(() => {
