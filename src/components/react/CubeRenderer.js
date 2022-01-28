@@ -108,6 +108,7 @@ function Boxes(props) {
         const mesh = new THREE.Mesh(geometry, meshRef.current.material.clone());
         meshRef.current.getMatrixAt(i, mesh.matrix);
         mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        if(mesh.scale.length() === 0) continue;
         //meshRef.current.getColorAt(i, mesh.material.color);
         // ^does not work, colors are set directly on geometry for some reason... so:
         mesh.material.color.fromArray(meshRef.current.geometry.attributes.color.array, i * 3);
@@ -125,11 +126,14 @@ function Boxes(props) {
         const mesh = new THREE.Mesh(geometry, cylRef.current.material.clone());
         cylRef.current.getMatrixAt(i, mesh.matrix);
         mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        if(mesh.scale.length() === 0) continue;
         if(cylRef.current.instanceColor) // ?? this hook runs too early I guess
         cylRef.current.getColorAt(i, mesh.material.color);
         group.add(mesh);
       }
     }
+
+    if(group.children.length > 0)
 
     exporter.parse(
       group,
