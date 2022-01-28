@@ -97,8 +97,42 @@ function Boxes(props) {
     save( new Blob( [ text ], { type: 'text/plain' } ), filename );
   }
   useEffect(() => {
+    const group = new THREE.Group();
+    if(meshRef.current) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.attributes.position = meshRef.current.geometry.attributes.position;
+      geometry.attributes.normal   = meshRef.current.geometry.attributes.normal;
+      geometry.attributes.uv       = meshRef.current.geometry.attributes.uv;
+      geometry.index               = meshRef.current.geometry.index;
+      for(let i = 0, n = meshRef.current.count; i < n; i++) {
+        const mesh = new THREE.Mesh(geometry, meshRef.current.material.clone());
+        meshRef.current.getMatrixAt(i, mesh.matrix);
+        mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        //meshRef.current.getColorAt(i, mesh.material.color);
+        // ^does not work, colors are set directly on geometry for some reason... so:
+        mesh.material.color.fromArray(meshRef.current.geometry.attributes.color.array, i * 3);
+        group.add(mesh);
+      }
+    }
+
+    if(cylRef.current) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.attributes.position = cylRef.current.geometry.attributes.position;
+      geometry.attributes.normal   = cylRef.current.geometry.attributes.normal;
+      geometry.attributes.uv       = cylRef.current.geometry.attributes.uv;
+      geometry.index               = cylRef.current.geometry.index;
+      for(let i = 0, n = cylRef.current.count; i < n; i++) {
+        const mesh = new THREE.Mesh(geometry, cylRef.current.material.clone());
+        cylRef.current.getMatrixAt(i, mesh.matrix);
+        mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        if(cylRef.current.instanceColor) // ?? this hook runs too early I guess
+        cylRef.current.getColorAt(i, mesh.material.color);
+        group.add(mesh);
+      }
+    }
+
     exporter.parse(
-      scene,
+      group,
       function(result) {
         const output = JSON.stringify(result, null, 2);
         console.log(output);
@@ -112,7 +146,7 @@ function Boxes(props) {
         onlyVisible: false,
       },
     )
-  }, []);
+  }, Object.values(props));
 
   // ============== END: EXPORT CODE ===========================
 
