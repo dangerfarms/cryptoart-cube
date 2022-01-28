@@ -260,6 +260,9 @@ function CubeMain(props) {
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
+      saveGLTF: button(() => {
+        cryptoCubeMachine.actionCreators.saveGLTF();
+      }),
       mergeCubesIntro: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesIntro(() => {
           alert('completed intro');

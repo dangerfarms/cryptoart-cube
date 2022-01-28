@@ -19,6 +19,14 @@ export const generateActionCreators = (machine) => {
     takeScreenShot: () => {
       machine.service.send(machine.actionTypes.SAVE_THUMB);
     },
+    storeGLTF: (gltf) => {
+      machine.service.send(machine.actionTypes.STORE_GLTF, {
+        gltf,
+      });
+    },
+    saveGLTF: () => {
+      machine.service.send(machine.actionTypes.SAVE_GLTF);
+    },
     //
     // setTriggeredUnrwap: () => {
     //   machine.service.send(machine.actionTypes.UNWRAP_TAP);
