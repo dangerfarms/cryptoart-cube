@@ -205,7 +205,7 @@ function calculateDisplacementDistance(squares){
 }
 //2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61 / 18 out of 64
 function enableDisplacementMovement(squares){
-  for(const i = 2; i < squares; i++)
+  for(let i = 2; i < squares; i++)
     if(squares % i === 0) return false;
   return 0.001;
 }
