@@ -96,6 +96,7 @@ function Boxes(props) {
   function saveString( text, filename ) {
     save( new Blob( [ text ], { type: 'text/plain' } ), filename );
   }
+
   useEffect(() => {
     const group = new THREE.Group();
     if(meshRef.current) {

@@ -210,8 +210,6 @@ function enableDisplacementMovement(squares){
   return 0.001;
 }
 
-
-
 export const adjustedFragmentProperties = squareCount => {
   /*
   face1: subSquareOpacity 0.5-0.9
