@@ -32,22 +32,16 @@ CubeMain.propTypes = {
   freeze: PropTypes.bool,
   disableZoom: PropTypes.bool,
   hideBackground: PropTypes.bool,
-  subSquaresScale: PropTypes.number,
-  mainCubeSide: PropTypes.number,
-  thickness: PropTypes.number,
-  explosion: PropTypes.number,
-  subSquareOpacity: PropTypes.number,
-  cylinderThickness: PropTypes.number,
-  cylinderOpacity: PropTypes.number,
-
-  subSquaresScaleSecond: PropTypes.number,
-  mainCubeSideSecond: PropTypes.number,
-  thicknessSecond: PropTypes.number,
-  explosionSecond: PropTypes.number,
-  subSquareOpacitySecond: PropTypes.number,
-  cylinderThicknessSecond: PropTypes.number,
-  cylinderOpacitySecond: PropTypes.number,
 };
+
+const subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale;
+const mainCubeSide = CUBE_CONSTANTS.Defaults.mainCubeSide;
+const thickness = CUBE_CONSTANTS.Defaults.thickness;
+const explosion = CUBE_CONSTANTS.Defaults.explosion;
+const subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity;
+const cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness;
+const cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity;
+
 
 function CubeMain(props) {
   const {
@@ -65,14 +59,6 @@ function CubeMain(props) {
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
-
-    subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
-    mainCubeSide = CUBE_CONSTANTS.Defaults.mainCubeSide,
-    thickness = CUBE_CONSTANTS.Defaults.thickness,
-    explosion = CUBE_CONSTANTS.Defaults.explosion,
-    subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity,
-    cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
-    cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
 
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
@@ -125,7 +111,7 @@ function CubeMain(props) {
       facesPreview,
       previewCube,
     });
-  }, [facesMergedCube, facesPreview, colors, previewCube]);
+  }, [facesMergedCube, facesPreview, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
