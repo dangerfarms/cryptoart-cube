@@ -12,6 +12,8 @@ require('./CubeRenderer.css');
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+
 const isDev = process.env.NODE_ENV === 'development';
 
 // // const RoundedBoxGeometry = require('three-rounded-box')(THREE);
@@ -40,10 +42,11 @@ function Boxes(props) {
     mainCubeSide = 10,
     thickness = 0.01,
     explosion = 0.1,
-    backGroundColor = '#f0f0f0',
+    backGroundColor = "#f0f0f0",
     subSquareOpacity = 0.9,
     cylinderOpacity = 0.1,
     cylinderThickness = 0.8,
+    hideBackground = true,
     // freeze = false,
     previewCube = false,
     active = true,
@@ -76,6 +79,7 @@ function Boxes(props) {
     // invalidate,
     // setDefaultCamera,
   } = useThree();
+
   //
   // const renderToJPG = useMemo(() => {
   //   const strMime = 'image/png';
@@ -284,9 +288,12 @@ function Boxes(props) {
   //   roundedGeometry.setAttribute('color', new THREE.InstancedBufferAttribute(colorArray, 3));
   // }, [roundedGeometry, colorArray]);
   useEffect(() => {
-    // TODO: Revert?
-    // scene.background = new THREE.Color(backGroundColor);
-    scene.background = null;
+    if (hideBackground) {
+      scene.background = null;
+    } else {
+      scene.background = new THREE.Color(backGroundColor)
+    }
+
     // if (!freeze) invalidate();
   }, [
     scene,
@@ -534,6 +541,71 @@ function Boxes(props) {
   // });
 
   // console.log(active);
+
+
+  // ============== EXPORT CODE ===========================
+
+  const exporter = new GLTFExporter();
+
+  useEffect(() => {
+    const group = new THREE.Group();
+    if(meshRef.current) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.attributes.position = meshRef.current.geometry.attributes.position;
+      geometry.attributes.normal   = meshRef.current.geometry.attributes.normal;
+      geometry.attributes.uv       = meshRef.current.geometry.attributes.uv;
+      geometry.index               = meshRef.current.geometry.index;
+      for(let i = 0, n = meshRef.current.count; i < n; i++) {
+        const mesh = new THREE.Mesh(geometry, meshRef.current.material.clone());
+        meshRef.current.getMatrixAt(i, mesh.matrix);
+        mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        if(mesh.scale.length() === 0) continue;
+        //meshRef.current.getColorAt(i, mesh.material.color);
+        // ^does not work, colors are set directly on geometry for some reason... so:
+        mesh.material.color.fromArray(meshRef.current.geometry.attributes.color.array, i * 3);
+        group.add(mesh);
+      }
+    }
+
+    if(cylRef.current) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.attributes.position = cylRef.current.geometry.attributes.position;
+      geometry.attributes.normal   = cylRef.current.geometry.attributes.normal;
+      geometry.attributes.uv       = cylRef.current.geometry.attributes.uv;
+      geometry.index               = cylRef.current.geometry.index;
+      for(let i = 0, n = cylRef.current.count; i < n; i++) {
+        const mesh = new THREE.Mesh(geometry, cylRef.current.material.clone());
+        cylRef.current.getMatrixAt(i, mesh.matrix);
+        mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        if(mesh.scale.length() === 0) continue;
+//        if(cylRef.current.instanceColor) // ?? this hook runs too early I guess
+        cylRef.current.getColorAt(i, mesh.material.color);
+        group.add(mesh);
+      }
+    }
+
+    if(group.children.length > 0)
+
+    exporter.parse(
+      group,
+      function(result) {
+        const output = JSON.stringify(result, null, 2);
+        console.log(output);
+        cryptoCubeMachine.actionCreators.storeGLTF(output);
+      },
+      // called when there is an error in the generation
+      function(error) {
+        console.log('An error happened');
+      },
+      {
+        onlyVisible: false,
+      },
+    )
+  }, Object.values(props));
+
+  // ============== END: EXPORT CODE ===========================
+
+
   const _previewCubeWireframe = previewCube && previewCubeWireframe;
 
   const _previewCubeUniqueColor = previewCube && previewCubeUniqueColor;

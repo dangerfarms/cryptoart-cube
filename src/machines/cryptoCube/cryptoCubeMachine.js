@@ -39,6 +39,12 @@ const cryptoCubeMachine = createMachine(
           [actionTypes.SAVE_THUMB]: {
             actions: ['takeScreenshot', 'saveThumbnail'],
           },
+          [actionTypes.STORE_GLTF]: {
+            actions: ['storeGLTF'],
+          },
+          [actionTypes.SAVE_GLTF]: {
+            actions: ['saveGLTF'],
+          },
           [actionTypes.REGISTER_GL]: {
             actions: ['registerDomElement'],
           },
@@ -117,6 +123,34 @@ const cryptoCubeMachine = createMachine(
         }
 
         downloadImage(context.thumbnail);
+      },
+      storeGLTF: assign((context, event) => {
+        return {
+          gltf: event.gltf
+        };
+      }),
+      saveGLTF: (context, event) => {
+        const link = document.createElement( 'a' );
+        link.style.display = 'none';
+        document.body.appendChild( link ); // Firefox workaround, see #6594
+      
+        function save( blob, filename ) {
+          link.href = URL.createObjectURL( blob );
+          link.download = filename;
+          link.click();
+        }
+      
+        function saveString( text, filename ) {
+          save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+        }
+
+        if( context.gltf ) {
+          saveString(context.gltf, 'scene.gltf');
+        } else {
+          console.error('no GLTF was stored yet');
+        }
+
+        document.body.removeChild( link );
       },
     },
   },
