@@ -62,29 +62,27 @@
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
-  let squareCount, isCombined;
+  let squareCount, isCombined, frag2Config, is2Combined;
   try {
     squareCount = urlParams.get('config').split(',').map(value => parseInt(value));
+    frag2Config = urlParams.get('config2').split(',').map(value => parseInt(value));
     isCombined = urlParams.get('isCombined') === "true" || false;
-    // const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
-    // faces = config.map((square, i) => {
-    //   const squares = [
-    //     ...new Array(square).fill(1),
-    //     ...new Array(maxSquaresPerFace[i] - square).fill(0),
-    //   ];
-    //   return [...squares].sort(() => 0.5 - Math.random());
-    // });
+    is2Combined = urlParams.get('is2Combined') === "true" || false;
   } catch {
     squareCount = null;
     isCombined = false;
-    // faces = [[0, 1, 1, 1, 0, 1, 1, 0, 0], [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1], [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1], [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0]];
+    frag2Config = null;
+    is2Combined = false;
   }
 
   const cubeData = {
     frag1Config: squareCount,
+    frag2Config,
     isCombined,
+    is2Combined,
     hideBackground: false,
   };
+
 </script>
 <script>
   window.onload = function() {

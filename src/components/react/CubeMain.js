@@ -19,9 +19,11 @@ CubeMain.propTypes = {
   // TODO: New
   frag1Config: PropTypes.arrayOf(PropTypes.number),
   isCombined: PropTypes.bool,
+  frag2Config: PropTypes.arrayOf(PropTypes.number),
+  is2Combined: PropTypes.bool,
   // TODO: remove if square count works
   // faces: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-  facesSecond: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  // facesSecond: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   facesPreview: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   freeze: PropTypes.bool,
@@ -48,13 +50,15 @@ function CubeMain(props) {
   const {
     // TODO: new value that holds square count
     frag1Config = null,
+    frag2Config = null,
     isCombined = false,
+    is2Combined = false,
     // TODO: Remove if not needed
     // faces = CUBE_CONSTANTS.Defaults.faces,
+    // facesSecond,
     facesMergedCube,
     facesPreview,
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
-    facesSecond,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
@@ -67,21 +71,10 @@ function CubeMain(props) {
     cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
     cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
 
-    subSquaresScaleSecond = CUBE_CONSTANTS.Defaults.subSquaresScale,
-    mainCubeSideSecond = CUBE_CONSTANTS.Defaults.mainCubeSide,
-    thicknessSecond = CUBE_CONSTANTS.Defaults.thickness,
-    explosionSecond = CUBE_CONSTANTS.Defaults.explosion,
-    subSquareOpacitySecond = CUBE_CONSTANTS.Defaults.subSquareOpacity,
-    cylinderThicknessSecond = CUBE_CONSTANTS.Defaults.cylinderThickness,
-    cylinderOpacitySecond = CUBE_CONSTANTS.Defaults.cylinderOpacity,
-
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
-
-
-  console.log(isCombined);
 
   // TODO: NEW CODE – lift up?
   let frag1faces, frag1properties, colors;
@@ -96,6 +89,13 @@ function CubeMain(props) {
     frag1faces = translateSizeToConfig(frag1Config);
     frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
     colors = frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  }
+
+  let facesSecond, frag2properties, frag2colors;
+  if (frag2Config !== null) {
+    facesSecond = translateSizeToConfig(frag2Config);
+    frag2properties = is2Combined ? adjustedFragmentProperties(frag2Config) : {};
+    frag2colors = frag2properties.colors || CUBE_CONSTANTS.Defaults.colors;
   }
   // TODO: END NEW CODE
 
@@ -113,12 +113,12 @@ function CubeMain(props) {
     setCubeData({
       colors,
       faces: frag1faces,
-      facesMergedCube,
       facesSecond,
+      facesMergedCube,
       facesPreview,
       previewCube,
     });
-  }, [facesMergedCube, facesPreview, facesSecond, previewCube]);
+  }, [facesMergedCube, facesPreview, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
@@ -190,33 +190,33 @@ function CubeMain(props) {
         max: 1,
       },
       subSquaresScaleSecond: {
-        value: subSquaresScale,
+        value: frag2properties.subSquaresScale || subSquaresScale,
         min: 0,
         max: 1,
       },
-      mainCubeSideSecond: mainCubeSide,
+      mainCubeSideSecond: frag2properties.mainCubeSide || mainCubeSide,
       thicknessSecond: {
-        value: thickness,
+        value: frag2properties.thickness || thickness,
         min: -1,
         max: 1,
       },
       explosionSecond: {
-        value: explosion,
+        value: frag2properties.explosion || explosion,
         min: -10,
         max: 10,
       },
       subSquareOpacitySecond: {
-        value: subSquareOpacity,
+        value: frag2properties.subSquareOpacity || subSquareOpacity,
         min: 0,
         max: 1,
       },
       cylinderThicknessSecond: {
-        value: cylinderThickness,
+        value: frag2properties.cylinderThickness || cylinderThickness,
         min: 0,
         max: 1,
       },
       cylinderOpacitySecond: {
-        value: cylinderOpacity,
+        value: frag2properties.cylinderOpacity || cylinderOpacity,
         min: 0,
         max: 1,
       },
