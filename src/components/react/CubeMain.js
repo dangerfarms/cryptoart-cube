@@ -2,15 +2,10 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import {
-  adjustedFragmentProperties,
-  generateCubes,
-  translateSizeToConfig,
-} from '../../utils/cubeGeneration';
+import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
-import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -276,7 +271,7 @@ function CubeMain(props) {
         onChange: (color) => {
           colors[4] = color;
           setCubeData({
-            colors,frag2colors,
+            colors, frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -422,11 +417,26 @@ function CubeMain(props) {
   // cubeData is the data from html - Variable cube : true ?
   // data has all props except cubeConfig
 
+
+  const [showPanel, setShowPanel] = useState(process.env.REACT_APP_DEBUG_CUBE)
+  document.addEventListener('keyup', e => {
+    if (e.repeat) { return }
+    if (e.key === 'x') {
+      cryptoCubeMachine.actionCreators.saveGLTF();
+      e.preventDefault();
+    }
+    if (process.env.REACT_APP_DEBUG_CUBE) {
+      if (e.key === 'h') {
+        setShowPanel(!showPanel);
+      }
+    }
+  });
+
   return (
     <>
-      {process.env.REACT_APP_DEBUG_CUBE && <LevaPanel key="panel" store={store} titleBar={true} />}
+      {showPanel && <LevaPanel key="panel" store={store} titleBar={true}/>}
       <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
-      <CubeMainStudio set={set} data={data} />
+      <CubeMainStudio set={set} data={data}/>
     </>
   );
 }
