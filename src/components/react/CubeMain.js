@@ -34,6 +34,14 @@ CubeMain.propTypes = {
   subSquareOpacity: PropTypes.number,
   cylinderThickness: PropTypes.number,
   cylinderOpacity: PropTypes.number,
+
+  subSquaresScaleSecond: PropTypes.number,
+  mainCubeSideSecond: PropTypes.number,
+  thicknessSecond: PropTypes.number,
+  explosionSecond: PropTypes.number,
+  subSquareOpacitySecond: PropTypes.number,
+  cylinderThicknessSecond: PropTypes.number,
+  cylinderOpacitySecond: PropTypes.number,
 };
 
 function CubeMain(props) {
@@ -50,6 +58,7 @@ function CubeMain(props) {
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
+
     subSquaresScale = CUBE_CONSTANTS.Defaults.subSquaresScale,
     mainCubeSide = CUBE_CONSTANTS.Defaults.mainCubeSide,
     thickness = CUBE_CONSTANTS.Defaults.thickness,
@@ -57,6 +66,15 @@ function CubeMain(props) {
     subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity,
     cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness,
     cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity,
+
+    subSquaresScaleSecond = CUBE_CONSTANTS.Defaults.subSquaresScale,
+    mainCubeSideSecond = CUBE_CONSTANTS.Defaults.mainCubeSide,
+    thicknessSecond = CUBE_CONSTANTS.Defaults.thickness,
+    explosionSecond = CUBE_CONSTANTS.Defaults.explosion,
+    subSquareOpacitySecond = CUBE_CONSTANTS.Defaults.subSquareOpacity,
+    cylinderThicknessSecond = CUBE_CONSTANTS.Defaults.cylinderThickness,
+    cylinderOpacitySecond = CUBE_CONSTANTS.Defaults.cylinderOpacity,
+
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
@@ -171,6 +189,37 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
+      subSquaresScaleSecond: {
+        value: subSquaresScale,
+        min: 0,
+        max: 1,
+      },
+      mainCubeSideSecond: mainCubeSide,
+      thicknessSecond: {
+        value: thickness,
+        min: -1,
+        max: 1,
+      },
+      explosionSecond: {
+        value: explosion,
+        min: -10,
+        max: 10,
+      },
+      subSquareOpacitySecond: {
+        value: subSquareOpacity,
+        min: 0,
+        max: 1,
+      },
+      cylinderThicknessSecond: {
+        value: cylinderThickness,
+        min: 0,
+        max: 1,
+      },
+      cylinderOpacitySecond: {
+        value: cylinderOpacity,
+        min: 0,
+        max: 1,
+      },
       orbitControls: orbitControls,
       color0: {
         value: colors[0],
@@ -255,6 +304,13 @@ function CubeMain(props) {
           colors,
 
           ...generateCubes(),
+        });
+      }),
+      regenerateFilled: button(() => {
+        setCubeData({
+          colors,
+
+          ...generateCubes(true),
         });
       }),
       takeScreenShot: button(() => {

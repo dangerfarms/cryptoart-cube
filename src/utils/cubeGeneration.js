@@ -61,8 +61,21 @@ export const generateRandomFaces = () => {
   return translateSizeToConfig(cube);
 };
 
-export const generateCubes = () => {
-  const cube1 = generateRandomFaces();
+
+export const generateRandomFacesFilled = () => {
+  const cube = [
+    Math.random()> 0.5 ? 9 : getRandomInt(10),
+    Math.random()> 0.5 ? 16 :getRandomInt(17),
+    Math.random()> 0.5 ? 25 :getRandomInt(26),
+    Math.random()> 0.5 ? 36 :getRandomInt(37),
+    Math.random()> 0.5 ? 49 :getRandomInt(50),
+    Math.random()> 0.5 ? 64 :getRandomInt(65),
+  ];
+  return translateSizeToConfig(cube);
+};
+
+export const generateCubes = (filled = false) => {
+  const cube1 = filled ? generateRandomFacesFilled() : generateRandomFaces();
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   const cube2Squares = cube1.map((face, i) =>
     getRandomInt(maxSquaresPerFace[i] + 1 - face.reduce((a, b) => a + b, 0)),

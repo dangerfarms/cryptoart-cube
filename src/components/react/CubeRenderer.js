@@ -38,11 +38,12 @@ function Boxes(props) {
   const {
     cubeData,
     toggleMergedCube = false,
+    backGroundColor = '#f0f0f0',
+    // per cube props
     subSquaresScale = 0.9,
     mainCubeSide = 10,
     thickness = 0.01,
     explosion = 0.1,
-    backGroundColor = "#f0f0f0",
     subSquareOpacity = 0.9,
     cylinderOpacity = 0.1,
     cylinderThickness = 0.8,
@@ -333,12 +334,15 @@ function Boxes(props) {
 
       const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
-      const currentFaceNumberOfSquaresPerLine = Math.sqrt(cubeData.faces[cubeFaceIndex].length);
+      const isFilledFace = false && cubeData.faces[cubeFaceIndex].find(value=>value===0) === undefined;
+      const currentFaceNumberOfSquaresPerLine = isFilledFace ? 1:Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
       const subFaceRealSideLength = mainCubeSide / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSide = 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
+
+      console.log("facesArray ?", cubeData.faces[cubeFaceIndex],isFilledFace);
       // get the orientation vectors for moving the  pointer that will draw the subsquares on the correct position
       let nonMovingCoordVector = null;
 
@@ -372,6 +376,8 @@ function Boxes(props) {
         .add(mainCubeFaceMovingPointerDirectonVectors[1])
         .multiplyScalar(halfCubeSide - subFaceRealSideLength / 2);
 
+      let totalRemainingSideFaces = (cubeData.faces[cubeFaceIndex].length);
+      console.log("totalRemainingSideFaces:",totalRemainingSideFaces,"\ncurrentFaceNumberOfSquaresPerLine:",currentFaceNumberOfSquaresPerLine,"\ncubeFaceIndex:",cubeFaceIndex,"\ncurrentFaceId:",currentFaceId,"\nisFilledFace:",isFilledFace);
       // iterate on face subfaces
       for (let coord1 = 0; coord1 < currentFaceNumberOfSquaresPerLine; coord1++) {
         for (let coord2 = 0; coord2 < currentFaceNumberOfSquaresPerLine; coord2++) {
@@ -440,13 +446,13 @@ function Boxes(props) {
           // const cylinderThickness = subSquaresScale * (subFaceRealSideLength / 2);
 
           tempObject.scale.set(
-            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+            true || facesActiveOriginalScale[currentFaceId] || faceSecondCube
               ? cylinderThickness * compoundScale
               : 0,
-            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+            true || facesActiveOriginalScale[currentFaceId] || faceSecondCube
               ? (mainCubeSide + _explosion * 2) * faceDisplacementSignal * compoundScale
               : 0,
-            facesActiveOriginalScale[currentFaceId] || faceSecondCube
+            true || facesActiveOriginalScale[currentFaceId] || faceSecondCube
               ? cylinderThickness * compoundScale
               : 0,
           );
@@ -480,9 +486,16 @@ function Boxes(props) {
 
             let cylObj = tempObject.clone();
 
-            cylObj.position.sub(nonMovingCoordVector);
+            cylObj.position.sub(nonMovingCoordVector)
+            // cylObj.position.sub(pointerStartPositionVector);
             cylObj.position.add(cylinderCoordPointerVector1);
             cylObj.position.add(cylinderCoordPointerVector2);
+
+
+          // .add(nonMovingCoordVector)
+          //     .add(pointerStartPositionVector)
+          //     .sub(coord1PointerVector)
+          //     .sub(coord2PointerVector),
 
             cylObj.rotateX(Math.PI / 2);
 
@@ -496,9 +509,16 @@ function Boxes(props) {
             cylRef.current.setColorAt(cylinderInstanceIndex, faceColor);
           }
           // }
+          // if (isFilledFace)
+          //   currentFaceId+=totalRemainingSideFaces
+          // else
           currentFaceId++;
+          if (!isFilledFace)
+          totalRemainingSideFaces--
         }
       }
+      currentFaceId+=totalRemainingSideFaces
+      console.log(cubeFaceIndex,currentFaceId,totalRemainingSideFaces)
     }
     // console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
@@ -669,6 +689,8 @@ function Boxes(props) {
         args={[cylGeometry, null, facesActive.length * 4]}
         renderOrder={0}
         visible={active}
+
+        position={[position.x, position.y, position.z]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
       >
@@ -755,7 +777,8 @@ export const CubeRenderer = (props) => {
         previewCube={false}
         position={props.positionCube1}
       />
-      {props.cubeData.facesPreview && (
+      {
+        props.cubeData.facesPreview && (
         <Boxes
           // White preview cube
           {...props}
@@ -823,6 +846,13 @@ export const CubeRenderer = (props) => {
             facesMergedCube: null,
           }}
           position={props.positionCube2}
+          subSquaresScale={props.subSquaresScaleSecond}
+        mainCubeSide={props.mainCubeSideSecond}
+        thickness={props.thicknessSecond}
+        explosion={props.explosionSecond}
+        subSquareOpacity={props.subSquareOpacitySecond}
+        cylinderOpacity={props.cylinderOpacitySecond}
+        cylinderThickness={props.cylinderThicknessSecond}
         />
       )}
       <CubeCamera key={'cubeCamera'} {...props} />
