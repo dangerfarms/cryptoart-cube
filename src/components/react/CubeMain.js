@@ -42,7 +42,6 @@ const subSquareOpacity = CUBE_CONSTANTS.Defaults.subSquareOpacity;
 const cylinderThickness = CUBE_CONSTANTS.Defaults.cylinderThickness;
 const cylinderOpacity = CUBE_CONSTANTS.Defaults.cylinderOpacity;
 
-
 function CubeMain(props) {
   const {
     // TODO: new value that holds square count
@@ -95,6 +94,7 @@ function CubeMain(props) {
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
     colors,
+    frag2colors,
     faces: frag1faces,
     previewCube,
     facesMergedCube,
@@ -105,6 +105,7 @@ function CubeMain(props) {
   useEffect(() => {
     setCubeData({
       colors,
+      frag2colors,
       faces: frag1faces,
       facesSecond,
       facesMergedCube,
@@ -220,6 +221,7 @@ function CubeMain(props) {
           colors[0] = color;
           setCubeData({
             colors,
+            frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -233,6 +235,7 @@ function CubeMain(props) {
           colors[1] = color;
           setCubeData({
             colors,
+            frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -246,6 +249,7 @@ function CubeMain(props) {
           colors[2] = color;
           setCubeData({
             colors,
+            frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -259,6 +263,7 @@ function CubeMain(props) {
           colors[3] = color;
           setCubeData({
             colors,
+            frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -271,7 +276,7 @@ function CubeMain(props) {
         onChange: (color) => {
           colors[4] = color;
           setCubeData({
-            colors,
+            colors,frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -285,6 +290,91 @@ function CubeMain(props) {
           colors[5] = color;
           setCubeData({
             colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond0: {
+        value: frag2colors[0],
+        onChange: (color) => {
+          frag2colors[0] = color;
+          setCubeData({
+            colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond1: {
+        value: frag2colors[1],
+        onChange: (color) => {
+          frag2colors[1] = color;
+          setCubeData({
+            colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond2: {
+        value: frag2colors[2],
+        onChange: (color) => {
+          frag2colors[2] = color;
+          setCubeData({
+            colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond3: {
+        value: frag2colors[3],
+        onChange: (color) => {
+          frag2colors[3] = color;
+          setCubeData({
+            colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond4: {
+        value: frag2colors[4],
+        onChange: (color) => {
+          frag2colors[4] = color;
+          setCubeData({
+            colors,
+            frag2colors,
+            faces: _cubeData.faces,
+            facesMergedCube: _cubeData.facesMergedCube,
+            facesSecond: _cubeData.facesSecond,
+            facesPreview: _cubeData.facesPreview,
+          });
+        },
+      },
+      colorSecond5: {
+        value: frag2colors[5],
+        onChange: (color) => {
+          frag2colors[5] = color;
+          setCubeData({
+            colors,
+            frag2colors,
             faces: _cubeData.faces,
             facesMergedCube: _cubeData.facesMergedCube,
             facesSecond: _cubeData.facesSecond,
@@ -295,14 +385,14 @@ function CubeMain(props) {
       regenerate: button(() => {
         setCubeData({
           colors,
-
+          frag2colors,
           ...generateCubes(),
         });
       }),
       regenerateFilled: button(() => {
         setCubeData({
           colors,
-
+          frag2colors,
           ...generateCubes(true),
         });
       }),

@@ -850,6 +850,7 @@ export const CubeRenderer = (props) => {
           cubeData={{
             ...props.cubeData,
             faces: props.cubeData.facesSecond,
+            colors: props.cubeData.frag2colors,
             facesMergedCube: null,
           }}
           position={props.positionCube2}
