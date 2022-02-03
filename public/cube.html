@@ -62,18 +62,16 @@
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
-  let squareCount, isCombined, frag2Config, is2Combined;
+  let squareCount = null, isCombined = false, frag2Config = null, is2Combined = false;
   try {
     squareCount = urlParams.get('config').split(',').map(value => parseInt(value));
-    frag2Config = urlParams.get('config2').split(',').map(value => parseInt(value));
     isCombined = urlParams.get('isCombined') === "true" || false;
+  } catch {}
+
+  try {
+    frag2Config = urlParams.get('config2').split(',').map(value => parseInt(value));
     is2Combined = urlParams.get('is2Combined') === "true" || false;
-  } catch {
-    squareCount = null;
-    isCombined = false;
-    frag2Config = null;
-    is2Combined = false;
-  }
+  } catch {}
 
   const cubeData = {
     frag1Config: squareCount,

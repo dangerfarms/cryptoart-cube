@@ -19,7 +19,7 @@ module.exports = {
       jsx: true,
     },
   },
-  ignorePatterns: ['/node_modules/**', '/build/**'],
+  ignorePatterns: ['node_modules/**', 'cryptoart_cube_dist/**','cryptoart_cube_build/**',],
   rules: {
     // 'no-unused-vars': ['warn', { args: 'none', argsIgnorePattern: 'req|res|next|val' }],
     'prettier/prettier': ['warn'],

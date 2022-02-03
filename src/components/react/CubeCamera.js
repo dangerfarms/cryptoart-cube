@@ -35,16 +35,15 @@ export default function CubeCamera({
       >
         <pointLight key="light" intensity={0.15} />
       </PerspectiveCamera>
-        <OrbitControls
-          ref={controls}
-          key="controls"
-          camera={cameraRef.current}
-          enablePan={false}
-          autoRotate={autoRotate && orbitControls}
-          enableZoom={!disableZoom && orbitControls}
-          enableRotate={orbitControls}
-        />
-
+      <OrbitControls
+        ref={controls}
+        key="controls"
+        camera={cameraRef.current}
+        enablePan={false}
+        autoRotate={autoRotate && orbitControls}
+        enableZoom={!disableZoom && orbitControls}
+        enableRotate={orbitControls}
+      />
     </>
   );
 }

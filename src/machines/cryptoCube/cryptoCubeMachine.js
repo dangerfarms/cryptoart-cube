@@ -126,31 +126,31 @@ const cryptoCubeMachine = createMachine(
       },
       storeGLTF: assign((context, event) => {
         return {
-          gltf: event.gltf
+          gltf: event.gltf,
         };
       }),
       saveGLTF: (context, event) => {
-        const link = document.createElement( 'a' );
+        const link = document.createElement('a');
         link.style.display = 'none';
-        document.body.appendChild( link ); // Firefox workaround, see #6594
-      
-        function save( blob, filename ) {
-          link.href = URL.createObjectURL( blob );
+        document.body.appendChild(link); // Firefox workaround, see #6594
+
+        function save(blob, filename) {
+          link.href = URL.createObjectURL(blob);
           link.download = filename;
           link.click();
         }
-      
-        function saveString( text, filename ) {
-          save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+
+        function saveString(text, filename) {
+          save(new Blob([text], { type: 'text/plain' }), filename);
         }
 
-        if( context.gltf ) {
+        if (context.gltf) {
           saveString(context.gltf, 'scene.gltf');
         } else {
           console.error('no GLTF was stored yet');
         }
 
-        document.body.removeChild( link );
+        document.body.removeChild(link);
       },
     },
   },

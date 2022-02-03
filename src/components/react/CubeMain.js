@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from '../../utils/cubeGeneration';
+import {
+  adjustedFragmentProperties,
+  generateCubes,
+  translateSizeToConfig,
+} from '../../utils/cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
 import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter';
-
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -91,11 +94,15 @@ function CubeMain(props) {
     colors = frag1properties.colors || CUBE_CONSTANTS.Defaults.colors;
   }
 
-  let facesSecond, frag2properties, frag2colors;
+  let facesSecond = null,
+    frag2properties,
+    frag2colors;
   if (frag2Config !== null) {
     facesSecond = translateSizeToConfig(frag2Config);
     frag2properties = is2Combined ? adjustedFragmentProperties(frag2Config) : {};
     frag2colors = frag2properties.colors || CUBE_CONSTANTS.Defaults.colors;
+  } else {
+    frag2properties = frag1properties;
   }
   // TODO: END NEW CODE
 
@@ -118,7 +125,7 @@ function CubeMain(props) {
       facesPreview,
       previewCube,
     });
-  }, [facesMergedCube, facesPreview, previewCube]);
+  }, [facesMergedCube, facesPreview, colors, previewCube]);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
@@ -341,11 +348,9 @@ function CubeMain(props) {
 
   return (
     <>
-      {process.env.REACT_APP_DEBUG_CUBE && (
-        <LevaPanel key="panel" store={store} titleBar={true}/>
-      )}
+      {process.env.REACT_APP_DEBUG_CUBE && <LevaPanel key="panel" store={store} titleBar={true} />}
       <CubeRenderer key={'renderer'} cubeData={_cubeData || props} {...data} />
-      <CubeMainStudio set={set} data={data}/>
+      <CubeMainStudio set={set} data={data} />
     </>
   );
 }

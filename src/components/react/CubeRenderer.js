@@ -292,13 +292,14 @@ function Boxes(props) {
     if (hideBackground) {
       scene.background = null;
     } else {
-      scene.background = new THREE.Color(backGroundColor)
+      scene.background = new THREE.Color(backGroundColor);
     }
 
     // if (!freeze) invalidate();
   }, [
     scene,
     backGroundColor,
+    hideBackground,
     // freeze,
     // invalidate,
   ]);
@@ -334,15 +335,17 @@ function Boxes(props) {
 
       const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
-      const isFilledFace = false && cubeData.faces[cubeFaceIndex].find(value=>value===0) === undefined;
-      const currentFaceNumberOfSquaresPerLine = isFilledFace ? 1:Math.sqrt(cubeData.faces[cubeFaceIndex].length);
+      const isFilledFace =
+        false && cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
+      const currentFaceNumberOfSquaresPerLine = isFilledFace
+        ? 1
+        : Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
       const subFaceRealSideLength = mainCubeSide / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSide = 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
-
-      console.log("facesArray ?", cubeData.faces[cubeFaceIndex],isFilledFace);
+      console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
       // get the orientation vectors for moving the  pointer that will draw the subsquares on the correct position
       let nonMovingCoordVector = null;
 
@@ -376,8 +379,19 @@ function Boxes(props) {
         .add(mainCubeFaceMovingPointerDirectonVectors[1])
         .multiplyScalar(halfCubeSide - subFaceRealSideLength / 2);
 
-      let totalRemainingSideFaces = (cubeData.faces[cubeFaceIndex].length);
-      console.log("totalRemainingSideFaces:",totalRemainingSideFaces,"\ncurrentFaceNumberOfSquaresPerLine:",currentFaceNumberOfSquaresPerLine,"\ncubeFaceIndex:",cubeFaceIndex,"\ncurrentFaceId:",currentFaceId,"\nisFilledFace:",isFilledFace);
+      let totalRemainingSideFaces = cubeData.faces[cubeFaceIndex].length;
+      console.log(
+        'totalRemainingSideFaces:',
+        totalRemainingSideFaces,
+        '\ncurrentFaceNumberOfSquaresPerLine:',
+        currentFaceNumberOfSquaresPerLine,
+        '\ncubeFaceIndex:',
+        cubeFaceIndex,
+        '\ncurrentFaceId:',
+        currentFaceId,
+        '\nisFilledFace:',
+        isFilledFace,
+      );
       // iterate on face subfaces
       for (let coord1 = 0; coord1 < currentFaceNumberOfSquaresPerLine; coord1++) {
         for (let coord2 = 0; coord2 < currentFaceNumberOfSquaresPerLine; coord2++) {
@@ -486,16 +500,15 @@ function Boxes(props) {
 
             let cylObj = tempObject.clone();
 
-            cylObj.position.sub(nonMovingCoordVector)
+            cylObj.position.sub(nonMovingCoordVector);
             // cylObj.position.sub(pointerStartPositionVector);
             cylObj.position.add(cylinderCoordPointerVector1);
             cylObj.position.add(cylinderCoordPointerVector2);
 
-
-          // .add(nonMovingCoordVector)
-          //     .add(pointerStartPositionVector)
-          //     .sub(coord1PointerVector)
-          //     .sub(coord2PointerVector),
+            // .add(nonMovingCoordVector)
+            //     .add(pointerStartPositionVector)
+            //     .sub(coord1PointerVector)
+            //     .sub(coord2PointerVector),
 
             cylObj.rotateX(Math.PI / 2);
 
@@ -513,12 +526,11 @@ function Boxes(props) {
           //   currentFaceId+=totalRemainingSideFaces
           // else
           currentFaceId++;
-          if (!isFilledFace)
-          totalRemainingSideFaces--
+          if (!isFilledFace) totalRemainingSideFaces--;
         }
       }
-      currentFaceId+=totalRemainingSideFaces
-      console.log(cubeFaceIndex,currentFaceId,totalRemainingSideFaces)
+      currentFaceId += totalRemainingSideFaces;
+      console.log(cubeFaceIndex, currentFaceId, totalRemainingSideFaces);
     }
     // console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
@@ -562,24 +574,23 @@ function Boxes(props) {
 
   // console.log(active);
 
-
   // ============== EXPORT CODE ===========================
 
   const exporter = new GLTFExporter();
 
   useEffect(() => {
     const group = new THREE.Group();
-    if(meshRef.current) {
+    if (meshRef.current) {
       const geometry = new THREE.BufferGeometry();
       geometry.attributes.position = meshRef.current.geometry.attributes.position;
-      geometry.attributes.normal   = meshRef.current.geometry.attributes.normal;
-      geometry.attributes.uv       = meshRef.current.geometry.attributes.uv;
-      geometry.index               = meshRef.current.geometry.index;
-      for(let i = 0, n = meshRef.current.count; i < n; i++) {
+      geometry.attributes.normal = meshRef.current.geometry.attributes.normal;
+      geometry.attributes.uv = meshRef.current.geometry.attributes.uv;
+      geometry.index = meshRef.current.geometry.index;
+      for (let i = 0, n = meshRef.current.count; i < n; i++) {
         const mesh = new THREE.Mesh(geometry, meshRef.current.material.clone());
         meshRef.current.getMatrixAt(i, mesh.matrix);
         mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
-        if(mesh.scale.length() === 0) continue;
+        if (mesh.scale.length() === 0) continue;
         //meshRef.current.getColorAt(i, mesh.material.color);
         // ^does not work, colors are set directly on geometry for some reason... so:
         mesh.material.color.fromArray(meshRef.current.geometry.attributes.color.array, i * 3);
@@ -587,44 +598,42 @@ function Boxes(props) {
       }
     }
 
-    if(cylRef.current) {
+    if (cylRef.current) {
       const geometry = new THREE.BufferGeometry();
       geometry.attributes.position = cylRef.current.geometry.attributes.position;
-      geometry.attributes.normal   = cylRef.current.geometry.attributes.normal;
-      geometry.attributes.uv       = cylRef.current.geometry.attributes.uv;
-      geometry.index               = cylRef.current.geometry.index;
-      for(let i = 0, n = cylRef.current.count; i < n; i++) {
+      geometry.attributes.normal = cylRef.current.geometry.attributes.normal;
+      geometry.attributes.uv = cylRef.current.geometry.attributes.uv;
+      geometry.index = cylRef.current.geometry.index;
+      for (let i = 0, n = cylRef.current.count; i < n; i++) {
         const mesh = new THREE.Mesh(geometry, cylRef.current.material.clone());
         cylRef.current.getMatrixAt(i, mesh.matrix);
         mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
-        if(mesh.scale.length() === 0) continue;
-//        if(cylRef.current.instanceColor) // ?? this hook runs too early I guess
+        if (mesh.scale.length() === 0) continue;
+        //        if(cylRef.current.instanceColor) // ?? this hook runs too early I guess
         cylRef.current.getColorAt(i, mesh.material.color);
         group.add(mesh);
       }
     }
 
-    if(group.children.length > 0)
-
-    exporter.parse(
-      group,
-      function(result) {
-        const output = JSON.stringify(result, null, 2);
-        console.log(output);
-        cryptoCubeMachine.actionCreators.storeGLTF(output);
-      },
-      // called when there is an error in the generation
-      function(error) {
-        console.log('An error happened');
-      },
-      {
-        onlyVisible: false,
-      },
-    )
+    if (group.children.length > 0)
+      exporter.parse(
+        group,
+        function (result) {
+          const output = JSON.stringify(result, null, 2);
+          console.log(output);
+          cryptoCubeMachine.actionCreators.storeGLTF(output);
+        },
+        // called when there is an error in the generation
+        function (error) {
+          console.log('An error happened');
+        },
+        {
+          onlyVisible: false,
+        },
+      );
   }, Object.values(props));
 
   // ============== END: EXPORT CODE ===========================
-
 
   const _previewCubeWireframe = previewCube && previewCubeWireframe;
 
@@ -689,7 +698,6 @@ function Boxes(props) {
         args={[cylGeometry, null, facesActive.length * 4]}
         renderOrder={0}
         visible={active}
-
         position={[position.x, position.y, position.z]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
@@ -777,8 +785,7 @@ export const CubeRenderer = (props) => {
         previewCube={false}
         position={props.positionCube1}
       />
-      {
-        props.cubeData.facesPreview && (
+      {props.cubeData.facesPreview && (
         <Boxes
           // White preview cube
           {...props}
@@ -847,12 +854,12 @@ export const CubeRenderer = (props) => {
           }}
           position={props.positionCube2}
           subSquaresScale={props.subSquaresScaleSecond}
-        mainCubeSide={props.mainCubeSideSecond}
-        thickness={props.thicknessSecond}
-        explosion={props.explosionSecond}
-        subSquareOpacity={props.subSquareOpacitySecond}
-        cylinderOpacity={props.cylinderOpacitySecond}
-        cylinderThickness={props.cylinderThicknessSecond}
+          mainCubeSide={props.mainCubeSideSecond}
+          thickness={props.thicknessSecond}
+          explosion={props.explosionSecond}
+          subSquareOpacity={props.subSquareOpacitySecond}
+          cylinderOpacity={props.cylinderOpacitySecond}
+          cylinderThickness={props.cylinderThicknessSecond}
         />
       )}
       <CubeCamera key={'cubeCamera'} {...props} />
