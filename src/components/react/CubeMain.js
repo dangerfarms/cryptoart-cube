@@ -83,6 +83,7 @@ function CubeMain(props) {
     frag2colors = frag2properties.colors || CUBE_CONSTANTS.Defaults.colors;
   } else {
     frag2properties = frag1properties;
+    frag2colors = colors;
   }
   // TODO: END NEW CODE
 
