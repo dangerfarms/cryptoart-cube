@@ -10,6 +10,12 @@ const ROOT = __dirname;
 module.exports = merge(common, {
   mode: 'development',
   devServer: {
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+    },
     static: {
       publicPath: '/',
       directory: './cryptoart_cube_dist',
