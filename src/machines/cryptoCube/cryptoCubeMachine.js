@@ -68,7 +68,7 @@ const cryptoCubeMachine = createMachine(
       },
       mergingCubesConclusion: {
         invoke: {
-          id: 'merging',
+          id: 'mergingConclusion',
           src: () => cubeStudioService.playMergeConclusion(),
           onDone: {
             target: 'idle',
