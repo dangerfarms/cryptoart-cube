@@ -113,7 +113,7 @@ function Boxes(props) {
     const time =clock.getElapsedTime()*10
     // console.log(nebula.current,emitterA.current,emitterB.current,gl);
     // animateEmitters(emitterA.current, emitterB.current);
-    animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
+    // animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
     nebula.current.update();
     //renderer.render(threeScene, camera);
   })
@@ -124,8 +124,8 @@ function Boxes(props) {
 
     const nebulaRenderer = new ParticleSystem();
     emitterA.current = createEmitter({
-      colorA: '#4F1500',
-      colorB: '#0029FF',
+      colorA: '#FF0000',
+      colorB: '#0000FF',
       camera,
       renderer:gl,
     });
@@ -711,7 +711,7 @@ function Boxes(props) {
         args={[null, null, facesActive.length]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
-        renderOrder={previewCube ? 1 : 2}
+        renderOrder={previewCube ? 3 : 4}
         position={[position.x, position.y, position.z]}
         visible={active}
       >
@@ -762,7 +762,7 @@ function Boxes(props) {
       <instancedMesh
         ref={cylRef}
         args={[cylGeometry, null, facesActive.length * 4]}
-        renderOrder={0}
+        renderOrder={2}
         visible={active}
         position={[position.x, position.y, position.z]}
         // onPointerMove={(e) => set(e.instanceId)}

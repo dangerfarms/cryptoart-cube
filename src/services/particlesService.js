@@ -13,24 +13,12 @@ import ParticleSystem, {
   Rate,
   Scale,
   ScreenZone,
-  Span,Gravity,
+  Span, Gravity,
   SpriteRenderer,
   Rotate,
   Position,
-  Vector3D,
+  Vector3D, RandomDrift,
 } from 'three-nebula';
-
-const createMesh = () => {
-  const geometry = new THREE.SphereGeometry(1, 8, 8);
-    const material= new THREE.MeshBasicMaterial({
-        color: '#ff0000',
-      blending: THREE.AdditiveBlending,
-        fog: true
-        // ,transparent:true,opacity:0.1
-      }
-    );
-  return new THREE.Mesh(geometry, material);
-}
 
 const createSprite = () => {
   const map = new THREE.TextureLoader().load('./img/dot.png');
@@ -38,11 +26,35 @@ const createSprite = () => {
     map: map,
     color: 0xff0000,
     blending: THREE.AdditiveBlending,
-    fog: true,
-    transparent:true
+    // fog: true,
+  renderOrder:10,
+    // depthWrite: false,
+    depthTest:false,
+    side: THREE.DoubleSide,
+    // colorWrite:false,
+    transparent:true,
+    // opacity:0.5
   });
-  return new THREE.Sprite(material);
+  const sprite = new THREE.Sprite(material);
+  sprite.renderOrder=10;
+  return sprite;
 };
+
+const createMesh = () => {
+  const geometry = new THREE.SphereGeometry(1, 8, 8);
+    const material= new THREE.MeshBasicMaterial({
+        color: '#ff0000',
+      blending: THREE.AdditiveBlending,
+        // fog: true,
+      transparent:true,
+
+        // ,transparent:true,opacity:0.1
+      }
+    );
+  return new THREE.Mesh(geometry, material);
+}
+
+
 
 export const createEmitter = ({ colorA, colorB, camera, renderer }) => {
   const emitter = new Emitter();
@@ -52,18 +64,19 @@ export const createEmitter = ({ colorA, colorB, camera, renderer }) => {
     .setRate(new Rate(new Span(5, 10), new Span(0.1, 0.025)))
     .addInitializers([
       new Mass(1),
-      new Radius(1),
-      new Life(2, 4),
-      new Body(createMesh()),
+      new Radius(5),
+      new Life(1),
+      new Body(createSprite()),
       // new Position(new BoxZone(100)),
       //new RadialVelocity(1, new Vector3D(.1, 1, 0.1), 1),
     ])
     .addBehaviours([
       // new Rotate('random', 'random'),
       new Rotate('random', 'random'),
-        new Alpha(1, 0),
+        new RandomDrift(.2,.2,.2),
+        new Alpha(1, 0.1),
         new Color(colorA, colorB),
-      new Scale(1, 0.1),
+      new Scale(.2,1),
       // new Gravity(3),
     ])
     // .setRate(new Rate(new Span(1, 1), new Span(0.01, 0.02)))
