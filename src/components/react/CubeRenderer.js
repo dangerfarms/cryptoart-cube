@@ -9,10 +9,32 @@ import { LineMesh } from './Line';
 import { noise } from '../../utils/Noise';
 require('./CubeRenderer.css');
 
+
+
+import ParticleSystem, {
+  Alpha,
+  Body,
+  Color,
+  CrossZone,
+  Emitter,
+  Force,
+  Life,
+  Mass,
+  RadialVelocity,
+  Radius,
+  Rate,
+  Scale,
+  ScreenZone,
+  Span,
+  SpriteRenderer,
+  Vector3D,
+} from 'three-nebula';
+
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+import { animateEmitters, animationFunctions, createEmitter } from '../../services/particlesService';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -73,13 +95,58 @@ function Boxes(props) {
 
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1) + (previewCube ? 0.1 : 0);
   const {
-    // camera,
+    camera,
     scene,
     gl,
     // gl: { domElement },
     // invalidate,
     // setDefaultCamera,
   } = useThree();
+
+  const nebula = useRef(null);
+  const emitterA = useRef(null);
+  // const emitterB = useRef(null);
+
+  useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
+    if (!nebula.current) return
+    // This function runs 60 times/second inside the global render-loop
+    const time =clock.getElapsedTime()*10
+    // console.log(nebula.current,emitterA.current,emitterB.current,gl);
+    // animateEmitters(emitterA.current, emitterB.current);
+    animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
+    nebula.current.update();
+    //renderer.render(threeScene, camera);
+  })
+
+
+
+  useEffect(() => {
+
+    const nebulaRenderer = new ParticleSystem();
+    emitterA.current = createEmitter({
+      colorA: '#4F1500',
+      colorB: '#0029FF',
+      camera,
+      renderer:gl,
+    });
+    // emitterB.current = createEmitter({
+    //   colorA: '#004CFE',
+    //   colorB: '#6600FF',
+    //   camera,
+    //   renderer:gl,
+    // });
+
+    // animateEmitters(emitterA.current, emitterB.current);
+
+
+
+    nebulaRenderer
+      .addEmitter(emitterA.current)
+      // .addEmitter(emitterB.current)
+      .addRenderer(new SpriteRenderer(scene, THREE));
+
+    nebula.current = nebulaRenderer;
+  }, [scene])
 
   //
   // const renderToJPG = useMemo(() => {
@@ -620,7 +687,6 @@ function Boxes(props) {
         group,
         function (result) {
           const output = JSON.stringify(result, null, 2);
-          console.log(output);
           cryptoCubeMachine.actionCreators.storeGLTF(output);
         },
         // called when there is an error in the generation

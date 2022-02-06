@@ -56,6 +56,7 @@
     "react-dom": "^17.0.1"
   },
   "dependencies": {
+    "@babel/plugin-transform-react-jsx-source": "^7.16.7",
     "@react-three/drei": "^7.3.1",
     "@react-three/fiber": "^7.0.6",
     "@react-three/postprocessing": "^2.0.5",
@@ -82,6 +83,7 @@
     "nice-color-palettes": "^3.0.0",
     "open-simplex-noise": "^2.5.0",
     "three": "^0.130.1",
+    "three-nebula": "^10.0.3",
     "three-rounded-box": "^0.1.1",
     "three.meshline": "utsuboco/THREE.MeshLine",
     "xstate": "^4.25.0"
