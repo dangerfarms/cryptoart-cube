@@ -59,7 +59,7 @@ const createMesh = () => {
 export const createEmitter = ({ colorA, colorB, camera, renderer }) => {
   const emitter = new Emitter();
 
-  console.log(camera,renderer)
+  // console.log(camera,renderer)
   return emitter
     .setRate(new Rate(new Span(5, 10), new Span(0.1, 0.025)))
     .addInitializers([

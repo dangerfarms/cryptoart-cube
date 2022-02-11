@@ -108,7 +108,35 @@ function Boxes(props) {
   // const emitterB = useRef(null);
 
   useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
-    if (!nebula.current) return
+    if (!nebula.current) return;
+
+    if (!props.insideSphere && emitterA.current){
+      //
+      emitterA.current.destroy()
+      // emitterA.current.removeAllParticles()
+      // emitterA.current.isEmitting = false
+      emitterA.current=null;
+    }
+
+    if (props.insideSphere && !emitterA.current){
+      emitterA.current = createEmitter({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
+        camera,
+        renderer:gl,
+      });
+      // emitterB.current = createEmitter({
+      //   colorA: '#004CFE',
+      //   colorB: '#6600FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+      // animateEmitters(emitterA.current, emitterB.current);
+
+      nebula.current
+        .addEmitter(emitterA.current)
+    }
     // This function runs 60 times/second inside the global render-loop
     const time =clock.getElapsedTime()*10
     // console.log(nebula.current,emitterA.current,emitterB.current,gl);
@@ -123,25 +151,10 @@ function Boxes(props) {
   useEffect(() => {
 
     const nebulaRenderer = new ParticleSystem();
-    emitterA.current = createEmitter({
-      colorA: '#FF0000',
-      colorB: '#0000FF',
-      camera,
-      renderer:gl,
-    });
-    // emitterB.current = createEmitter({
-    //   colorA: '#004CFE',
-    //   colorB: '#6600FF',
-    //   camera,
-    //   renderer:gl,
-    // });
-
-    // animateEmitters(emitterA.current, emitterB.current);
 
 
 
     nebulaRenderer
-      .addEmitter(emitterA.current)
       // .addEmitter(emitterB.current)
       .addRenderer(new SpriteRenderer(scene, THREE));
 
@@ -402,14 +415,11 @@ function Boxes(props) {
 
       const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
-      const isFilledFace =
-        false && cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
-      const currentFaceNumberOfSquaresPerLine = isFilledFace
-        ? 1
-        : Math.sqrt(cubeData.faces[cubeFaceIndex].length);
+      const isFilledFace =cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
+      const currentFaceNumberOfSquaresPerLine = Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
-      const subFaceRealSideLength = mainCubeSide / currentFaceNumberOfSquaresPerLine;
-      const subFaceRelativeSide = 1 / currentFaceNumberOfSquaresPerLine;
+      const subFaceRealSideLength = isFilledFace ? mainCubeSide: mainCubeSide / currentFaceNumberOfSquaresPerLine;
+      const subFaceRelativeSide = isFilledFace? 1: 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
       // console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
@@ -466,6 +476,16 @@ function Boxes(props) {
           //   facesActiveOriginalScale[currentFaceId],
           //   facesMergedCubeActiveOriginalScale[currentFaceId],
           // );
+          if ( isFilledFace && (coord1>0 || coord2 >0)){
+            tempObject.scale.set(0,0,0);
+
+            tempObject.updateMatrix();
+
+            meshRef.current.setMatrixAt(currentFaceId, tempObject.matrix);
+            _cubeMatrixes.push(tempObject.matrix.clone());
+
+          }
+          else{
           const faceSecondCube = facesMergedCubeActiveOriginalScale[currentFaceId] || 0;
           const compoundScale =
             facesActiveOriginalScale[currentFaceId] * scaleMainCube +
@@ -588,15 +608,20 @@ function Boxes(props) {
             cylRef.current.setMatrixAt(cylinderInstanceIndex, cylObj.matrix);
             cylRef.current.setColorAt(cylinderInstanceIndex, faceColor);
           }
+          }
           // }
+
+
+          // console.log("isFilledFace",isFilledFace,currentFaceId,cubeData.faces[cubeFaceIndex].length,hexColorsArray[cubeFaceIndex],cubeFaceIndex);
           // if (isFilledFace)
-          //   currentFaceId+=totalRemainingSideFaces
+          //   currentFaceId+=cubeData.faces[cubeFaceIndex].length
           // else
           currentFaceId++;
-          if (!isFilledFace) totalRemainingSideFaces--;
+
+          // if (!isFilledFace) totalRemainingSideFaces--;
         }
       }
-      currentFaceId += totalRemainingSideFaces;
+      // currentFaceId += totalRemainingSideFaces;
       // console.log(cubeFaceIndex, currentFaceId, totalRemainingSideFaces);
     }
     // console.log('drawn cube');
@@ -825,7 +850,7 @@ function Boxes(props) {
       </instancedMesh>
 
       <React.Suspense fallback={null}>
-        <Environment preset="warehouse" />
+        <Environment preset="apartment" />
       </React.Suspense>
     </>
   );
