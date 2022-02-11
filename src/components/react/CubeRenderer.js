@@ -90,7 +90,7 @@ function Boxes(props) {
   const [cubeMatrixes, setCubeMatrixes] = useState([]);
 
   useEffect(() => {
-    console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
+    // console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
   }, [cubeVersion, previewCube]);
 
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1) + (previewCube ? 0.1 : 0);
@@ -164,7 +164,7 @@ function Boxes(props) {
     // }
     gl.domElement.id = 'canvasGL';
     cryptoCubeMachine.actionCreators.registerGL('canvasGL');
-    console.log(gl.domElement);
+
   }, [gl.domElement]);
 
   useFrame(({ clock, gl, scene, camera }) => {
@@ -412,7 +412,7 @@ function Boxes(props) {
       const subFaceRelativeSide = 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
-      console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
+      // console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
       // get the orientation vectors for moving the  pointer that will draw the subsquares on the correct position
       let nonMovingCoordVector = null;
 
@@ -447,18 +447,18 @@ function Boxes(props) {
         .multiplyScalar(halfCubeSide - subFaceRealSideLength / 2);
 
       let totalRemainingSideFaces = cubeData.faces[cubeFaceIndex].length;
-      console.log(
-        'totalRemainingSideFaces:',
-        totalRemainingSideFaces,
-        '\ncurrentFaceNumberOfSquaresPerLine:',
-        currentFaceNumberOfSquaresPerLine,
-        '\ncubeFaceIndex:',
-        cubeFaceIndex,
-        '\ncurrentFaceId:',
-        currentFaceId,
-        '\nisFilledFace:',
-        isFilledFace,
-      );
+      // console.log(
+      //   'totalRemainingSideFaces:',
+      //   totalRemainingSideFaces,
+      //   '\ncurrentFaceNumberOfSquaresPerLine:',
+      //   currentFaceNumberOfSquaresPerLine,
+      //   '\ncubeFaceIndex:',
+      //   cubeFaceIndex,
+      //   '\ncurrentFaceId:',
+      //   currentFaceId,
+      //   '\nisFilledFace:',
+      //   isFilledFace,
+      // );
       // iterate on face subfaces
       for (let coord1 = 0; coord1 < currentFaceNumberOfSquaresPerLine; coord1++) {
         for (let coord2 = 0; coord2 < currentFaceNumberOfSquaresPerLine; coord2++) {
@@ -597,7 +597,7 @@ function Boxes(props) {
         }
       }
       currentFaceId += totalRemainingSideFaces;
-      console.log(cubeFaceIndex, currentFaceId, totalRemainingSideFaces);
+      // console.log(cubeFaceIndex, currentFaceId, totalRemainingSideFaces);
     }
     // console.log('drawn cube');
     meshRef.current.instanceMatrix.needsUpdate = true;
