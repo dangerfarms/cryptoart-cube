@@ -9,10 +9,32 @@ import { LineMesh } from './Line';
 import { noise } from '../../utils/Noise';
 require('./CubeRenderer.css');
 
+
+
+import ParticleSystem, {
+  Alpha,
+  Body,
+  Color,
+  CrossZone,
+  Emitter,
+  Force,
+  Life,
+  Mass,
+  RadialVelocity,
+  Radius,
+  Rate,
+  Scale,
+  ScreenZone,
+  Span,
+  SpriteRenderer,
+  Vector3D,
+} from 'three-nebula';
+
 import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
+import { animateEmitters, animationFunctions, createEmitter } from '../../services/particlesService';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -73,13 +95,71 @@ function Boxes(props) {
 
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1) + (previewCube ? 0.1 : 0);
   const {
-    // camera,
+    camera,
     scene,
     gl,
     // gl: { domElement },
     // invalidate,
     // setDefaultCamera,
   } = useThree();
+
+  const nebula = useRef(null);
+  const emitterA = useRef(null);
+  // const emitterB = useRef(null);
+
+  useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
+    if (!nebula.current) return;
+
+    if (!props.insideSphere && emitterA.current){
+      //
+      emitterA.current.destroy()
+      // emitterA.current.removeAllParticles()
+      // emitterA.current.isEmitting = false
+      emitterA.current=null;
+    }
+
+    if (props.insideSphere && !emitterA.current){
+      emitterA.current = createEmitter({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
+        camera,
+        renderer:gl,
+      });
+      // emitterB.current = createEmitter({
+      //   colorA: '#004CFE',
+      //   colorB: '#6600FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+      // animateEmitters(emitterA.current, emitterB.current);
+
+      nebula.current
+        .addEmitter(emitterA.current)
+    }
+    // This function runs 60 times/second inside the global render-loop
+    const time =clock.getElapsedTime()*10
+    // console.log(nebula.current,emitterA.current,emitterB.current,gl);
+    // animateEmitters(emitterA.current, emitterB.current);
+    // animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
+    nebula.current.update();
+    //renderer.render(threeScene, camera);
+  })
+
+
+
+  useEffect(() => {
+
+    const nebulaRenderer = new ParticleSystem();
+
+
+
+    nebulaRenderer
+      // .addEmitter(emitterB.current)
+      .addRenderer(new SpriteRenderer(scene, THREE));
+
+    nebula.current = nebulaRenderer;
+  }, [scene])
 
   //
   // const renderToJPG = useMemo(() => {
@@ -335,14 +415,11 @@ function Boxes(props) {
 
       const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
-      const isFilledFace =
-        false && cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
-      const currentFaceNumberOfSquaresPerLine = isFilledFace
-        ? 1
-        : Math.sqrt(cubeData.faces[cubeFaceIndex].length);
+      const isFilledFace =cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
+      const currentFaceNumberOfSquaresPerLine = Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
-      const subFaceRealSideLength = mainCubeSide / currentFaceNumberOfSquaresPerLine;
-      const subFaceRelativeSide = 1 / currentFaceNumberOfSquaresPerLine;
+      const subFaceRealSideLength = isFilledFace ? mainCubeSide: mainCubeSide / currentFaceNumberOfSquaresPerLine;
+      const subFaceRelativeSide = isFilledFace? 1: 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
       // console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
@@ -399,6 +476,16 @@ function Boxes(props) {
           //   facesActiveOriginalScale[currentFaceId],
           //   facesMergedCubeActiveOriginalScale[currentFaceId],
           // );
+          if ( isFilledFace && (coord1>0 || coord2 >0)){
+            tempObject.scale.set(0,0,0);
+
+            tempObject.updateMatrix();
+
+            meshRef.current.setMatrixAt(currentFaceId, tempObject.matrix);
+            _cubeMatrixes.push(tempObject.matrix.clone());
+
+          }
+          else{
           const faceSecondCube = facesMergedCubeActiveOriginalScale[currentFaceId] || 0;
           const compoundScale =
             facesActiveOriginalScale[currentFaceId] * scaleMainCube +
@@ -521,15 +608,20 @@ function Boxes(props) {
             cylRef.current.setMatrixAt(cylinderInstanceIndex, cylObj.matrix);
             cylRef.current.setColorAt(cylinderInstanceIndex, faceColor);
           }
+          }
           // }
+
+
+          // console.log("isFilledFace",isFilledFace,currentFaceId,cubeData.faces[cubeFaceIndex].length,hexColorsArray[cubeFaceIndex],cubeFaceIndex);
           // if (isFilledFace)
-          //   currentFaceId+=totalRemainingSideFaces
+          //   currentFaceId+=cubeData.faces[cubeFaceIndex].length
           // else
           currentFaceId++;
-          if (!isFilledFace) totalRemainingSideFaces--;
+
+          // if (!isFilledFace) totalRemainingSideFaces--;
         }
       }
-      currentFaceId += totalRemainingSideFaces;
+      // currentFaceId += totalRemainingSideFaces;
       // console.log(cubeFaceIndex, currentFaceId, totalRemainingSideFaces);
     }
     // console.log('drawn cube');
@@ -620,7 +712,6 @@ function Boxes(props) {
         group,
         function (result) {
           const output = JSON.stringify(result, null, 2);
-          console.log(output);
           cryptoCubeMachine.actionCreators.storeGLTF(output);
         },
         // called when there is an error in the generation
@@ -645,7 +736,7 @@ function Boxes(props) {
         args={[null, null, facesActive.length]}
         // onPointerMove={(e) => set(e.instanceId)}
         // onPointerOut={(e) => set(undefined)}
-        renderOrder={previewCube ? 1 : 2}
+        renderOrder={previewCube ? 3 : 4}
         position={[position.x, position.y, position.z]}
         visible={active}
       >
@@ -696,7 +787,7 @@ function Boxes(props) {
       <instancedMesh
         ref={cylRef}
         args={[cylGeometry, null, facesActive.length * 4]}
-        renderOrder={0}
+        renderOrder={2}
         visible={active}
         position={[position.x, position.y, position.z]}
         // onPointerMove={(e) => set(e.instanceId)}
@@ -759,7 +850,7 @@ function Boxes(props) {
       </instancedMesh>
 
       <React.Suspense fallback={null}>
-        <Environment preset="warehouse" />
+        <Environment preset="apartment" />
       </React.Suspense>
     </>
   );

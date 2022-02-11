@@ -6,10 +6,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // root path for this project
 const ROOT = __dirname;
-
+console.log(path.join(__dirname, 'public'))
 module.exports = merge(common, {
   mode: 'development',
   devServer: {
+
     client: {
       overlay: {
         errors: true,
@@ -17,8 +18,7 @@ module.exports = merge(common, {
       },
     },
     static: {
-      publicPath: '/',
-      directory: './cryptoart_cube_dist',
+      directory: './public',
     },
     hot: false,
     open: true,

@@ -35,6 +35,7 @@ const Defaults = {
   previewCubeWireframe: false,
   previewCubeUniqueColor: true,
   previewCubeBloomAnimation: false,
+  insideSphere:false,
   orbitControls: 1,
 };
 

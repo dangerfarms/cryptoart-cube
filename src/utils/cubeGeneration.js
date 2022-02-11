@@ -217,15 +217,15 @@ function calculateThickness(squares) {
   var k = interval / fullFace;
   if (squares == fullFace) {
     value = 0.01;
-    console.log('The thickness value is:' + value);
+    // console.log('The thickness value is:' + value);
     return value;
   } else if (squares % 2 == 0) {
     value = ((fullFace - squares + 1) / 2) * k;
-    console.log('The thickness value is:' + value);
+    // console.log('The thickness value is:' + value);
     return value;
   } else {
     value = (-(fullFace - squares) / 2) * k;
-    console.log('The thickness value is:' + value);
+    // console.log('The thickness value is:' + value);
     return value;
   }
 }
@@ -270,7 +270,7 @@ export const adjustedFragmentProperties = (squareCount) => {
       squareCount[5],
     ),
   };
-  console.log(props);
+  // console.log(props);
   return props;
 };
 
@@ -278,7 +278,7 @@ export const adjustedFragmentProperties = (squareCount) => {
 
 export const Fragment = (fragment, exemptSquares = null) => {
   if (exemptSquares) {
-    console.log({ exemptSquares }); // debug
+    // console.log({ exemptSquares }); // debug
   }
   if (fragment === null) {
     return null;

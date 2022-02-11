@@ -56,6 +56,7 @@ function CubeMain(props) {
 
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
+    insideSphere = CUBE_CONSTANTS.Defaults.insideSphere,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
 
@@ -115,6 +116,7 @@ function CubeMain(props) {
   const [data, set] = useControls(
     () => ({
       lightningRays: lightningRays,
+      insideSphere: insideSphere,
       positionCamera: { x: 0, y: 0, z: 25 },
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
