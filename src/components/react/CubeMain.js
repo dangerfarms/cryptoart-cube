@@ -86,6 +86,19 @@ function CubeMain(props) {
     frag2properties = frag1properties;
     frag2colors = colors;
   }
+
+  const hasFullFace = squareCount => {
+    const hasFace = (
+      squareCount[0] === 9 ||
+      squareCount[1] === 16 ||
+      squareCount[2] === 25 ||
+      squareCount[3] === 36 ||
+      squareCount[4] === 49 ||
+      squareCount[5] === 64
+    );
+    return hasFace;
+  };
+
   // TODO: END NEW CODE
 
   // const [_cubeData, setCubeData] = useState(initialCubeConfig);
@@ -116,7 +129,7 @@ function CubeMain(props) {
   const [data, set] = useControls(
     () => ({
       lightningRays: lightningRays,
-      insideSphere: insideSphere,
+      insideSphere: hasFullFace(frag1Config),
       positionCamera: { x: 0, y: 0, z: 25 },
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
@@ -421,9 +434,11 @@ function CubeMain(props) {
   // data has all props except cubeConfig
 
 
-  const [showPanel, setShowPanel] = useState(process.env.REACT_APP_DEBUG_CUBE)
+  const [showPanel, setShowPanel] = useState(process.env.REACT_APP_DEBUG_CUBE);
   document.addEventListener('keyup', e => {
-    if (e.repeat) { return }
+    if (e.repeat) {
+      return;
+    }
     if (e.key === 'x') {
       cryptoCubeMachine.actionCreators.saveGLTF();
       e.preventDefault();
