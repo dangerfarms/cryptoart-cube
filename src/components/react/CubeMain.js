@@ -88,6 +88,8 @@ function CubeMain(props) {
   }
 
   const hasFullFace = squareCount => {
+    if (squareCount === null)
+      return false;
     const hasFace = (
       squareCount[0] === 9 ||
       squareCount[1] === 16 ||
