@@ -42,6 +42,7 @@ function CubeMain(props) {
     // TODO: new value that holds square count
     frag1Config = null,
     frag2Config = null,
+    combinedConfig = null,
     isCombined = false,
     is2Combined = false,
     // TODO: Remove if not needed
