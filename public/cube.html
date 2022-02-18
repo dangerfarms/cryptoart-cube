@@ -81,6 +81,10 @@
     hideBackground: false,
   };
 
+  if (squareCount && frag2Config) {
+    cubeData.combinedConfig = squareCount.map((a, i) => a + frag2Config[i]);
+  }
+
 </script>
 <script>
   window.onload = function() {

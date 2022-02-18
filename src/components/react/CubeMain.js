@@ -445,6 +445,18 @@ function CubeMain(props) {
       cryptoCubeMachine.actionCreators.saveGLTF();
       e.preventDefault();
     }
+    if (e.key === 'a') {
+      cryptoCubeMachine.actionCreators.mergeCubesIntro();
+      e.preventDefault();
+    }
+    if (e.key === 'b') {
+      cryptoCubeMachine.actionCreators.mergeCubesConclusion();
+      e.preventDefault();
+    }
+    if (e.key === 'c') {
+      cryptoCubeMachine.actionCreators.mergeComplete();
+      e.preventDefault();
+    }
     if (process.env.REACT_APP_DEBUG_CUBE) {
       if (e.key === 'h') {
         setShowPanel(!showPanel);
