@@ -82,7 +82,7 @@
     "lodash": "^4.17.21",
     "nice-color-palettes": "^3.0.0",
     "open-simplex-noise": "^2.5.0",
-    "three": "0.137.0",
+    "three": "0.136.0",
     "three-nebula": "^10.0.3",
     "three-rounded-box": "^0.1.1",
     "three.meshline": "utsuboco/THREE.MeshLine",

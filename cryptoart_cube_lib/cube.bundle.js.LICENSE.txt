@@ -90,12 +90,6 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /**
  * @license
- * Copyright 2010-2022 Three.js Authors
- * SPDX-License-Identifier: MIT
- */
-
-/**
- * @license
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="es" -o ./`
  * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
