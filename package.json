@@ -89,6 +89,7 @@
     "xstate": "^4.25.0"
   },
   "resolutions": {
-    "postprocessing": "6.23.5"
+    "postprocessing": "6.23.5",
+    "three-stdlib": "2.8.5"
   }
 }
