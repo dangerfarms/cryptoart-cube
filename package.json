@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.16.7",
-    "@react-three/drei": "8.9.0",
+    "@react-three/drei": "8.10.2",
     "@react-three/fiber": "^7.0.6",
     "@react-three/postprocessing": "2.1.2",
     "@theatre/core": "^0.4.2",
@@ -82,7 +82,7 @@
     "lodash": "^4.17.21",
     "nice-color-palettes": "^3.0.0",
     "open-simplex-noise": "^2.5.0",
-    "three": "^0.137.5",
+    "three": "0.137.0",
     "three-nebula": "^10.0.3",
     "three-rounded-box": "^0.1.1",
     "three.meshline": "utsuboco/THREE.MeshLine",
