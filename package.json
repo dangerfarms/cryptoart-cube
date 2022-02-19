@@ -89,6 +89,7 @@
     "xstate": "^4.25.0"
   },
   "resolutions": {
-    "@react-three/postprocessing/postprocessing": "6.23.3"
+    "@react-three/postprocessing/postprocessing": "6.23.3",
+    "postprocessing": "6.23.3"
   }
 }
