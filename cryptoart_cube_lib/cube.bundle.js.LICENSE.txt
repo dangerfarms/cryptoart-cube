@@ -84,7 +84,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /**
  * @license
- * Copyright 2010-2021 Three.js Authors
+ * Copyright 2010-2022 Three.js Authors
  * SPDX-License-Identifier: MIT
  */
 
