@@ -59,8 +59,7 @@
     "@babel/plugin-transform-react-jsx-source": "^7.16.7",
     "@react-three/drei": "^7.3.1",
     "@react-three/fiber": "^7.0.6",
-    "@react-three/postprocessing": "2.1.0",
-    "postprocessing": "6.22.5",
+    "@react-three/postprocessing": "^2.1.3",
     "@theatre/core": "^0.4.2",
     "@theatre/studio": "^0.4.2",
     "@xstate/inspect": "^0.5.0",
@@ -88,5 +87,8 @@
     "three-rounded-box": "^0.1.1",
     "three.meshline": "utsuboco/THREE.MeshLine",
     "xstate": "^4.25.0"
+  },
+  "resolutions": {
+    "@react-three/postprocessing/postprocessing": "6.23.3"
   }
 }
