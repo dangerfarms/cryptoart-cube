@@ -150,6 +150,16 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
+      displacementAnimationDistanceSecond: {
+        value: frag2properties.displacementAnimationDistance || displacementAnimationDistance,
+        min: 0,
+        max: 10,
+      },
+      displacementIncrementPerFrameSecond: {
+        value: frag2properties.displacementIncrementPerFrame || 0,
+        min: 0,
+        max: 1,
+      },
       hideBackground,
       toggleMergedCube: CUBE_CONSTANTS.Defaults.toggleMergedCube,
       previewCube: previewCube,

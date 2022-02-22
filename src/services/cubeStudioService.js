@@ -1,5 +1,5 @@
 import { getProject, types } from '@theatre/core';
-import mergeAnimation from '../constants/animations/merge19102021.json';
+import mergeAnimation from '../constants/animations/merge22022022.json';
 
 if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_STUDIO === 'true') {
   import('@theatre/studio').then(({ default: studio }) => {
@@ -28,6 +28,12 @@ const obj = sheet.object('testObject', {
     range: [0, 10],
   }),
   displacementIncrementPerFrame: types.number(0.01, {
+    range: [0, 1],
+  }),
+  displacementAnimationDistanceSecond: types.number(1, {
+    range: [0, 10],
+  }),
+  displacementIncrementPerFrameSecond: types.number(0.01, {
     range: [0, 1],
   }),
   // testValues: [0, 1, 1],

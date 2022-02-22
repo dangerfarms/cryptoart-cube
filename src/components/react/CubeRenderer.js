@@ -1017,6 +1017,8 @@ export const CubeRenderer = (props) => {
           subSquareOpacity={props.subSquareOpacitySecond}
           cylinderOpacity={props.cylinderOpacitySecond}
           cylinderThickness={props.cylinderThicknessSecond}
+          displacementAnimationDistance={props.displacementAnimationDistanceSecond}
+          displacementIncrementPerFrame={props.displacementIncrementPerFrameSecond}
         />
       )}
       <CubeCamera key={'cubeCamera'} {...props} />
