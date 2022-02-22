@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from '../../utils/cubeGeneration';
+import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from './cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
@@ -42,6 +42,7 @@ function CubeMain(props) {
     // TODO: new value that holds square count
     frag1Config = null,
     frag2Config = null,
+    combinedConfig = null,
     isCombined = false,
     is2Combined = false,
     // TODO: Remove if not needed
@@ -88,6 +89,8 @@ function CubeMain(props) {
   }
 
   const hasFullFace = squareCount => {
+    if (squareCount === null)
+      return false;
     const hasFace = (
       squareCount[0] === 9 ||
       squareCount[1] === 16 ||
@@ -441,6 +444,18 @@ function CubeMain(props) {
     }
     if (e.key === 'x') {
       cryptoCubeMachine.actionCreators.saveGLTF();
+      e.preventDefault();
+    }
+    if (e.key === 'a') {
+      cryptoCubeMachine.actionCreators.mergeCubesIntro();
+      e.preventDefault();
+    }
+    if (e.key === 'b') {
+      cryptoCubeMachine.actionCreators.mergeCubesConclusion();
+      e.preventDefault();
+    }
+    if (e.key === 'c') {
+      cryptoCubeMachine.actionCreators.mergeComplete();
       e.preventDefault();
     }
     if (process.env.REACT_APP_DEBUG_CUBE) {
