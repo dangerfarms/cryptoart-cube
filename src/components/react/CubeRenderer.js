@@ -34,7 +34,7 @@ import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { animateEmitters, animationFunctions, createEmitter } from '../../services/particlesService';
+import { animateEmitters, animationFunctions, createEmitter,createEmitter2,createEmitter3 } from '../../services/particlesService';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -105,6 +105,8 @@ function Boxes(props) {
 
   const nebula = useRef(null);
   const emitterA = useRef(null);
+  const emitterB = useRef(null);
+  const emitterC = useRef(null);
   // const emitterB = useRef(null);
 
   useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
@@ -125,7 +127,7 @@ function Boxes(props) {
         camera,
         renderer:gl,
       });
-      // emitterB.current = createEmitter({
+      // emitterA.current = createEmitter({
       //   colorA: '#004CFE',
       //   colorB: '#6600FF',
       //   camera,
@@ -137,6 +139,69 @@ function Boxes(props) {
       nebula.current
         .addEmitter(emitterA.current)
     }
+
+    // hotfix code for multiple spheres ... remove later
+
+    if (!props.insideSphere2 && emitterB.current){
+      //
+      emitterB.current.destroy()
+      // emitterA.current.removeAllParticles()
+      // emitterA.current.isEmitting = false
+      emitterB.current=null;
+    }
+
+    if (props.insideSphere2 && !emitterB.current){
+      emitterB.current = createEmitter2({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
+        camera,
+        renderer:gl,
+      });
+      // emitterB.current = createEmitter({
+      //   colorA: '#004CFE',
+      //   colorB: '#6600FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+      // animateEmitters(emitterA.current, emitterB.current);
+
+      nebula.current
+        .addEmitter(emitterB.current)
+    }
+
+
+    // hotfix code for multiple spheres ... remove later
+
+    if (!props.insideSphere3 && emitterC.current){
+      //
+      emitterC.current.destroy()
+      // emitterA.current.removeAllParticles()
+      // emitterA.current.isEmitting = false
+      emitterC.current=null;
+    }
+
+    if (props.insideSphere3 && !emitterC.current){
+      emitterC.current = createEmitter3({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
+        camera,
+        renderer:gl,
+      });
+      // emitterB.current = createEmitter({
+      //   colorA: '#004CFE',
+      //   colorB: '#6600FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+      // animateEmitters(emitterA.current, emitterB.current);
+
+      nebula.current
+        .addEmitter(emitterC.current)
+    }
+
+
     // This function runs 60 times/second inside the global render-loop
     const time =clock.getElapsedTime()*10
     // console.log(nebula.current,emitterA.current,emitterB.current,gl);

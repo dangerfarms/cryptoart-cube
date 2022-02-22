@@ -59,6 +59,88 @@ const createMesh = () => {
 export const createEmitter = ({ colorA, colorB, camera, renderer }) => {
   const emitter = new Emitter();
 
+  return emitter
+    .setRate(new Rate(new Span(5, 10), new Span(0.1, 0.025)))
+    .addInitializers([
+      new Mass(1),
+      new Radius(5),
+      new Life(1),
+      new Body(createMesh()),
+      // new Position(new BoxZone(100)),
+      //new RadialVelocity(1, new Vector3D(.1, 1, 0.1), 1),
+    ])
+    .addBehaviours([
+      // new Rotate('random', 'random'),
+      new Rotate('random', 'random'),
+        new RandomDrift(.1,.1,.1),
+        new Alpha(1, 0.1),
+        new Color(colorA, colorB),
+      new Scale(.2,.5),
+      // new Gravity(3),
+    ])
+    // .setRate(new Rate(new Span(1, 1), new Span(0.01, 0.02)))
+    // .setInitializers([
+    //   new Mass(3,10),
+    //   new Life(2),
+    //   new Body(createMesh()),
+    //   new Radius(4,4),
+    //   new RadialVelocity(1, new Vector3D(0, 5, 0), 1),
+    // ])
+    // .setBehaviours([
+    //   new Alpha(1, 0),
+    //   new Color(colorA, colorB),
+    //   new Scale(1, 0.1),
+    //   // new Gravity(.1),
+    //    new CrossZone(new ScreenZone(camera, renderer), 'dead'),
+    //    new Force(0, 0, -0.01),
+    // ])
+    .emit();
+};
+
+
+export const createEmitter3 = ({ colorA, colorB, camera, renderer }) => {
+  const emitter = new Emitter();
+
+  // console.log(camera,renderer)
+  return emitter
+    .setRate(new Rate(new Span(5, 7), new Span(0.01, 0.02)))
+    .setInitializers([
+      new Mass(1),
+      new Life(2),
+      new Body(createSprite()),
+      new Radius(2),
+      new RadialVelocity(200, new Vector3D(0, 0, -1), 0),
+    ])
+    .setBehaviours([
+      new Alpha(1, 0),
+      new Color(colorA, colorB),
+      new Scale(1, 0.5),
+      new CrossZone(new ScreenZone(camera, renderer), 'dead'),
+      // new Force(0, 0, -20),
+    ])
+    // .setRate(new Rate(new Span(1, 1), new Span(0.01, 0.02)))
+    // .setInitializers([
+    //   // new Mass(3,10),
+    //   new Life(2),
+    //   new Body(createMesh()),
+    //   // new Radius(4,4),
+    //   new RadialVelocity(1, new Vector3D(0, 5, 0), 1),
+    // ])
+    // .setBehaviours([
+    //   new Alpha(1, 0),
+    //   new Color(colorA, colorB),
+    //   // new Scale(1, 0.1),
+    //   // new Gravity(.1),
+    //   // new CrossZone(new ScreenZone(camera, renderer), 'dead'),
+    //   // new Force(0, 0, -0.01),
+    // ])
+    .emit();
+};
+
+
+export const createEmitter2 = ({ colorA, colorB, camera, renderer }) => {
+  const emitter = new Emitter();
+
   // console.log(camera,renderer)
   return emitter
     .setRate(new Rate(new Span(5, 10), new Span(0.1, 0.025)))
@@ -73,9 +155,9 @@ export const createEmitter = ({ colorA, colorB, camera, renderer }) => {
     .addBehaviours([
       // new Rotate('random', 'random'),
       new Rotate('random', 'random'),
-        new RandomDrift(.2,.2,.2),
-        new Alpha(1, 0.1),
-        new Color(colorA, colorB),
+      new RandomDrift(.2,.2,.2),
+      new Alpha(1, 0.1),
+      new Color(colorA, colorB),
       new Scale(.2,1),
       // new Gravity(3),
     ])

@@ -58,6 +58,8 @@ function CubeMain(props) {
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
     insideSphere = CUBE_CONSTANTS.Defaults.insideSphere,
+    insideSphere2 = CUBE_CONSTANTS.Defaults.insideSphere,
+    insideSphere3 = CUBE_CONSTANTS.Defaults.insideSphere,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
 
@@ -69,7 +71,7 @@ function CubeMain(props) {
       displacementAnimationDistance: 1,
       displacementIncrementPerFrame: 0.1,
     };
-    colors = ['#555', '#555', '#555', '#555', '#555', '#555'];
+    colors = ['#500', '#005', '#050', '#550', '#055', '#505'];
   } else {
     frag1faces = translateSizeToConfig(frag1Config);
     frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
@@ -133,6 +135,8 @@ function CubeMain(props) {
     () => ({
       lightningRays: lightningRays,
       insideSphere: hasFullFace(frag1Config),
+      insideSphere2: false,
+      // insideSphere3: false,
       positionCamera: { x: 0, y: 0, z: 25 },
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
