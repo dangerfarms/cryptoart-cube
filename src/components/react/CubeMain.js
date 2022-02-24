@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { button, LevaPanel, useControls, useCreateStore } from 'leva';
 import { CubeRenderer } from './CubeRenderer';
-import { adjustedFragmentProperties, generateCubes, translateSizeToConfig } from './cubeGeneration';
+import {
+  adjustedFragmentProperties,
+  createIntersectingCubeConfig,
+  generateCubes,
+  translateSizeToConfig,
+} from './cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
@@ -42,24 +47,17 @@ function CubeMain(props) {
     // TODO: new value that holds square count
     frag1Config = null,
     frag2Config = null,
-    combinedConfig = null,
     isCombined = false,
     is2Combined = false,
-    // TODO: Remove if not needed
-    // faces = CUBE_CONSTANTS.Defaults.faces,
-    // facesSecond,
+    // TODO: Remove
     facesMergedCube,
     facesPreview,
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
-
     displacementAnimationDistance = 0,
     lightningRays = CUBE_CONSTANTS.Defaults.lightningRays,
-    insideSphere = CUBE_CONSTANTS.Defaults.insideSphere,
-    insideSphere2 = CUBE_CONSTANTS.Defaults.insideSphere,
-    insideSphere3 = CUBE_CONSTANTS.Defaults.insideSphere,
     orbitControls = CUBE_CONSTANTS.Defaults.orbitControls,
   } = props;
 
@@ -82,7 +80,7 @@ function CubeMain(props) {
     frag2properties,
     frag2colors;
   if (frag2Config !== null) {
-    facesSecond = translateSizeToConfig(frag2Config);
+    facesSecond = createIntersectingCubeConfig(frag1faces, frag2Config);
     frag2properties = is2Combined ? adjustedFragmentProperties(frag2Config) : {};
     frag2colors = frag2properties.colors || CUBE_CONSTANTS.Defaults.colors;
   } else {
@@ -104,30 +102,42 @@ function CubeMain(props) {
     return hasFace;
   };
 
+  const mergedSquareCount = (frag1Config && frag2Config) ?
+    squareCount.map((a, i) => a + frag2Config[i]) :
+    null;
+
   // TODO: END NEW CODE
 
-  // const [_cubeData, setCubeData] = useState(initialCubeConfig);
   const [_cubeData, setCubeData] = useState({
-    colors,
-    frag2colors,
     faces: frag1faces,
+    frag1properties,
+    colors,
+    facesSecond,
+    frag2properties,
+    frag2colors,
     previewCube,
     facesMergedCube,
     facesPreview,
-    facesSecond,
   });
 
   useEffect(() => {
     setCubeData({
-      colors,
-      frag2colors,
       faces: frag1faces,
+      frag1properties,
+      colors,
       facesSecond,
+      frag2properties,
+      frag2colors,
       facesMergedCube,
       facesPreview,
       previewCube,
     });
-  }, [facesMergedCube, facesPreview, previewCube]);
+  }, []);
+
+
+  console.log(`We are here: ${_cubeData.faces[0]}`);
+  console.log(`We are here: ${JSON.stringify(frag1properties)}`);
+  console.log(`We are here: ${JSON.stringify(_cubeData.frag1properties)}`);
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
   const store = useCreateStore();
@@ -141,12 +151,12 @@ function CubeMain(props) {
       positionCube1: { x: 0, y: 0, z: 0 },
       positionCube2: { x: 20, y: 20, z: 20 },
       displacementAnimationDistance: {
-        value: frag1properties.displacementAnimationDistance || displacementAnimationDistance,
+        value: _cubeData?.frag1properties.displacementAnimationDistance || displacementAnimationDistance,
         min: 0,
         max: 10,
       },
       displacementIncrementPerFrame: {
-        value: frag1properties.displacementIncrementPerFrame || 0,
+        value: _cubeData?.frag1properties.displacementIncrementPerFrame || 0,
         min: 0,
         max: 1,
       },
@@ -185,29 +195,29 @@ function CubeMain(props) {
         min: 0,
         max: 1,
       },
-      mainCubeSide: frag1properties.mainCubeSide || mainCubeSide,
+      mainCubeSide: _cubeData?.frag1properties.mainCubeSide || mainCubeSide,
       thickness: {
-        value: frag1properties.thickness || thickness,
+        value: _cubeData?.frag1properties.thickness || thickness,
         min: -1,
         max: 1,
       },
       explosion: {
-        value: frag1properties.explosion || explosion,
+        value: _cubeData?.frag1properties.explosion || explosion,
         min: -10,
         max: 10,
       },
       subSquareOpacity: {
-        value: frag1properties.subSquareOpacity || subSquareOpacity,
+        value: _cubeData?.frag1properties.subSquareOpacity || subSquareOpacity,
         min: 0,
         max: 1,
       },
       cylinderThickness: {
-        value: frag1properties.cylinderThickness || cylinderThickness,
+        value: _cubeData?.frag1properties.cylinderThickness || cylinderThickness,
         min: 0,
         max: 1,
       },
       cylinderOpacity: {
-        value: frag1properties.cylinderOpacity || cylinderOpacity,
+        value: _cubeData?.frag1properties.cylinderOpacity || cylinderOpacity,
         min: 0,
         max: 1,
       },
@@ -243,187 +253,187 @@ function CubeMain(props) {
         max: 1,
       },
       orbitControls: orbitControls,
-      color0: {
-        value: colors[0],
-        onChange: (color) => {
-          colors[0] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      color1: {
-        value: colors[1],
-        onChange: (color) => {
-          colors[1] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      color2: {
-        value: colors[2],
-        onChange: (color) => {
-          colors[2] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      color3: {
-        value: colors[3],
-        onChange: (color) => {
-          colors[3] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      color4: {
-        value: colors[4],
-        onChange: (color) => {
-          colors[4] = color;
-          setCubeData({
-            colors, frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      color5: {
-        value: colors[5],
-        onChange: (color) => {
-          colors[5] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond0: {
-        value: frag2colors[0],
-        onChange: (color) => {
-          frag2colors[0] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond1: {
-        value: frag2colors[1],
-        onChange: (color) => {
-          frag2colors[1] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond2: {
-        value: frag2colors[2],
-        onChange: (color) => {
-          frag2colors[2] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond3: {
-        value: frag2colors[3],
-        onChange: (color) => {
-          frag2colors[3] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond4: {
-        value: frag2colors[4],
-        onChange: (color) => {
-          frag2colors[4] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      colorSecond5: {
-        value: frag2colors[5],
-        onChange: (color) => {
-          frag2colors[5] = color;
-          setCubeData({
-            colors,
-            frag2colors,
-            faces: _cubeData.faces,
-            facesMergedCube: _cubeData.facesMergedCube,
-            facesSecond: _cubeData.facesSecond,
-            facesPreview: _cubeData.facesPreview,
-          });
-        },
-      },
-      regenerate: button(() => {
-        setCubeData({
-          colors,
-          frag2colors,
-          ...generateCubes(),
-        });
-      }),
-      regenerateFilled: button(() => {
-        setCubeData({
-          colors,
-          frag2colors,
-          ...generateCubes(true),
-        });
-      }),
+      // color0: {
+      //   value: colors[0],
+      //   onChange: (color) => {
+      //     colors[0] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // color1: {
+      //   value: colors[1],
+      //   onChange: (color) => {
+      //     colors[1] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // color2: {
+      //   value: colors[2],
+      //   onChange: (color) => {
+      //     colors[2] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // color3: {
+      //   value: colors[3],
+      //   onChange: (color) => {
+      //     colors[3] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // color4: {
+      //   value: colors[4],
+      //   onChange: (color) => {
+      //     colors[4] = color;
+      //     setCubeData({
+      //       colors, frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // color5: {
+      //   value: colors[5],
+      //   onChange: (color) => {
+      //     colors[5] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond0: {
+      //   value: frag2colors[0],
+      //   onChange: (color) => {
+      //     frag2colors[0] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond1: {
+      //   value: frag2colors[1],
+      //   onChange: (color) => {
+      //     frag2colors[1] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond2: {
+      //   value: frag2colors[2],
+      //   onChange: (color) => {
+      //     frag2colors[2] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond3: {
+      //   value: frag2colors[3],
+      //   onChange: (color) => {
+      //     frag2colors[3] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond4: {
+      //   value: frag2colors[4],
+      //   onChange: (color) => {
+      //     frag2colors[4] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // colorSecond5: {
+      //   value: frag2colors[5],
+      //   onChange: (color) => {
+      //     frag2colors[5] = color;
+      //     setCubeData({
+      //       colors,
+      //       frag2colors,
+      //       faces: _cubeData.faces,
+      //       facesMergedCube: _cubeData.facesMergedCube,
+      //       facesSecond: _cubeData.facesSecond,
+      //       facesPreview: _cubeData.facesPreview,
+      //     });
+      //   },
+      // },
+      // regenerate: button(() => {
+      //   setCubeData({
+      //     colors,
+      //     frag2colors,
+      //     ...generateCubes(),
+      //   });
+      // }),
+      // regenerateFilled: button(() => {
+      //   setCubeData({
+      //     colors,
+      //     frag2colors,
+      //     ...generateCubes(true),
+      //   });
+      // }),
       takeScreenShot: button(() => {
         cryptoCubeMachine.actionCreators.takeScreenShot();
       }),
@@ -438,6 +448,15 @@ function CubeMain(props) {
       mergeCubesConclusion: button(() => {
         cryptoCubeMachine.actionCreators.mergeCubesConclusion(() => {
           alert('completed conclusion');
+          setCubeData({
+            colors,
+            frag2colors: null,
+            faces: translateSizeToConfig(combinedConfig),
+            facesSecond: null,
+            facesMergedCube: null,
+            facesPreview: null,
+            previewCube,
+          });
         });
       }),
     }),
@@ -465,7 +484,26 @@ function CubeMain(props) {
       e.preventDefault();
     }
     if (e.key === 'b') {
-      cryptoCubeMachine.actionCreators.mergeCubesConclusion();
+      cryptoCubeMachine.actionCreators.mergeCubesConclusion(() => {
+        // alert('completed conclusion');
+        // cryptoCubeMachine.actionCreators.mergeComplete();
+        const newFaces = frag1faces.map((face, faceId) =>
+          face.map((value, subFaceId) => {
+            return value || facesSecond[faceId][subFaceId];
+          }),
+        );
+        const f1p = adjustedFragmentProperties(mergedSquareCount);
+        setCubeData({
+          faces: newFaces,
+          frag1properties: f1p,
+          colors: f1p.colors,
+          frag2colors: null,
+          facesSecond: null,
+          facesMergedCube: null,
+          facesPreview: null,
+          previewCube: null,
+        });
+      });
       e.preventDefault();
     }
     if (e.key === 'c') {
