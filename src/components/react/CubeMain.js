@@ -69,7 +69,7 @@ function CubeMain(props) {
       displacementAnimationDistance: 1,
       displacementIncrementPerFrame: 0.1,
     };
-    colors = ['#500', '#005', '#050', '#550', '#055', '#505'];
+    colors = ['#555', '#555', '#555', '#555', '#555', '#555'];
   } else {
     frag1faces = translateSizeToConfig(frag1Config);
     frag1properties = isCombined ? adjustedFragmentProperties(frag1Config) : {};
