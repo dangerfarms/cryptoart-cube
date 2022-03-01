@@ -416,8 +416,7 @@ function CubeMain(props) {
       ...frag2.properties,
     });
     set({...frag1.properties});
-    if (frag2.properties)
-      set({...frag2.properties});
+    set({...frag2.properties});
   }, [_fragmentData]);
 
 
