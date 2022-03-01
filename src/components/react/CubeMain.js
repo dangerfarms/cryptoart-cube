@@ -21,7 +21,6 @@ CubeMain.propTypes = {
   frag2Config: PropTypes.arrayOf(PropTypes.number),
   is2Combined: PropTypes.bool,
   facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-  facesPreview: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   freeze: PropTypes.bool,
   disableZoom: PropTypes.bool,
   hideBackground: PropTypes.bool,
@@ -45,7 +44,7 @@ function CubeMain(props) {
     is2Combined = false,
     // TODO: Remove
     facesMergedCube,
-    facesPreview,
+    // TODO: end
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
     hideBackground = true,
@@ -71,7 +70,7 @@ function CubeMain(props) {
     frag2colors: null,
     previewCube: null,
     facesMergedCube: null,
-    facesPreview,
+    facesPreview: null,
   });
 
   // const [state, send] = useActor(cryptoCubeMachine.service);
@@ -402,18 +401,19 @@ function CubeMain(props) {
 
   useEffect(() => {
     const [frag1, frag2] = getFragmentProperties(_fragmentData);
+
     setCubeData({
       faces: frag1.faces,
       frag1properties: frag1.properties,
       colors: frag1.colors,
-      facesSecond: frag2.faces,
+      facesSecond: !previewCube ? frag2.faces : null,
       frag2properties: frag2.properties,
       frag2colors: frag2.colors,
       previewCube,
+      facesPreview: previewCube ? frag2.faces : null,
       facesMergedCube,
-      facesPreview,
       ...frag1.properties,
-      ...frag2.properties,
+      ...(!previewCube ? frag2.properties : {}),
     });
     set({...frag1.properties});
     set({...frag2.properties});
