@@ -417,7 +417,7 @@ function CubeMain(props) {
     });
     set({...frag1.properties});
     set({...frag2.properties});
-  }, [_fragmentData]);
+  }, [_fragmentData, previewCube]);
 
 
   // console.log('data', data, set);

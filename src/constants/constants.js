@@ -31,7 +31,7 @@ const Defaults = {
   cylinderOpacity: 0.8,
   lightningRays: false,
   toggleMergedCube: false,
-  previewCube: true,
+  previewCube: false,
   previewCubeWireframe: false,
   previewCubeUniqueColor: true,
   previewCubeBloomAnimation: false,
