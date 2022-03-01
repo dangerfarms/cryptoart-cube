@@ -23,9 +23,5 @@ export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
     face.map((square, j) => (freeSquareFaceIndices[i].includes(j) ? 1 : 0)),
   );
 
-  console.log(cube1Config);
-  console.log(freeSquareFaceIndices);
-  console.log(cube2Config);
-
   return cube2Config;
 };

@@ -96,7 +96,7 @@ export const generateCubes = (filled = false) => {
   };
 };
 
-const defaultColor = ['#ff003c', '#ff7b00', '#ffcd00', '#ffcd00', '#1e63ff', '#ba0dbe'];
+const defaultColor = ['#ff003c', '#ff7b00', '#ffcd00', '#5ed723', '#1e63ff', '#ba0dbe'];
 const primeColor = [
   '#000000',
   '#000001',

@@ -34,7 +34,14 @@ import { useActor } from '@xstate/react';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { animateEmitters, animationFunctions, createEmitter,createEmitter2,createEmitter3 } from '../../services/particlesService';
+import {
+  animateEmitters,
+  animationFunctions,
+  createEmitter,
+  createEmitter2,
+  createEmitter3,
+  createSphere,
+} from '../../services/particlesService';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -121,12 +128,22 @@ function Boxes(props) {
     }
 
     if (props.insideSphere && !emitterA.current){
-      emitterA.current = createEmitter({
+      // emitterA.current = createEmitter({
+      //   colorA: '#FF0000',
+      //   colorB: '#0000FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+      emitterA.current = createSphere({
         colorA: '#FF0000',
         colorB: '#0000FF',
         camera,
         renderer:gl,
+        alpha: 0.2,
+        radius: 2,
       });
+
       // emitterA.current = createEmitter({
       //   colorA: '#004CFE',
       //   colorB: '#6600FF',
@@ -151,12 +168,23 @@ function Boxes(props) {
     }
 
     if (props.insideSphere2 && !emitterB.current){
-      emitterB.current = createEmitter2({
-        colorA: '#FF0000',
-        colorB: '#0000FF',
+      // emitterB.current = createEmitter2({
+      //   colorA: '#FF0000',
+      //   colorB: '#0000FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+
+      emitterB.current = createSphere({
+        colorA: '#fd5b14',
+        colorB: '#651e00',
         camera,
         renderer:gl,
+        alpha: 3,
+        radius: 5,
       });
+
       // emitterB.current = createEmitter({
       //   colorA: '#004CFE',
       //   colorB: '#6600FF',
@@ -182,12 +210,23 @@ function Boxes(props) {
     }
 
     if (props.insideSphere3 && !emitterC.current){
-      emitterC.current = createEmitter3({
-        colorA: '#FF0000',
-        colorB: '#0000FF',
+      // emitterC.current = createEmitter3({
+      //   colorA: '#FF0000',
+      //   colorB: '#0000FF',
+      //   camera,
+      //   renderer:gl,
+      // });
+
+
+      emitterC.current = createSphere({
+        colorA: '#ffde00',
+        colorB: '#383700',
         camera,
         renderer:gl,
+        alpha: 5,
+        radius: 7,
       });
+
       // emitterB.current = createEmitter({
       //   colorA: '#004CFE',
       //   colorB: '#6600FF',
