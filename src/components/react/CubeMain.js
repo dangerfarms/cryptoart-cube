@@ -450,6 +450,9 @@ function CubeMain(props) {
         //     return value || facesSecond[faceId][subFaceId];
         //   }),
         // );
+
+        // TODO: combine fragment when overlap
+
         const mergedSquareCount = (_fragmentData.frag1SquareCount && _fragmentData.frag2SquareCount) ?
           _fragmentData.frag1SquareCount.map((a, i) => a + _fragmentData.frag2SquareCount[i]) :
           null;
