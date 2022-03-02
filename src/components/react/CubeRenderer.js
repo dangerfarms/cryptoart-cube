@@ -114,6 +114,9 @@ function Boxes(props) {
   const emitterA = useRef(null);
   const emitterB = useRef(null);
   const emitterC = useRef(null);
+  const emitterD = useRef(null);
+  const emitterE = useRef(null);
+  const emitterF = useRef(null);
   // const emitterB = useRef(null);
 
   useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
@@ -137,14 +140,14 @@ function Boxes(props) {
 
       emitterA.current = createSphere({
         colorA: '#FF0000',
-        colorB: '#0000FF',
+        colorB: '#ff003b',
         camera,
         renderer:gl,
         alpha: 0.2,
         radius: 2,
       });
 
-      // emitterA.current = createEmitter({
+      // emitterA.current = createEmitter2({
       //   colorA: '#004CFE',
       //   colorB: '#6600FF',
       //   camera,
@@ -181,8 +184,8 @@ function Boxes(props) {
         colorB: '#651e00',
         camera,
         renderer:gl,
-        alpha: 3,
-        radius: 5,
+        alpha: 0.5,
+        radius: 3,
       });
 
       // emitterB.current = createEmitter({
@@ -223,8 +226,8 @@ function Boxes(props) {
         colorB: '#383700',
         camera,
         renderer:gl,
-        alpha: 5,
-        radius: 7,
+        alpha: 0.4,
+        radius: 4,
       });
 
       // emitterB.current = createEmitter({
@@ -239,6 +242,31 @@ function Boxes(props) {
       nebula.current
         .addEmitter(emitterC.current)
     }
+
+    [
+      [4, emitterD, '#1b7200', '#103b00', 0.3, 5],
+      [5, emitterE, '#003572', '#000e3b', 0.2, 20],
+      [6, emitterF, '#3b0072', '#2a003b', 0.01, 30]
+    ].map(emit => {
+      const [ num, emitter, colorA, colorB, alpha, radius ] = emit;
+      if (!props[`insideSphere${num}`] && emitter.current) {
+        emitter.current.destroy()
+        emitter.current = null;
+      }
+      if (props[`insideSphere${num}`] && !emitter.current) {
+        emitter.current = createSphere({
+          colorA,
+          colorB,
+          camera,
+          renderer:gl,
+          alpha,
+          radius,
+        });
+
+        nebula.current.addEmitter(emitter.current)
+      }  
+    })
+    
 
 
     // This function runs 60 times/second inside the global render-loop

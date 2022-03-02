@@ -177,36 +177,19 @@ export const createSphere = ({
     .addInitializers([
       new Mass(1),
       new Radius(radius),
-      new Life(2),
-      new Body(createMesh()),
+      new Life(1),
+      new Body(createSprite()),
       // new Position(new BoxZone(100)),
       //new RadialVelocity(1, new Vector3D(.1, 1, 0.1), 1),
     ])
     .addBehaviours([
-      // new Rotate('random', 'random'),
       new Rotate('random', 'random'),
-      // new RandomDrift(.1, .1, .1),
-      new Alpha(alpha, alpha * 4),
+      new RandomDrift(.2, .2, .2),
+      new Alpha(alpha, 0.1),
       new Color(colorA, colorB),
-      new Scale(.2, .5),
+      new Scale(radius/100, 1),
       // new Gravity(3),
     ])
-    // .setRate(new Rate(new Span(1, 1), new Span(0.01, 0.02)))
-    // .setInitializers([
-    //   new Mass(3,10),
-    //   new Life(2),
-    //   new Body(createMesh()),
-    //   new Radius(4,4),
-    //   new RadialVelocity(1, new Vector3D(0, 5, 0), 1),
-    // ])
-    // .setBehaviours([
-    //   new Alpha(1, 0),
-    //   new Color(colorA, colorB),
-    //   new Scale(1, 0.1),
-    //   // new Gravity(.1),
-    //    new CrossZone(new ScreenZone(camera, renderer), 'dead'),
-    //    new Force(0, 0, -0.01),
-    // ])
     .emit();
 };
 

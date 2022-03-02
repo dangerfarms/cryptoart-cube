@@ -80,6 +80,9 @@ function CubeMain(props) {
     insideSphere: hasFullFace(frag1Config),
     insideSphere2: false,
     insideSphere3: false,
+    insideSphere4: false,
+    insideSphere5: false,
+    insideSphere6: false,
     positionCamera: { x: 0, y: 0, z: 25 },
     positionCube1: { x: 0, y: 0, z: 0 },
     positionCube2: { x: 20, y: 20, z: 20 },
@@ -443,16 +446,8 @@ function CubeMain(props) {
     }
     if (e.key === 'b') {
       cryptoCubeMachine.actionCreators.mergeCubesConclusion(() => {
-        // cryptoCubeMachine.actionCreators.mergeComplete();
-        // TODO
-        // const newFaces = frag1faces.map((face, faceId) =>
-        //   face.map((value, subFaceId) => {
-        //     return value || facesSecond[faceId][subFaceId];
-        //   }),
-        // );
 
         // TODO: combine fragment when overlap
-
         const mergedSquareCount = (_fragmentData.frag1SquareCount && _fragmentData.frag2SquareCount) ?
           _fragmentData.frag1SquareCount.map((a, i) => a + _fragmentData.frag2SquareCount[i]) :
           null;
