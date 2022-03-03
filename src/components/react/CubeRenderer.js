@@ -10,7 +10,7 @@ import { noise } from '../../utils/Noise';
 require('./CubeRenderer.css');
 
 
-
+import Nebula from 'three-nebula';
 import ParticleSystem, {
   Alpha,
   Body,
@@ -42,6 +42,7 @@ import {
   createEmitter3,
   createSphere,
 } from '../../services/particlesService';
+import { generateSpheres } from './sphereGeneration';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -90,15 +91,14 @@ function Boxes(props) {
     displacementIncrementPerFrame = 0.01,
   } = props;
   const [scaleMainCube, setScaleMainCube] = useState(1);
-  const [state, send] = useActor(cryptoCubeMachine.service);
-
-  const [cubeVersion] = useState(Math.round(Math.random() * 10));
-
   const [cubeMatrixes, setCubeMatrixes] = useState([]);
 
-  useEffect(() => {
-    // console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
-  }, [cubeVersion, previewCube]);
+  // TODO: Remove if not needed
+  // const [state, send] = useActor(cryptoCubeMachine.service);
+  // const [cubeVersion] = useState(Math.round(Math.random() * 10));
+  // useEffect(() => {
+  //   // console.log(previewCube ? 'previewCube' : 'normalCube', cubeVersion);
+  // }, [cubeVersion, previewCube]);
 
   const clampedSubSquaresScale = clamp(subSquaresScale, 0, 1) + (previewCube ? 0.1 : 0);
   const {
@@ -117,9 +117,8 @@ function Boxes(props) {
   const emitterD = useRef(null);
   const emitterE = useRef(null);
   const emitterF = useRef(null);
-  // const emitterB = useRef(null);
 
-  useFrame(({clock,scene:threeScene, camera, gl: renderer}, delta) => {
+  useFrame(({clock, scene:threeScene, camera, gl: renderer}, delta) => {
     if (!nebula.current) return;
 
     if (!props.insideSphere && emitterA.current){
@@ -131,21 +130,21 @@ function Boxes(props) {
     }
 
     if (props.insideSphere && !emitterA.current){
-      // emitterA.current = createEmitter({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-      emitterA.current = createSphere({
+      emitterA.current = createEmitter({
         colorA: '#FF0000',
-        colorB: '#ff003b',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.2,
-        radius: 2,
       });
+
+      // emitterA.current = createSphere({
+      //   colorA: '#FF0000',
+      //   colorB: '#ff003b',
+      //   camera,
+      //   renderer:gl,
+      //   alpha: 0.2,
+      //   radius: 2,
+      // });
 
       // emitterA.current = createEmitter2({
       //   colorA: '#004CFE',
@@ -156,6 +155,7 @@ function Boxes(props) {
 
       // animateEmitters(emitterA.current, emitterB.current);
 
+      // TODO: Bring back
       nebula.current
         .addEmitter(emitterA.current)
     }
@@ -171,22 +171,21 @@ function Boxes(props) {
     }
 
     if (props.insideSphere2 && !emitterB.current){
-      // emitterB.current = createEmitter2({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-
-      emitterB.current = createSphere({
-        colorA: '#fd5b14',
-        colorB: '#651e00',
+      emitterB.current = createEmitter2({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.5,
-        radius: 3,
       });
+
+      // emitterB.current = createSphere({
+      //   colorA: '#fd5b14',
+      //   colorB: '#651e00',
+      //   camera,
+      //   renderer:gl,
+      //   alpha: 0.5,
+      //   radius: 3,
+      // });
 
       // emitterB.current = createEmitter({
       //   colorA: '#004CFE',
@@ -197,8 +196,9 @@ function Boxes(props) {
 
       // animateEmitters(emitterA.current, emitterB.current);
 
-      nebula.current
-        .addEmitter(emitterB.current)
+      // TODO: bring back
+      // nebula.current
+      //   .addEmitter(emitterB.current)
     }
 
 
@@ -213,22 +213,21 @@ function Boxes(props) {
     }
 
     if (props.insideSphere3 && !emitterC.current){
-      // emitterC.current = createEmitter3({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-
-      emitterC.current = createSphere({
-        colorA: '#ffde00',
-        colorB: '#383700',
+      emitterC.current = createEmitter3({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.4,
-        radius: 4,
       });
+
+      // emitterC.current = createSphere({
+      //   colorA: '#ffde00',
+      //   colorB: '#383700',
+      //   camera,
+      //   renderer:gl,
+      //   alpha: 0.4,
+      //   radius: 4,
+      // });
 
       // emitterB.current = createEmitter({
       //   colorA: '#004CFE',
@@ -239,83 +238,80 @@ function Boxes(props) {
 
       // animateEmitters(emitterA.current, emitterB.current);
 
+      // TODO: Bring back
       nebula.current
         .addEmitter(emitterC.current)
     }
 
-    [
-      [4, emitterD, '#1b7200', '#103b00', 0.3, 5],
-      [5, emitterE, '#003572', '#000e3b', 0.2, 20],
-      [6, emitterF, '#3b0072', '#2a003b', 0.01, 30]
-    ].map(emit => {
-      const [ num, emitter, colorA, colorB, alpha, radius ] = emit;
-      if (!props[`insideSphere${num}`] && emitter.current) {
-        emitter.current.destroy()
-        emitter.current = null;
-      }
-      if (props[`insideSphere${num}`] && !emitter.current) {
-        emitter.current = createSphere({
-          colorA,
-          colorB,
-          camera,
-          renderer:gl,
-          alpha,
-          radius,
-        });
-
-        nebula.current.addEmitter(emitter.current)
-      }  
-    })
-    
+    // TODO: Bring back
+    // [
+    //   [4, emitterD, '#1b7200', '#103b00', 0.3, 5],
+    //   [5, emitterE, '#003572', '#000e3b', 0.2, 20],
+    //   [6, emitterF, '#3b0072', '#2a003b', 0.01, 30]
+    // ].map(emit => {
+    //   const [ num, emitter, colorA, colorB, alpha, radius ] = emit;
+    //   if (!props[`insideSphere${num}`] && emitter.current) {
+    //     emitter.current.destroy()
+    //     emitter.current = null;
+    //   }
+    //   if (props[`insideSphere${num}`] && !emitter.current) {
+    //     emitter.current = createSphere({
+    //       colorA,
+    //       colorB,
+    //       camera,
+    //       renderer:gl,
+    //       alpha,
+    //       radius,
+    //     });
+    //
+    //     nebula.current.addEmitter(emitter.current)
+    //   }
+    // })
 
 
     // This function runs 60 times/second inside the global render-loop
-    const time =clock.getElapsedTime()*10
+    // const time =clock.getElapsedTime()*10
+    // nebula.current.update();
+
+    // TODO: Remove?
     // console.log(nebula.current,emitterA.current,emitterB.current,gl);
     // animateEmitters(emitterA.current, emitterB.current);
     // animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
-    nebula.current.update();
     //renderer.render(threeScene, camera);
+    // TODO: End Remove
   })
 
-
-
   useEffect(() => {
+    // TODO: Bring back
+    // const nebulaRenderer = new ParticleSystem();
+    // nebulaRenderer
+    //   .addRenderer(new SpriteRenderer(scene, THREE));
+    // nebula.current = nebulaRenderer;
 
-    const nebulaRenderer = new ParticleSystem();
+    function animate(nebula, app) {
+      requestAnimationFrame(() => animate(nebula, app));
+      nebula.update();
+      app.renderer.render(scene, camera);
+    }
 
+    const spheres = generateSpheres([1]);
+    console.log(spheres);
+    ParticleSystem.fromJSONAsync(spheres, THREE).then(loaded => {
+      console.log(loaded);
+      const nebulaRenderer = new SpriteRenderer(scene, THREE);
+      const nebula = loaded.addRenderer(nebulaRenderer);
+      animate(nebula, { scene, camera, renderer: gl });
+      nebula.current = nebulaRenderer;
+    });
 
-
-    nebulaRenderer
-      // .addEmitter(emitterB.current)
-      .addRenderer(new SpriteRenderer(scene, THREE));
-
-    nebula.current = nebulaRenderer;
   }, [scene])
 
-  //
-  // const renderToJPG = useMemo(() => {
-  //   const strMime = 'image/png';
-  //   const imgData = gl.domElement.toDataURL(strMime);
-  //   // console.log(imgData);
-  //   return imgData;
-  // }, [gl.domElement]);
-  //
   useEffect(() => {
-    // if (gl.domElement && !state.domElement){
-    //
-    //   alert("here");
-    //   cryptoCubeMachine.actionCreators.registerGL(gl.domElement)
-    // }
     gl.domElement.id = 'canvasGL';
     cryptoCubeMachine.actionCreators.registerGL('canvasGL');
-
   }, [gl.domElement]);
 
   useFrame(({ clock, gl, scene, camera }) => {
-    // const isNewFrame = controls.current.update();
-    // console.log('frame', freeze, isNewFrame);
-    // console.log(previewCube);
     if (
       // freeze ||
       previewCube
@@ -323,9 +319,6 @@ function Boxes(props) {
       return;
     }
 
-    // console.log('normalCube', cubeVersion);
-
-    // console.log('here', cubeMatrixes);
     for (let j = 0; j < cubeMatrixes.length; j++) {
       const matrix = cubeMatrixes[j].clone();
       const position = new THREE.Vector3().setFromMatrixPosition(matrix);

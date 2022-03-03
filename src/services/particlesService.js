@@ -180,7 +180,7 @@ export const createSphere = ({
       new Life(1),
       new Body(createSprite()),
       // new Position(new BoxZone(100)),
-      //new RadialVelocity(1, new Vector3D(.1, 1, 0.1), 1),
+      new RadialVelocity(1, new Vector3D(.1, 1, 0.1), 1),
     ])
     .addBehaviours([
       new Rotate('random', 'random'),
