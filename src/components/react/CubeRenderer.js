@@ -269,24 +269,6 @@ function Boxes(props) {
     // })
 
 
-    // This function runs 60 times/second inside the global render-loop
-    // const time =clock.getElapsedTime()*10
-    // nebula.current.update();
-
-    // TODO: Remove?
-    // console.log(nebula.current,emitterA.current,emitterB.current,gl);
-    // animateEmitters(emitterA.current, emitterB.current);
-    // animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
-    //renderer.render(threeScene, camera);
-    // TODO: End Remove
-  })
-
-  useEffect(() => {
-    // TODO: Bring back
-    // const nebulaRenderer = new ParticleSystem();
-    // nebulaRenderer
-    //   .addRenderer(new SpriteRenderer(scene, THREE));
-    // nebula.current = nebulaRenderer;
 
     function animate(nebula, app) {
       requestAnimationFrame(() => animate(nebula, app));
@@ -301,9 +283,28 @@ function Boxes(props) {
       const nebulaRenderer = new SpriteRenderer(scene, THREE);
       const nebula = loaded.addRenderer(nebulaRenderer);
       animate(nebula, { scene, camera, renderer: gl });
-      nebula.current = nebulaRenderer;
     });
 
+
+    // This function runs 60 times/second inside the global render-loop
+    // const time =clock.getElapsedTime()*10
+    // nebula.current.update();
+
+    // TODO: Remove?
+    // console.log(nebula.current,emitterA.current,emitterB.current,gl);
+    // animateEmitters(emitterA.current, emitterB.current);
+    // animationFunctions.ROTATION_ELIPSES_2(emitterA.current,time,.1)
+    //renderer.render(threeScene, camera);
+    // TODO: End Remove
+  })
+
+  useEffect(() => {
+    // TODO: Bring back??
+    const nebulaRenderer = new ParticleSystem();
+    nebulaRenderer
+      .addRenderer(new SpriteRenderer(scene, THREE));
+
+    nebula.current = nebulaRenderer;
   }, [scene])
 
   useEffect(() => {
