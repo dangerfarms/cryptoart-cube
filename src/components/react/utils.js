@@ -32,6 +32,11 @@ export const didFaceOverlap =  (frag1, frag2) => {
   return [false, false, false, false, false, false]
 };
 
+export const getCombineDifference = (frag1, frag2) => {
+  const combined = mergeCube(frag1, frag2);
+  const difference = combined.squareCount.map((combinedFaceCount, i) => combinedFaceCount - frag1[i]);
+  return difference
+}
 
 /**
  * Return a merged cube with information on whether an overlap occurred for each face.
@@ -79,15 +84,13 @@ export const getFragmentProperties = (fragmentData) => {
 
   if (frag2SquareCount !== null) {
     const { colors, ...props } = is2Combined ? adjustedFragmentProperties(frag2SquareCount) : {};
-
-    const { didFaceOverlap } = mergeCube(frag1SquareCount, frag2SquareCount);
-    console.log(didFaceOverlap);
+    const combineDifference = getCombineDifference(frag1SquareCount, frag2SquareCount);
 
     const updatedColors = (colors || CUBE_CONSTANTS.Defaults.colors)
-      .map((color, i) => didFaceOverlap[i] ? '#222' : color);
+      .map((color, i) => combineDifference[i] < 0 ? '#222' : color);
 
     frag2 = {
-      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount, didFaceOverlap),
+      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount, combineDifference),
       properties: {
         mainCubeSideSecond: props.mainCubeSide,
         thicknessSecond: props.thickness,

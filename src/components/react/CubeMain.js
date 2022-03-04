@@ -6,7 +6,7 @@ import { generateCubes } from './cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
-import { didFaceOverlap, getFragmentProperties, hasFullFace, mergeCube } from './utils';
+import { didFaceOverlap, getCombineDifference, getFragmentProperties, hasFullFace, mergeCube } from './utils';
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -223,9 +223,7 @@ function CubeMain(props) {
 
   useEffect(() => {
     const [frag1, frag2] = getFragmentProperties(_fragmentData);
-    const overlaps = didFaceOverlap(_fragmentData.frag1SquareCount, _fragmentData.frag2SquareCount);
-
-    console.log(frag2)
+    const combineDifference = getCombineDifference(_fragmentData.frag1SquareCount, _fragmentData.frag2SquareCount);
 
     setCubeData({
       faces: frag1.faces,
@@ -235,7 +233,7 @@ function CubeMain(props) {
       frag2properties: frag2.properties,
       frag2colors: frag2.colors,
       previewCube,
-      didFaceOverlap: overlaps,
+      combineDifference,
       facesPreview: previewCube ? frag2.faces : null,
       facesMergedCube,
       ...frag1.properties,
