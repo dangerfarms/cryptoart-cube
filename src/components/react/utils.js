@@ -24,7 +24,6 @@ const defaultProps = {
   displacementIncrementPerFrame,
 };
 
-
 export const didFaceOverlap =  (frag1, frag2) => {
   const tileLimits = [9, 16, 25, 36, 49, 64];
   if (frag1 && frag2)
@@ -33,30 +32,27 @@ export const didFaceOverlap =  (frag1, frag2) => {
 };
 
 export const getCombineDifference = (frag1, frag2) => {
+  if (!frag2) {
+    return [0,0,0,0,0,0]
+  }
   const combined = mergeCube(frag1, frag2);
-  const difference = combined.squareCount.map((combinedFaceCount, i) => combinedFaceCount - frag1[i]);
+  const difference = combined.map((combinedFaceCount, i) => combinedFaceCount - frag1[i]);
   return difference
 }
 
 /**
- * Return a merged cube with information on whether an overlap occurred for each face.
+ * Return a merged cube.
  */
 export const mergeCube = (frag1, frag2) => {
   const squareCount = [];
-  const didFaceOverlap = [];
   const tileLimits = [9, 16, 25, 36, 49, 64];
   for (let i = 0; i < 6; i++) {
     squareCount[i] = frag1[i] + frag2[i];
-    didFaceOverlap[i] = false;
     if (squareCount[i] > tileLimits[i]) {
       squareCount[i] = 2 * tileLimits[i] - squareCount[i];
-      didFaceOverlap[i] = true;
     }
   }
-  return {
-    squareCount,
-    didFaceOverlap,
-  };
+  return squareCount;
 };
 
 export const getFragmentProperties = (fragmentData) => {

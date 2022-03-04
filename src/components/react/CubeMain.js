@@ -6,7 +6,7 @@ import { generateCubes } from './cubeGeneration';
 import { CubeMainStudio } from './CubeMainStudio';
 import cryptoCubeMachine from '../../machines/cryptoCube/cryptoCubeMachine';
 import { CUBE_CONSTANTS } from '../../constants/constants';
-import { didFaceOverlap, getCombineDifference, getFragmentProperties, hasFullFace, mergeCube } from './utils';
+import { getCombineDifference, getFragmentProperties, hasFullFace, mergeCube } from './utils';
 
 const initialCubeConfig = {
   colors: CUBE_CONSTANTS.Defaults.colors,
@@ -267,11 +267,7 @@ function CubeMain(props) {
     }
     if (e.key === 'b') {
       cryptoCubeMachine.actionCreators.mergeCubesConclusion(() => {
-
-        // TODO: combine fragment when overlap
-        const mergedSquareCount = (_fragmentData.frag1SquareCount && _fragmentData.frag2SquareCount) ?
-          _fragmentData.frag1SquareCount.map((a, i) => a + _fragmentData.frag2SquareCount[i]) :
-          null;
+        const mergedSquareCount = mergeCube(_fragmentData.frag1SquareCount, _fragmentData.frag2SquareCount);
         setFragmentData({
           frag1SquareCount: mergedSquareCount,
           isCombined: true,
