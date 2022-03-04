@@ -42,6 +42,7 @@ function CubeMain(props) {
     frag2Config = null,
     isCombined = false,
     is2Combined = false,
+    showOverlap = false,
     // TODO: Remove
     facesMergedCube,
     // TODO: end
@@ -68,7 +69,8 @@ function CubeMain(props) {
     facesSecond: null,
     frag2properties: null,
     frag2colors: null,
-    previewCube: null,
+    previewCube,
+    showOverlap,
     facesMergedCube: null,
     facesPreview: null,
   });
@@ -189,187 +191,6 @@ function CubeMain(props) {
       max: 1,
     },
     orbitControls: orbitControls,
-    // color0: {
-    //   value: colors[0],
-    //   onChange: (color) => {
-    //     colors[0] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // color1: {
-    //   value: colors[1],
-    //   onChange: (color) => {
-    //     colors[1] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // color2: {
-    //   value: colors[2],
-    //   onChange: (color) => {
-    //     colors[2] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // color3: {
-    //   value: colors[3],
-    //   onChange: (color) => {
-    //     colors[3] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // color4: {
-    //   value: colors[4],
-    //   onChange: (color) => {
-    //     colors[4] = color;
-    //     setCubeData({
-    //       colors, frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // color5: {
-    //   value: colors[5],
-    //   onChange: (color) => {
-    //     colors[5] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond0: {
-    //   value: frag2colors[0],
-    //   onChange: (color) => {
-    //     frag2colors[0] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond1: {
-    //   value: frag2colors[1],
-    //   onChange: (color) => {
-    //     frag2colors[1] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond2: {
-    //   value: frag2colors[2],
-    //   onChange: (color) => {
-    //     frag2colors[2] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond3: {
-    //   value: frag2colors[3],
-    //   onChange: (color) => {
-    //     frag2colors[3] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond4: {
-    //   value: frag2colors[4],
-    //   onChange: (color) => {
-    //     frag2colors[4] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // colorSecond5: {
-    //   value: frag2colors[5],
-    //   onChange: (color) => {
-    //     frag2colors[5] = color;
-    //     setCubeData({
-    //       colors,
-    //       frag2colors,
-    //       faces: _cubeData.faces,
-    //       facesMergedCube: _cubeData.facesMergedCube,
-    //       facesSecond: _cubeData.facesSecond,
-    //       facesPreview: _cubeData.facesPreview,
-    //     });
-    //   },
-    // },
-    // regenerate: button(() => {
-    //   setCubeData({
-    //     colors,
-    //     frag2colors,
-    //     ...generateCubes(),
-    //   });
-    // }),
-    // regenerateFilled: button(() => {
-    //   setCubeData({
-    //     colors,
-    //     frag2colors,
-    //     ...generateCubes(true),
-    //   });
-    // }),
     takeScreenShot: button(() => {
       cryptoCubeMachine.actionCreators.takeScreenShot();
     }),
@@ -403,7 +224,9 @@ function CubeMain(props) {
   );
 
   useEffect(() => {
-    const [frag1, frag2] = getFragmentProperties(_fragmentData);
+    const [frag1, frag2] = getFragmentProperties(_fragmentData, showOverlap);
+
+    console.log(frag2);
 
     setCubeData({
       faces: frag1.faces,
@@ -414,6 +237,7 @@ function CubeMain(props) {
       frag2colors: frag2.colors,
       previewCube,
       facesPreview: previewCube ? frag2.faces : null,
+      showOverlap,
       facesMergedCube,
       ...frag1.properties,
       ...(!previewCube ? frag2.properties : {}),

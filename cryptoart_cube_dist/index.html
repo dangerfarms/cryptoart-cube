@@ -27,12 +27,17 @@
     is2Combined = urlParams.get('is2Combined') === "true" || false;
   } catch {}
 
+  const previewCube = urlParams.get('previewCube') === 'true' || false;
+  const showOverlap = urlParams.get('showOverlap') === 'true' || false;
+
   const cubeData = {
     frag1Config: squareCount,
     frag2Config,
     isCombined,
     is2Combined,
     hideBackground: false,
+    previewCube,
+    showOverlap,
   };</script><script>window.onload = function() {
     const domElement = document.getElementById('root');
     DANGER_CUBE.loadCubeIntoDomElement(

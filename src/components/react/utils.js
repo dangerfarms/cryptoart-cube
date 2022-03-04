@@ -24,7 +24,7 @@ const defaultProps = {
   displacementIncrementPerFrame,
 }
 
-export const getFragmentProperties = (fragmentData) => {
+export const getFragmentProperties = (fragmentData, showOverlap = true) => {
   const { frag1SquareCount, isCombined, frag2SquareCount, is2Combined } = fragmentData;
 
   let frag1, frag2;
@@ -49,8 +49,9 @@ export const getFragmentProperties = (fragmentData) => {
 
   if (frag2SquareCount !== null) {
     const {colors, ...props} = is2Combined ? adjustedFragmentProperties(frag2SquareCount) : {};
+
     frag2 = {
-      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount),
+      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount, showOverlap),
       properties: {
         mainCubeSideSecond: props.mainCubeSide,
         thicknessSecond: props.thickness,
@@ -62,7 +63,9 @@ export const getFragmentProperties = (fragmentData) => {
         displacementAnimationDistanceSecond: props.displacementAnimationDistance,
         displacementIncrementPerFrameSecond: props.displacementIncrementPerFrame,
       },
-      colors: colors || CUBE_CONSTANTS.Defaults.colors,
+      colors: showOverlap ?
+        ['#222', '#222', '#222', '#222', '#222', '#222'] :
+        colors || CUBE_CONSTANTS.Defaults.colors,
     }
   } else {
     frag2 = {

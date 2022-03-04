@@ -82,6 +82,7 @@ function Boxes(props) {
     active = true,
     previewCubeWireframe = false,
     previewCubeUniqueColor = false,
+    showOverlap = false,
     // previewCubeAttachBloomToAnimation = false,
     previewCubeAnimationSpeed = 10,
     previewCubeOpacity = 1,
@@ -207,7 +208,6 @@ function Boxes(props) {
         nebula.current.addEmitter(emitter.current)
       }  
     })
-    
 
 
     // This function runs 60 times/second inside the global render-loop
@@ -401,7 +401,10 @@ function Boxes(props) {
           const _colorArray = new Array(face.length)
             .fill()
             .flatMap((_, i) =>
-              tempColor.set(_previewCubeUniqueColor ? '#ffffff' : cubeData.colors[index]).toArray(),
+              tempColor.set(
+                showOverlap ?
+                  '#111' :
+                  (_previewCubeUniqueColor ? '#ffffff' : cubeData.colors[index])).toArray(),
             );
 
           const toReturn = [...acc, ..._colorArray];
@@ -953,6 +956,7 @@ export const CubeRenderer = (props) => {
             faces: props.cubeData.facesPreview,
             facesMergedCube: null,
           }}
+          showOverlap={showOverlap}
           subSquareOpacity={0.9}
           previewCube={true}
           toggleMergedCube={false}

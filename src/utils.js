@@ -8,13 +8,13 @@
  * @param cube1Config [[0,0,0,1,0,0,1,0],[0,1..]....]
  * @param cube2Squares [2,0,15,2,5,30]
  */
-export const createIntersectingCubeConfig = (cube1Config, cube2Squares) => {
+export const createIntersectingCubeConfig = (cube1Config, cube2Squares, createOverlap = false) => {
   const maxSquaresPerFace = [9, 16, 25, 36, 49, 64];
   const emptyCube = maxSquaresPerFace.map((square, i) => new Array(square).fill(0));
 
   const freeSquareFaceIndices = cube1Config.map((faceConfig, i) =>
     faceConfig
-      .map((e, j) => (e === 0 ? j : ''))
+      .map((e, j) => (e === (showOverlap ? 1 : 0) ? j : ''))
       .filter(String)
       .slice(0, cube2Squares[i]),
   );
