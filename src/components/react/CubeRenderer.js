@@ -82,7 +82,6 @@ function Boxes(props) {
     active = true,
     previewCubeWireframe = false,
     previewCubeUniqueColor = false,
-    didFaceOverlap = [false, false, false, false, false, false],
     combineDifference = [0,0,0,0,0,0],
     // previewCubeAttachBloomToAnimation = false,
     previewCubeAnimationSpeed = 10,
@@ -957,7 +956,6 @@ export const CubeRenderer = (props) => {
             faces: props.cubeData.facesPreview,
             facesMergedCube: null,
           }}
-          didFaceOverlap={props.cubeData.didFaceOverlap}
           combineDifference={props.cubeData.combineDifference}
           subSquareOpacity={0.9}
           previewCube={true}
