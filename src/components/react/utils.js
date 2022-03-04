@@ -22,19 +22,49 @@ const defaultProps = {
   cylinderOpacity,
   displacementAnimationDistance,
   displacementIncrementPerFrame,
-}
+};
 
-export const getFragmentProperties = (fragmentData, showOverlap = true) => {
+
+export const didFaceOverlap =  (frag1, frag2) => {
+  const tileLimits = [9, 16, 25, 36, 49, 64];
+  if (frag1 && frag2)
+    return [0,1,2,3,4,5].map(i => (frag1[i] + frag2[i] > tileLimits[i]) ? true : false)
+  return [false, false, false, false, false, false]
+};
+
+
+/**
+ * Return a merged cube with information on whether an overlap occurred for each face.
+ */
+export const mergeCube = (frag1, frag2) => {
+  const squareCount = [];
+  const didFaceOverlap = [];
+  const tileLimits = [9, 16, 25, 36, 49, 64];
+  for (let i = 0; i < 6; i++) {
+    squareCount[i] = frag1[i] + frag2[i];
+    didFaceOverlap[i] = false;
+    if (squareCount[i] > tileLimits[i]) {
+      squareCount[i] = 2 * tileLimits[i] - squareCount[i];
+      didFaceOverlap[i] = true;
+    }
+  }
+  return {
+    squareCount,
+    didFaceOverlap,
+  };
+};
+
+export const getFragmentProperties = (fragmentData) => {
   const { frag1SquareCount, isCombined, frag2SquareCount, is2Combined } = fragmentData;
 
   let frag1, frag2;
   if (frag1SquareCount) {
-    const {colors, ...properties } = isCombined ? adjustedFragmentProperties(frag1SquareCount) : defaultProps;
+    const { colors, ...properties } = isCombined ? adjustedFragmentProperties(frag1SquareCount) : defaultProps;
     frag1 = {
       faces: translateSizeToConfig(frag1SquareCount),
       properties,
-      colors: colors || CUBE_CONSTANTS.Defaults.colors
-    }
+      colors: colors || CUBE_CONSTANTS.Defaults.colors,
+    };
   } else {
     frag1 = {
       faces: translateSizeToConfig([9, 16, 25, 36, 49, 64]),
@@ -43,15 +73,21 @@ export const getFragmentProperties = (fragmentData, showOverlap = true) => {
         displacementAnimationDistance: 1,
         displacementIncrementPerFrame: 0.1,
       },
-      colors: ['#555', '#555', '#555', '#555', '#555', '#555']
-    }
+      colors: ['#555', '#555', '#555', '#555', '#555', '#555'],
+    };
   }
 
   if (frag2SquareCount !== null) {
-    const {colors, ...props} = is2Combined ? adjustedFragmentProperties(frag2SquareCount) : {};
+    const { colors, ...props } = is2Combined ? adjustedFragmentProperties(frag2SquareCount) : {};
+
+    const { didFaceOverlap } = mergeCube(frag1SquareCount, frag2SquareCount);
+    console.log(didFaceOverlap);
+
+    const updatedColors = (colors || CUBE_CONSTANTS.Defaults.colors)
+      .map((color, i) => didFaceOverlap[i] ? '#222' : color);
 
     frag2 = {
-      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount, showOverlap),
+      faces: createIntersectingCubeConfig(frag1.faces, frag2SquareCount, didFaceOverlap),
       properties: {
         mainCubeSideSecond: props.mainCubeSide,
         thicknessSecond: props.thickness,
@@ -63,10 +99,8 @@ export const getFragmentProperties = (fragmentData, showOverlap = true) => {
         displacementAnimationDistanceSecond: props.displacementAnimationDistance,
         displacementIncrementPerFrameSecond: props.displacementIncrementPerFrame,
       },
-      colors: showOverlap ?
-        ['#222', '#222', '#222', '#222', '#222', '#222'] :
-        colors || CUBE_CONSTANTS.Defaults.colors,
-    }
+      colors: updatedColors,
+    };
   } else {
     frag2 = {
       faces: null,
@@ -82,12 +116,12 @@ export const getFragmentProperties = (fragmentData, showOverlap = true) => {
         displacementIncrementPerFrameSecond: displacementIncrementPerFrame,
 
       },
-      colors: CUBE_CONSTANTS.Defaults.colors
-    }
+      colors: CUBE_CONSTANTS.Defaults.colors,
+    };
   }
 
   return [frag1, frag2];
-}
+};
 
 export const hasFullFace = squareCount => {
   if (squareCount === null)

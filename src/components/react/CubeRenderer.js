@@ -82,7 +82,7 @@ function Boxes(props) {
     active = true,
     previewCubeWireframe = false,
     previewCubeUniqueColor = false,
-    showOverlap = false,
+    didFaceOverlap = [false, false, false, false, false, false],
     // previewCubeAttachBloomToAnimation = false,
     previewCubeAnimationSpeed = 10,
     previewCubeOpacity = 1,
@@ -402,7 +402,7 @@ function Boxes(props) {
             .fill()
             .flatMap((_, i) =>
               tempColor.set(
-                showOverlap ?
+                didFaceOverlap[i] ?
                   '#111' :
                   (_previewCubeUniqueColor ? '#ffffff' : cubeData.colors[index])).toArray(),
             );
@@ -956,7 +956,7 @@ export const CubeRenderer = (props) => {
             faces: props.cubeData.facesPreview,
             facesMergedCube: null,
           }}
-          showOverlap={showOverlap}
+          didFaceOverlap={props.cubeData.didFaceOverlap}
           subSquareOpacity={0.9}
           previewCube={true}
           toggleMergedCube={false}
