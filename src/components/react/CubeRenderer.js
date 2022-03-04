@@ -131,37 +131,17 @@ function Boxes(props) {
     }
 
     if (props.insideSphere && !emitterA.current){
-      // emitterA.current = createEmitter({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-      emitterA.current = createSphere({
+      emitterA.current = createEmitter({
         colorA: '#FF0000',
-        colorB: '#ff003b',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.2,
-        radius: 2,
       });
-
-      // emitterA.current = createEmitter2({
-      //   colorA: '#004CFE',
-      //   colorB: '#6600FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-      // animateEmitters(emitterA.current, emitterB.current);
-
       nebula.current
         .addEmitter(emitterA.current)
     }
 
     // hotfix code for multiple spheres ... remove later
-
     if (!props.insideSphere2 && emitterB.current){
       //
       emitterB.current.destroy()
@@ -171,31 +151,12 @@ function Boxes(props) {
     }
 
     if (props.insideSphere2 && !emitterB.current){
-      // emitterB.current = createEmitter2({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-
-      emitterB.current = createSphere({
-        colorA: '#fd5b14',
-        colorB: '#651e00',
+      emitterB.current = createEmitter2({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.5,
-        radius: 3,
       });
-
-      // emitterB.current = createEmitter({
-      //   colorA: '#004CFE',
-      //   colorB: '#6600FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-      // animateEmitters(emitterA.current, emitterB.current);
 
       nebula.current
         .addEmitter(emitterB.current)
@@ -213,32 +174,12 @@ function Boxes(props) {
     }
 
     if (props.insideSphere3 && !emitterC.current){
-      // emitterC.current = createEmitter3({
-      //   colorA: '#FF0000',
-      //   colorB: '#0000FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-
-      emitterC.current = createSphere({
-        colorA: '#ffde00',
-        colorB: '#383700',
+      emitterC.current = createEmitter3({
+        colorA: '#FF0000',
+        colorB: '#0000FF',
         camera,
         renderer:gl,
-        alpha: 0.4,
-        radius: 4,
       });
-
-      // emitterB.current = createEmitter({
-      //   colorA: '#004CFE',
-      //   colorB: '#6600FF',
-      //   camera,
-      //   renderer:gl,
-      // });
-
-      // animateEmitters(emitterA.current, emitterB.current);
-
       nebula.current
         .addEmitter(emitterC.current)
     }
@@ -281,15 +222,9 @@ function Boxes(props) {
 
 
   useEffect(() => {
-
     const nebulaRenderer = new ParticleSystem();
-
-
-
     nebulaRenderer
-      // .addEmitter(emitterB.current)
       .addRenderer(new SpriteRenderer(scene, THREE));
-
     nebula.current = nebulaRenderer;
   }, [scene])
 
