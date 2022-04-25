@@ -66,6 +66,7 @@ let jIncrement = 0;
 function Boxes(props) {
   const {
     cubeData,
+    isCombined=false,
     toggleMergedCube = false,
     backGroundColor = '#f0f0f0',
     // per cube props
@@ -485,11 +486,11 @@ function Boxes(props) {
 
       const faceColor = new THREE.Color(hexColorsArray[cubeFaceIndex]);
 
-      const isFilledFace =cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined;
+      const isFilledFace = isCombined && (cubeData.faces[cubeFaceIndex].find((value) => value === 0) === undefined);
       const currentFaceNumberOfSquaresPerLine = Math.sqrt(cubeData.faces[cubeFaceIndex].length);
       const currentFaceOrientationCoords = cubeFacesOrientation[cubeFaceIndex];
       const subFaceRealSideLength = isFilledFace ? mainCubeSide: mainCubeSide / currentFaceNumberOfSquaresPerLine;
-      const subFaceRelativeSide = isFilledFace? 1: 1 / currentFaceNumberOfSquaresPerLine;
+      const subFaceRelativeSide = isFilledFace ? 1 : 1 / currentFaceNumberOfSquaresPerLine;
       const subFaceRelativeSideScaled = subFaceRelativeSide * clampedSubSquaresScale;
 
       // console.log('facesArray ?', cubeData.faces[cubeFaceIndex], isFilledFace);
@@ -929,6 +930,7 @@ function Boxes(props) {
 export const CubeRenderer = (props) => {
   // const boxes1Position = [0, 0, 0];
   // const boxes2Position = [10, 10, 10];
+
   return (
     <Canvas
       key={'scene'}
@@ -942,6 +944,7 @@ export const CubeRenderer = (props) => {
       <Boxes
         key={'main'}
         // main cube
+        isCombined={props.isCombined}
         {...props}
         previewCube={false}
         position={props.positionCube1}
@@ -1007,6 +1010,7 @@ export const CubeRenderer = (props) => {
           key={'main2'}
           //second cube for merge animation
           {...props}
+          isCombined={props.is2Combined}
           previewCube={false}
           toggleMergedCube={false}
           cubeData={{

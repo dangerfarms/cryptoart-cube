@@ -77,7 +77,8 @@ function CubeMain(props) {
   const store = useCreateStore();
   const cubeState = {
     lightningRays: lightningRays,
-    insideSphere: hasFullFace(frag1Config),
+    // insideSphere: hasFullFace(frag1Config),
+    insideSphere: false,
     insideSphere2: false,
     insideSphere3: false,
     insideSphere4: false,
@@ -291,7 +292,13 @@ function CubeMain(props) {
   return (
     <>
       {showPanel && <LevaPanel key="panel" store={store} titleBar={true}/>}
-      <CubeRenderer key={'renderer'} cubeData={_cubeData} {...data} />
+      <CubeRenderer
+        key={'renderer'}
+        cubeData={_cubeData}
+        {...data}
+        isCombined={isCombined}
+        is2Combined={is2Combined}
+      />
       <CubeMainStudio set={set} data={data}/>
     </>
   );
