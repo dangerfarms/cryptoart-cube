@@ -469,9 +469,9 @@ function Boxes(props) {
 
     const halfCubeSide = mainCubeSide / 2;
 
-    const _thickness = (previewCube ? thickness - 0.0001 : thickness) || 0.00001; // requested by client.
+    const _thickness = (previewCube ? thickness + 0.02 : thickness) || 0.00001; // requested by client.
 
-    const _explosion = previewCube ? explosion + 0.08 : explosion;
+    const _explosion = previewCube ? explosion - 0.1 : explosion;
 
     const absoluteThickness = halfCubeSide * _thickness;
 
