@@ -253,7 +253,7 @@ function CubeMain(props) {
   // data has all props except cubeConfig
 
 
-  const [showPanel, setShowPanel] = useState(process.env.REACT_APP_DEBUG_CUBE);
+  const [showPanel, setShowPanel] = useState(false);
   document.addEventListener('keyup', e => {
     if (e.repeat) {
       return;
