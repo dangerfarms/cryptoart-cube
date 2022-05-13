@@ -21,6 +21,7 @@ const Defaults = {
   ],
   colors: ['#ff003c', '#ff7b00', '#ffcd00', '#5ED723', '#1E63FF', '#ba0dbe'],
   freeze: false,
+  cameraFov: 50,
   disableZoom: false,
   subSquaresScale: 0.9,
   mainCubeSide: 10,

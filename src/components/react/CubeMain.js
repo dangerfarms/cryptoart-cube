@@ -22,6 +22,7 @@ CubeMain.propTypes = {
   is2Combined: PropTypes.bool,
   facesMergedCube: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   freeze: PropTypes.bool,
+  cameraFov: PropTypes.number,
   disableZoom: PropTypes.bool,
   hideBackground: PropTypes.bool,
 };
@@ -47,6 +48,7 @@ function CubeMain(props) {
     // TODO: end
     previewCube = CUBE_CONSTANTS.Defaults.previewCube,
     freeze = CUBE_CONSTANTS.Defaults.freeze,
+    cameraFov = CUBE_CONSTANTS.Defaults.cameraFov,
     hideBackground = true,
     disableZoom = CUBE_CONSTANTS.Defaults.disableZoom,
     displacementAnimationDistance = 0,
@@ -125,6 +127,7 @@ function CubeMain(props) {
     },
     hideControls: true,
     freeze,
+    cameraFov,
     disableZoom,
     backGroundColor: '#202426',
     subSquaresScale: {

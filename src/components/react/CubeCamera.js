@@ -7,6 +7,7 @@ export default function CubeCamera({
   disableZoom = false,
   orbitControls = true,
   positionCamera = { x: 0, y: 0, z: 25 },
+  cameraFov = 50
 }) {
   const controls = useRef();
   const cameraRef = useRef();
@@ -29,6 +30,7 @@ export default function CubeCamera({
     <>
       <PerspectiveCamera
         key="camera"
+        fov={cameraFov}
         position={[positionCamera.x, positionCamera.y, positionCamera.z]}
         makeDefault
         ref={cameraRef}
